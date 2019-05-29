@@ -1,0 +1,8 @@
+.idea
+__pycache__
+venv
+reports
+/api/.cache/
+.coverage
+.vscode
+*.pyc
