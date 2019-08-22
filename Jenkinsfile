@@ -34,7 +34,7 @@ node {
     stage("Build image") {
         tryStep "build", {
             docker.withRegistry("${DOCKER_REGISTRY}",'docker-registry') {
-                def image = docker.build("mijnams/decosjoin:${env.BUILD_NUMBER}", "--build-arg http_proxy=${JENKINS_HTTP_PROXY_STRING} --build-arg https_proxy=${JENKINS_HTTP_PROXY_STRING} --build-arg no_proxy='nexus.secure.amsterdam.nl' app")
+                def image = docker.build("mijnams/decosjoin:${env.BUILD_NUMBER}", "app")
                 image.push()
             }
         }
