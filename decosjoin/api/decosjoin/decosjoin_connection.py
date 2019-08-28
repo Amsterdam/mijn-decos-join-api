@@ -37,8 +37,6 @@ class DecosJoinConnection:
     def get_zaken(self, bsn):
         """ Get all zaken for a bsn. """
         user_key = self._get_user_key(bsn)
-        url = f"{self.api_url}items/{user_key}/folders"
-        '/folders?select = mark, text45, subject1, text9, text11, text12, text13, text6, date6, text7, text10, date7,'
-        ' text8, document_date, date5, processed, dfunction'
+        url = f"{self.api_url}items/{user_key}/folders?select=mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction"
         res_json = self._get(url)
         return res_json
