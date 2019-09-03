@@ -22,14 +22,23 @@ node {
         checkout scm
     }
 
+//     stage('Test') {
+//         tryStep "test", {
+//             sh "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml build && " +
+//                "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml run -u root --rm test"
+//         }, {
+//             sh "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml down"
+//         }
+//     }
     stage('Test') {
         tryStep "test", {
-            sh "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml build && " +
-               "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml run -u root --rm test"
-        }, {
-            sh "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml down"
+            docker.withRegistry('${DOCKER_REGISTRY}','docker-registry') {
+                docker.build("mijnams/decosjoin:${env.BUILD_NUMBER}")
+                sh "docker run --rm mijnams/decosjoin:${env.BUILD_NUMBER} /app/test.sh"
+            }
         }
     }
+
 
     stage("Build image") {
         tryStep "build", {
