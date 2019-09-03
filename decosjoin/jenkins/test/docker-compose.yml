@@ -1,7 +1,7 @@
 version: "3.0"
 services:
   test:
-    build: ../../..
+    build: ../..
     command: >
       bash -c "decosjoin/test.sh"
     environment:
