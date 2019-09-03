@@ -1,8 +1,9 @@
 version: "3.0"
 services:
   test:
-    build: ../..
+    build: ../../..
     command: >
-      bash -c "decosjoin/test.sh"
+      bash -c "/app/test.sh"
+#      pwd
     environment:
       TMA_CERTIFICATE: 'test'

@@ -1,5 +1,6 @@
 # flask and plugins
 flask
+Flask-Testing
 
 requests
 

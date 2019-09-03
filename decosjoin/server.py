@@ -1,9 +1,9 @@
 
 import sentry_sdk
-from flask import Flask, request
+from flask import Flask
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-from decosjoin.api.config import get_sentry_dsn
+from decosjoin.config import get_sentry_dsn
 
 app = Flask(__name__)
 
@@ -18,7 +18,10 @@ if get_sentry_dsn():  # pragma: no cover
 
 @app.route('/decosjoin/getvergunningen', methods=['GET'])
 def get_vergunningen():
-    pass
+    return {
+        'status': 'OK',
+        'data': [],
+    }
 
 
 @app.route('/status/health')
@@ -28,4 +31,3 @@ def health_check():
 
 if __name__ == '__main__':  # pragma: no cover
     app.run()
-

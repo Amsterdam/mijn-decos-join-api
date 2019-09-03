@@ -24,10 +24,10 @@ node {
 
     stage('Test') {
         tryStep "test", {
-            sh "docker-compose -p focus -f decosjoin/jenkins/test/docker-compose.yml build && " +
-               "docker-compose -p focus -f decosjoin/jenkins/test/docker-compose.yml run -u root --rm test"
+            sh "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml build && " +
+               "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml run -u root --rm test"
         }, {
-            sh "docker-compose -p focus -f decosjoin/jenkins/test/docker-compose.yml down"
+            sh "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml down"
         }
     }
 

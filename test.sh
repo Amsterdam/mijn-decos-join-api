@@ -9,5 +9,5 @@ flake8
 echo "Running coverage tests"
 export COVERAGE_FILE=/tmp/.coverage
 coverage erase
-coverage run --source api -m unittest
+coverage run --source decosjoin -m unittest
 coverage report --fail-under=93

@@ -8,13 +8,15 @@ RUN apt-get update && apt-get install -y
 RUN pip install --upgrade pip
 RUN pip install uwsgi
 
-COPY /api /decosjoin/api
-COPY /requirements.txt /decosjoin
+WORKDIR /app
 
-COPY test.sh /decosjoin
-COPY .flake8 /decosjoin/
+COPY /requirements.txt /app/
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-RUN pip install --no-cache-dir -r /decosjoin/requirements.txt
+COPY test.sh /app/
+COPY .flake8 /app/
+
+COPY decosjoin /app/decosjoin
 
 #ENTRYPOINT ["uwsgi"]
 USER datapunt
