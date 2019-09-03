@@ -32,7 +32,7 @@ node {
 //     }
     stage('Test') {
         tryStep "test", {
-            docker.withRegistry('${DOCKER_REGISTRY}','docker-registry') {
+            docker.withRegistry("${DOCKER_REGISTRY}",'docker-registry') {
                 docker.build("mijnams/decosjoin:${env.BUILD_NUMBER}")
                 sh "docker run --rm mijnams/decosjoin:${env.BUILD_NUMBER} /app/test.sh"
             }
