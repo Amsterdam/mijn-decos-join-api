@@ -1,0 +1,8 @@
+version: "3.0"
+services:
+  test:
+    build: ../../..
+    command: >
+      bash -c "decosjoin/test.sh"
+    environment:
+      TMA_CERTIFICATE: 'test'
