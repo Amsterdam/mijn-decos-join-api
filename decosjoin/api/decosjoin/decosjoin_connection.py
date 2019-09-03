@@ -4,7 +4,7 @@ import requests
 # import json
 from requests.auth import HTTPBasicAuth
 
-from decosjoin.api.config import get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, get_decosjoin_adres_boek
+from decosjoin.config import get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, get_decosjoin_adres_boek
 
 
 class DecosJoinConnection:
