@@ -22,14 +22,6 @@ node {
         checkout scm
     }
 
-//     stage('Test') {
-//         tryStep "test", {
-//             sh "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml build && " +
-//                "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml run -u root --rm test"
-//         }, {
-//             sh "docker-compose -p decosjoin -f decosjoin/jenkins/test/docker-compose.yml down"
-//         }
-//     }
     stage('Test') {
         tryStep "test", {
             docker.withRegistry("${DOCKER_REGISTRY}",'docker-registry') {
@@ -43,7 +35,7 @@ node {
     stage("Build image") {
         tryStep "build", {
             docker.withRegistry("${DOCKER_REGISTRY}",'docker-registry') {
-                def image = docker.build("mijnams/decosjoin:${env.BUILD_NUMBER}", "decosjoin")
+                def image = docker.build("mijnams/decosjoin:${env.BUILD_NUMBER}")
                 image.push()
             }
         }
