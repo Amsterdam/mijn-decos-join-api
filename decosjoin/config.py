@@ -19,3 +19,9 @@ def get_decosjoin_api_host():
 
 def get_decosjoin_adres_boek():
     return os.getenv("DECOS_JOIN_ADRES_BOEK")
+
+
+def get_tma_certificate():
+    tma_cert_location = os.getenv('TMA_CERTIFICATE')
+    with open(tma_cert_location) as f:
+        return f.read()

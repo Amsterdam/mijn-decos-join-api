@@ -1,30 +1,27 @@
-from pprint import pprint
-
 import requests
-# import json
 from requests.auth import HTTPBasicAuth
-
-from decosjoin.config import get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, get_decosjoin_adres_boek
 
 
 class DecosJoinConnection:
-    def __init__(self):
-        self.username = get_decosjoin_username()
-        self.password = get_decosjoin_password()
+    def __init__(self, username, password, api_host, adres_boek):
+        self.username = username
+        self.password = password
 
-        self.adres_boek = get_decosjoin_adres_boek()
+        self.adres_boek = adres_boek
 
-        self._api_host = get_decosjoin_api_host()
+        self._api_host = api_host
         self._api_location = "/decosweb/aspx/api/v1/"
         self.api_url = f"{self._api_host}{self._api_location}"
+
+    def _get_response(self, *args, **kwargs):
+        return requests.get(*args, **kwargs)
 
     def _get(self, url):
         """ Makes request to the decos join api with credentials added. """
         print("Getting", url)
-        response = requests.get(url, auth=HTTPBasicAuth(self.username, self.password))
+        response = self._get_response(url, auth=HTTPBasicAuth(self.username, self.password))
         if response.status_code == 200:
             json = response.json()
-            pprint(json)
             return json
 
     def _get_user_key(self, bsn):
