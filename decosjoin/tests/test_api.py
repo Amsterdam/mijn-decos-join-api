@@ -35,3 +35,12 @@ class ApiTests(FlaskServerTMATestCase):
 
         # from pprint import pprint
         # pprint(data)
+
+    @patch('decosjoin.server.DecosJoinConnection.get_zaken', autospec=True)
+    @patch('decosjoin.server.get_tma_certificate', lambda: server_crt)
+    def test_getvergunningen_no_header(self, getzaken_mock):
+        getzaken_mock.return_value = get_zaken_response_as_dict()
+
+        response = self.client.get('/decosjoin/getvergunningen')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, b'Missing SAML token')
