@@ -8,9 +8,6 @@ from decosjoin.tests.fixtures.data import get_zaken_response_as_dict
 
 
 class ApiTests(FlaskServerTMATestCase):
-    # def create_app(self):
-    #     return app
-
     TEST_BSN = '111222333'
 
     def setUp(self):
