@@ -64,7 +64,7 @@ if (BRANCH == "master") {
                 build job: 'Subtask_Openstack_Playbook',
                     parameters: [
                         [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
-                        [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-mijn-decos-join.yml'],
+                        [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-mijn-decos-join-api.yml'],
                     ]
             }
         }
