@@ -1,0 +1,3 @@
+
+class DecosJoinConnectionError(Exception):
+    pass

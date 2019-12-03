@@ -1,6 +1,8 @@
 import requests
 from requests.auth import HTTPBasicAuth
 
+from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError
+
 
 class DecosJoinConnection:
     def __init__(self, username, password, api_host, adres_boek):
@@ -14,15 +16,20 @@ class DecosJoinConnection:
         self.api_url = f"{self._api_host}{self._api_location}"
 
     def _get_response(self, *args, **kwargs):
+        """ Easy to mock intermediate function. """
         return requests.get(*args, **kwargs)
 
     def _get(self, url):
-        """ Makes request to the decos join api with credentials added. """
+        """ Makes a request to the decos join api with HTTP basic auth credentials added. """
         print("Getting", url)
         response = self._get_response(url, auth=HTTPBasicAuth(self.username, self.password))
         if response.status_code == 200:
             json = response.json()
             return json
+        else:  # TODO: for debugging
+            print("status", response.status_code)
+            print(">>", response.content)
+            raise DecosJoinConnectionError(response.status_code)
 
     def _get_user_key(self, bsn):
         """ Retrieve the internally used id for a user. """
