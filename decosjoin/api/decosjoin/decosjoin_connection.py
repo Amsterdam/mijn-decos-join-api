@@ -26,7 +26,7 @@ class DecosJoinConnection:
         if response.status_code == 200:
             json = response.json()
             return json
-        else:  # TODO: for debugging
+        else:  # TODO: for debugging. Also test this
             print("status", response.status_code)
             print(">>", response.content)
             raise DecosJoinConnectionError(response.status_code)
