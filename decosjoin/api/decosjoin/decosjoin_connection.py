@@ -22,7 +22,11 @@ class DecosJoinConnection:
     def _get(self, url):
         """ Makes a request to the decos join api with HTTP basic auth credentials added. """
         print("Getting", url)
-        response = self._get_response(url, auth=HTTPBasicAuth(self.username, self.password))
+        response = self._get_response(url,
+                                      auth=HTTPBasicAuth(self.username, self.password),
+                                      headers={
+                                          "Accept": "application/itemdata",
+                                      })
         if response.status_code == 200:
             json = response.json()
             return json
