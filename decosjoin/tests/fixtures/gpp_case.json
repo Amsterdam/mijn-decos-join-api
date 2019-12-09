@@ -1,0 +1,55 @@
+{
+  "content": [
+    {
+      "fields": {
+        "date5": "2017-01-01T00:00:00",
+        "date6": "2008-01-01T00:00:00",
+        "date7": "2019-01-01T00:00:00",
+        "dfunction": "Verleend",
+        "document_date": "2017-01-01T00:00:00",
+        "mark": "Z/17/123456",
+        "processed": true,
+        "subject1": "GPP, aanleggen Amstel 32 A",
+        "text45": "GPP",
+        "text6": "passagier",
+        "text7": "A-111-AA",
+        "text8": "Amstel"
+      },
+      "key": "HEXSTRINGITEM1",
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRINGITEM1",
+          "rel": "self"
+        }
+      ]
+    },
+    {
+      "fields": {
+        "date5": "2018-01-01T00:00:00",
+        "date7": "2023-01-01T00:00:00",
+        "dfunction": "Verleend",
+        "document_date": "2018-01-01T00:00:00",
+        "mark": "Z/18/234567",
+        "processed": true,
+        "subject1": "GPK/P verlenging Mw V. Achternaam",
+        "text45": "GPK",
+        "text6": "passagier",
+        "text7": "passagier"
+      },
+      "key": "HEXSTRINGITEM2",
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRINGITEM2",
+          "rel": "self"
+        }
+      ]
+    }
+  ],
+  "count": 2,
+  "links": [
+    {
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/itemprofiles/HEXSTRING/list",
+      "rel": "itemprofile"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+    "content": [
+        {
+            "fields": {
+                "identifier": 123456789.0
+            },
+            "key": "32charsstringxxxxxxxxxxxxxxxxxxx",
+            "links": [
+                {
+                    "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxxx",
+                    "rel": "self"
+                }
+            ]
+        }
+    ],
+    "count": 1,
+    "links": [
+        {
+            "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/itemprofiles/another32charsxxxxxxxxxxxxxxxxxx/list",
+            "rel": "itemprofile"
+        }
+    ]
+}

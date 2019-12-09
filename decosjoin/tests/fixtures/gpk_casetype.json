@@ -1,0 +1,58 @@
+{
+  "description": "GPK",
+  "extensible": false,
+  "postponable": true,
+  "currentStatus": "",
+  "statuses": [
+    {
+      "description": "Ontvangen",
+      "reachedOn": "2018-01-01T01:00:47"
+    },
+    {
+      "description": "Toewijzen",
+      "reachedOn": "2018-01-01T01:00:26",
+      "handleAction": "Toewijzen"
+    },
+    {
+      "description": "In behandeling",
+      "handleAction": "Behandelen"
+    },
+    {
+      "description": "Extern Advies"
+    },
+    {
+      "description": "Afhandelen"
+    },
+    {
+      "description": "Afgehandeld",
+      "reachedOn": "2018-01-01T01:00:23",
+      "handleAction": "Behandelen"
+    }
+  ],
+  "results": [
+    {
+      "description": "Verleend"
+    },
+    {
+      "description": "Verleend vervangend GPK"
+    },
+    {
+      "description": "Verleend Bestuurder, niet verleend Passagier"
+    },
+    {
+      "description": "Verleend Passagier, niet verleend Bestuurder"
+    },
+    {
+      "description": "Ingetrokken"
+    },
+    {
+      "description": "Buiten behandeling"
+    },
+    {
+      "description": "Niet verleend"
+    },
+    {
+      "description": "Verleend"
+    }
+  ]
+}
