@@ -44,7 +44,7 @@ def get_vergunningen():
     zaken = connection.get_zaken(bsn)
     return {
         'status': 'OK',
-        'zaken': zaken,
+        'content': zaken,
     }
 
 
