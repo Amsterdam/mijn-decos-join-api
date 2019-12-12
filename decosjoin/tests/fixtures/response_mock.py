@@ -33,6 +33,10 @@ mocked_urls_tuple = (
         get_bsn_234567890_lookup_response()
     ),
     (
+        'http://localhost/decosweb/aspx/api/v1/items/userkey2xxxxxxxxxxxxxxxxxxxxxxxx/folders?select=mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction',
+        get_GPP_zaken_response()  # TODO: change this
+    ),
+    (
         "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxxx/folders?select=mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction",
         get_GPP_zaken_response()
     ),
