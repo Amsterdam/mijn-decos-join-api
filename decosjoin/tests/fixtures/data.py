@@ -12,8 +12,12 @@ def _load_fixture(json_file_name):
         return json.load(fh)
 
 
-def get_bsn_lookup_response():
-    return _load_fixture('bsn_lookup.json')
+def get_bsn_111222333_lookup_response():
+    return _load_fixture('bsn_lookup_111222333.json')
+
+
+def get_bsn_234567890_lookup_response():
+    return _load_fixture('bsn_lookup_234567890.json')
 
 
 def get_GPP_zaken_response():

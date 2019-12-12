@@ -4,9 +4,12 @@ from tma_saml import FlaskServerTMATestCase
 from tma_saml.for_tests.cert_and_key import server_crt
 
 from decosjoin.server import app
-from decosjoin.tests.fixtures.data import get_GPP_zaken_response
+from decosjoin.tests.fixtures.response_mock import get_response_mock
 
 
+@patch('decosjoin.server.get_tma_certificate', lambda: server_crt)
+@patch('decosjoin.server.get_decosjoin_api_host', lambda: "http://localhost")
+@patch('decosjoin.server.get_decosjoin_adres_boek', lambda: "hexkey32chars0000000000000000000")
 class ApiTests(FlaskServerTMATestCase):
     TEST_BSN = '111222333'
 
@@ -19,28 +22,23 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, b"OK")
 
-    @patch('decosjoin.server.DecosJoinConnection.get_zaken', autospec=True)
-    @patch('decosjoin.server.get_tma_certificate', lambda: server_crt)
-    def test_getvergunningen(self, getzaken_mock):
-        getzaken_mock.return_value = get_GPP_zaken_response()
-
+    @patch('decosjoin.server.DecosJoinConnection._get_response', get_response_mock)
+    def test_getvergunningen(self):
         SAML_HEADERS = self.add_digi_d_headers(self.TEST_BSN)
+
         response = self.client.get('/decosjoin/getvergunningen', headers=SAML_HEADERS)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.data)
         data = response.get_json()
         self.assertEqual(data['status'], "OK")
-        self.assertEqual(data['count'], 4)
+        self.assertEqual(data['count'], 2)
         self.assertEqual(data['content'][0]['key'], "zaak1xxxxxxxxxxxxxxxxxxxxxxxxxxx")
         # TODO: check fields
 
         # from pprint import pprint
         # pprint(data)
 
-    # @patch('decosjoin.server.DecosJoinConnection.get_zaken', autospec=True)
-    # @patch('decosjoin.server.get_tma_certificate', lambda: server_crt)
-    # def test_getvergunningen_no_header(self, getzaken_mock):
-    #     getzaken_mock.return_value = get_zaken_response_as_dict()
-    #
-    #     response = self.client.get('/decosjoin/getvergunningen')
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertEqual(response.data, b'Missing SAML token')
+    @patch('decosjoin.server.DecosJoinConnection._get_response', get_response_mock)
+    def test_getvergunningen_no_header(self):
+        response = self.client.get('/decosjoin/getvergunningen')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, b'Missing SAML token')

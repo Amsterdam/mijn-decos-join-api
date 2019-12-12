@@ -14,7 +14,7 @@ class DecosJoinConnection:
         self.api_url = f"{self._api_host}{self._api_location}"
 
     def _get_response(self, *args, **kwargs):
-        """ Easy to mock intermediate function. """
+        """ Easy to get_response_mock intermediate function. """
         return requests.get(*args, **kwargs)
 
     def _get(self, url):
@@ -55,26 +55,19 @@ class DecosJoinConnection:
 
     def _transform(self, zaken):
         new_zaken = []
-        # pprint(zaken)
         for zaak in zaken:
             print(zaak)
             # copy fields
             new_zaak = {key: zaak['fields'][key] for key in zaak['fields'] if key in ['mark', 'date5', 'date6', 'date7']}
             new_zaak['caseType'] = zaak['MA-casetype']
             new_zaak['caseStatus'] = zaak['MA-casestatus']
-            # new_zaak = {
-            #     key: zaak['fields'] for key in zaak['fields'] if key
-            # }
             new_zaken.append(new_zaak)
         return new_zaken
 
     def get_zaken(self, bsn):
         """ Get all zaken for a bsn. """
+        print("----- get zaken", bsn)
         user_key = self._get_user_key(bsn)
         res_zaken = self._get_zaken_for_user(user_key)
         self._enrich_with_case_type(res_zaken['content'])
         return self._transform(res_zaken['content'])
-
-
-# con = DecosJoinConnection(get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boek())
-# zaken = con.get_zaken("146368605")
