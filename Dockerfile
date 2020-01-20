@@ -11,6 +11,7 @@ RUN pip install uwsgi
 WORKDIR /app
 
 COPY /requirements.txt /app/
+COPY uwsgi.ini /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY test.sh /app/
@@ -20,4 +21,4 @@ COPY decosjoin /app/decosjoin
 
 #ENTRYPOINT ["uwsgi"]
 USER datapunt
-CMD uwsgi
+CMD uwsgi --ini /app/uwsgi.ini
