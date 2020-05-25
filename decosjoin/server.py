@@ -1,13 +1,15 @@
+import logging
 
 import sentry_sdk
 from flask import Flask, request
 from sentry_sdk.integrations.flask import FlaskIntegration
-from tma_saml import get_digi_d_bsn, InvalidBSNException
+from tma_saml import get_digi_d_bsn, InvalidBSNException, SamlVerificationException
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.config import get_sentry_dsn, get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, \
     get_decosjoin_adres_boek, get_tma_certificate
 
+logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 if get_sentry_dsn():  # pragma: no cover
@@ -36,10 +38,13 @@ def get_vergunningen():
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boek())
     try:
         bsn = get_bsn_from_request(request)
-    except InvalidBSNException as e:
-        return "Invalid BSN", 400
+    except InvalidBSNException:
+        return {"status": "ERROR", "message": "Invalid BSN"}, 400
+    except SamlVerificationException as e:
+        return {"status": "ERROR", "message": e.args[0]}, 400
     except Exception as e:
-        return str(e), 400
+        logger.error("Error", type(e), str(e))
+        return {"status": "ERROR", "message": "Unknown Error"}, 400
 
     zaken = connection.get_zaken(bsn)
     return {
