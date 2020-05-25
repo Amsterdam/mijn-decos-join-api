@@ -1,4 +1,4 @@
-FROM amsterdam/python
+FROM amsterdam/python:3.8-buster
 
 MAINTAINER datapunt@amsterdam.nl
 
@@ -19,6 +19,5 @@ COPY .flake8 /app/
 
 COPY decosjoin /app/decosjoin
 
-#ENTRYPOINT ["uwsgi"]
 USER datapunt
 CMD uwsgi --ini /app/uwsgi.ini

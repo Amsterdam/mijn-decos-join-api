@@ -12,4 +12,4 @@ coverage
 sentry-sdk[flask]
 
 --extra-index-url https://nexus.secure.amsterdam.nl/repository/pypi-hosted/simple
-tma-saml>=0.4
+tma-saml>=0.4.2
