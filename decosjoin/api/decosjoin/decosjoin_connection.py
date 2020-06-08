@@ -41,7 +41,7 @@ class DecosJoinConnection:
         return user_key
 
     def _get_zaken_for_user(self, user_key):
-        url = f"{self.api_url}items/{user_key}/folders?select=mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction"
+        url = f"{self.api_url}items/{user_key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction"
         res_json = self._get(url)
         return res_json
 
@@ -56,7 +56,7 @@ class DecosJoinConnection:
     def _transform(self, zaken):
         new_zaken = []
         for zaak in zaken:
-            print(zaak)
+            print('z', zaak)
             # copy fields
             new_zaak = {key: zaak['fields'][key] for key in zaak['fields'] if key in ['mark', 'date5', 'date6', 'date7']}
             new_zaak['caseType'] = zaak['MA-casetype']

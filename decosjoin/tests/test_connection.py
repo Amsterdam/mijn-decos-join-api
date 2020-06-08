@@ -20,7 +20,7 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[0]["mark"], "Z/17/123456")
         self.assertEqual(zaken[0]["caseType"], "GPP")
 
-    def test_get_zaken_user2(self):
-        zaken = self.connection.get_zaken("234567890")
-        # self.assertEqual(zaken[0]["mark"], "Z/17/123456")
-        # self.assertEqual(zaken[0]["caseType"], "GPP")
+    # def test_get_zaken_user2(self):
+    #     zaken = self.connection.get_zaken("234567890")
+    #     self.assertEqual(zaken[0]["mark"], "Z/17/123456")
+    #     self.assertEqual(zaken[0]["caseType"], "GPP")

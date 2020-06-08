@@ -43,4 +43,4 @@ class ApiTests(FlaskServerTMATestCase):
     def test_getvergunningen_no_header(self):
         response = self.client.get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, b"Missing SAML token")
+        self.assertEqual(response.json, {'message': 'Missing SAML token', 'status': 'ERROR'})
