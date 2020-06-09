@@ -34,15 +34,17 @@ class DecosJoinConnection:
             print(">>", response.content)
             raise DecosJoinConnectionError(response.status_code)
 
-    def _get_user_key(self, bsn):
-        """ Retrieve the internally used id for a user. """
+    def _get_user_keys(self, bsn):
+        """ Retrieve the internal ids used for a user. """
+        keys = []
         for boek in self.adres_boeken['bsn']:
             url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
             res_json = self._get(url)
-            if res_json['count'] == 0:
-                continue
-            user_key = res_json['content'][0]['key']
-            return user_key
+            if res_json['count'] > 0:
+                user_key = res_json['content'][0]['key']
+                keys.append(user_key)
+
+        return keys
 
     def _get_zaken_for_user(self, user_key):
         url = f"{self.api_url}items/{user_key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction"
@@ -62,9 +64,15 @@ class DecosJoinConnection:
 
     def get_zaken(self, bsn):
         """ Get all zaken for a bsn. """
-        user_key = self._get_user_key(bsn)
-        if user_key is None:
-            return []
-        res_zaken = self._get_zaken_for_user(user_key)
-        zaken = self.filter_zaken(res_zaken['content'])
+        zaken = []
+        user_keys = self._get_user_keys(bsn)
+        # if not user_keys:
+        #     return []
+        for key in user_keys:
+            res_zaken = self._get_zaken_for_user(key)
+            key_zaken = self.filter_zaken(res_zaken['content'])
+            zaken.extend(key_zaken)
+
+        zaken
+
         return self._transform(zaken)

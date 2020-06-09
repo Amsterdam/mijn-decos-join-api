@@ -12,9 +12,11 @@ class ConnectionTests(TestCase):
         self.connection = DecosJoinConnection('username', 'password', 'http://localhost', {'bsn': ['hexkey32chars000000000000000BSN1', 'hexkey32chars000000000000000BSN2']})
 
     def test_get_user_key(self):
-        user_key = self.connection._get_user_key("111222333")
-        self.assertEqual(user_key, "32charsstringxxxxxxxxxxxxxxxxxxx")
+        user_key = self.connection._get_user_keys("111222333")
+        self.assertEqual(user_key, ['32charsstringxxxxxxxxxxxxxxxxxxx', '32charsstringxxxxxxxxxxxxxxxxxx2'])
 
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("111222333")
         self.assertEqual(zaken[0]["mark"], "Z/20/1234567")
+        self.assertEqual(zaken[1]["mark"], "Z/20/2345678")
+        self.assertEqual(len(zaken), 2)

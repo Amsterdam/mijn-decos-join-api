@@ -20,5 +20,13 @@ def get_addresses_bsn_111222333_response():
     return _load_fixture('addresses_bsn_111222333.json')
 
 
+def get_addresses_bsn_111222333_response_2():
+    return _load_fixture('addresses_bsn_111222333_2.json')
+
+
 def get_zaken_response():
     return _load_fixture('zaken_response.json')
+
+
+def get_zaken_response_2():
+    return _load_fixture('zaken_response2.json')
