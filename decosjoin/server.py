@@ -7,7 +7,7 @@ from tma_saml import get_digi_d_bsn, InvalidBSNException, SamlVerificationExcept
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.config import get_sentry_dsn, get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, \
-    get_decosjoin_adres_boek, get_tma_certificate
+    get_decosjoin_adres_boeken, get_tma_certificate
 
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
@@ -35,7 +35,7 @@ def get_bsn_from_request(request):
 @app.route('/decosjoin/getvergunningen', methods=['GET'])
 def get_vergunningen():
     connection = DecosJoinConnection(
-        get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boek())
+        get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
     try:
         bsn = get_bsn_from_request(request)
     except InvalidBSNException:

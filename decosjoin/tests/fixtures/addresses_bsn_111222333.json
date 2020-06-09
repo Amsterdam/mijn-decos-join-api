@@ -1,0 +1,23 @@
+{
+  "count": 1,
+  "content": [
+    {
+      "key": "32charsstringxxxxxxxxxxxxxxxxxxx",
+      "fields": {
+        "num1": 123460013.0
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://localhost/decosweb/aspx/api/v1/itemprofiles/32charsstringxxxxxxxxxxxxxxxxxxx/list"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "rel": "itemprofile",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/itemprofiles/hexkey32chars000000000000000BSN1/list"
+    }
+  ]
+}

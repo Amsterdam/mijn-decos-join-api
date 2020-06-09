@@ -9,7 +9,7 @@ from decosjoin.tests.fixtures.response_mock import get_response_mock
 
 @patch("decosjoin.server.get_tma_certificate", lambda: server_crt)
 @patch("decosjoin.server.get_decosjoin_api_host", lambda: "http://localhost")
-@patch("decosjoin.server.get_decosjoin_adres_boek", lambda: ["hexkey32chars0000000000000000000"])
+@patch("decosjoin.server.get_decosjoin_adres_boeken", lambda: {'bsn': ["hexkey32chars000000000000000BSN1", "hexkey32chars000000000000000BSN2"], 'kvk': ['hexkey32chars0000000000000000KVK']})
 class ApiTests(FlaskServerTMATestCase):
     TEST_BSN = "111222333"
 
@@ -32,7 +32,7 @@ class ApiTests(FlaskServerTMATestCase):
         from pprint import pprint
         pprint(data)
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(data["content"][0]["mark"], "Z/17/123456")
+        self.assertEqual(data["content"][0]["mark"], "Z/20/1234567")
         # self.assertEqual(data["content"][0]["caseType"], "GPP")
         # TODO: check fields
 

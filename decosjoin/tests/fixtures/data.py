@@ -12,21 +12,13 @@ def _load_fixture(json_file_name):
         return json.load(fh)
 
 
-def get_bsn_111222333_lookup_response():
-    return _load_fixture('bsn_lookup_111222333.json')
+def get_addresses_bsn_111222333_response_empty():
+    return _load_fixture('addresses_bsn_111222333_empty.json')
 
 
-def get_bsn_234567890_lookup_response():
-    return _load_fixture('bsn_lookup_234567890.json')
+def get_addresses_bsn_111222333_response():
+    return _load_fixture('addresses_bsn_111222333.json')
 
 
-def get_GPP_zaken_response():
-    return _load_fixture('gpp_case.json')
-
-
-def get_GGP_casetype_response():
-    return _load_fixture('gpp_casetype.json')
-
-
-def get_GPK_casetype_response():
-    return _load_fixture('gpk_casetype.json')
+def get_zaken_response():
+    return _load_fixture('zaken_response.json')

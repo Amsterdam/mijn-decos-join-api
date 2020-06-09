@@ -1,0 +1,10 @@
+{
+  "count": 0,
+  "content": [],
+  "links": [
+    {
+      "rel": "itemprofile",
+      "href": "https://localhost/decosweb/aspx/api/v1/itemprofiles/another32charsxxxxxxxxxxxxxxxxxx/list"
+    }
+  ]
+}

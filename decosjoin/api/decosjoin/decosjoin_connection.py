@@ -35,7 +35,7 @@ class DecosJoinConnection:
 
     def _get_user_key(self, bsn):
         """ Retrieve the internally used id for a user. """
-        for boek in self.adres_boeken:
+        for boek in self.adres_boeken['bsn']:
             url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
             res_json = self._get(url)
             print(res_json)
@@ -68,6 +68,12 @@ class DecosJoinConnection:
             new_zaken.append(new_zaak)
         return new_zaken
 
+    def filter_zaken(self, zaken):
+        print(">>>>", zaken)
+        for i in zaken:
+            print(">>>>>>>>", i)
+        return [zaak for zaak in zaken if zaak['fields']['text45'] in ['TVM - RVV - Object']]
+
     def get_zaken(self, bsn):
         """ Get all zaken for a bsn. """
         print("----- get zaken", bsn)
@@ -75,5 +81,6 @@ class DecosJoinConnection:
         if user_key is None:
             return []
         res_zaken = self._get_zaken_for_user(user_key)
+        zaken = self.filter_zaken(res_zaken['content'])
         # self._enrich_with_case_type(res_zaken['content'])
-        return self._transform(res_zaken['content'])
+        return self._transform(zaken)

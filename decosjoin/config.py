@@ -21,8 +21,19 @@ def get_decosjoin_api_host():
     return os.getenv("DECOS_JOIN_API_HOST")
 
 
-def get_decosjoin_adres_boek():
-    return os.getenv("DECOS_JOIN_ADRES_BOEK")
+def get_decosjoin_adres_boeken_bsn():
+    return os.getenv("DECOS_JOIN_ADRES_BOEKEN_BSN").split(',')
+
+
+def get_decosjoin_adres_boeken_kvk():
+    return os.getenv("DECOS_JOIN_ADRES_BOEKEN_KVK").split(',')
+
+
+def get_decosjoin_adres_boeken():
+    return {
+        'bsn': get_decosjoin_adres_boeken_bsn(),
+        'kvk': get_decosjoin_adres_boeken_kvk(),
+    }
 
 
 def get_tma_certificate():
