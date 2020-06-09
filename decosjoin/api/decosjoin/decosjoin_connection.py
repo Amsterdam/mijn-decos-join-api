@@ -19,7 +19,7 @@ class DecosJoinConnection:
 
     def _get(self, url):
         """ Makes a request to the decos join api with HTTP basic auth credentials added. """
-        print("Getting", url)
+        print("\n------\nGetting\n", url, "\n")
         response = self._get_response(url,
                                       auth=HTTPBasicAuth(self.username, self.password),
                                       headers={
@@ -27,6 +27,7 @@ class DecosJoinConnection:
                                       })
         if response.status_code == 200:
             json = response.json()
+            print("response\n", json)
             return json
         else:  # TODO: for debugging. Also test this
             print("status", response.status_code)
@@ -38,7 +39,6 @@ class DecosJoinConnection:
         for boek in self.adres_boeken['bsn']:
             url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
             res_json = self._get(url)
-            print(res_json)
             if res_json['count'] == 0:
                 continue
             user_key = res_json['content'][0]['key']
@@ -49,38 +49,22 @@ class DecosJoinConnection:
         res_json = self._get(url)
         return res_json
 
-    # def _enrich_with_case_type(self, zaken):
-    #     for zaak in zaken:
-    #         zaak_key = zaak['key']
-    #         url = f"{self.api_url}items/{zaak_key}/casetype"
-    #         case_type = self._get(url)
-    #         zaak['MA-casetype'] = case_type['description']  # store it on the case itself with MA- prefix
-    #         zaak['MA-casestatus'] = case_type['currentStatus']
-
     def _transform(self, zaken):
         new_zaken = []
         for zaak in zaken:
-            print('z', zaak)
             # copy fields
             new_zaak = {key: zaak['fields'][key] for key in zaak['fields'] if key in ['mark', 'date5', 'date6', 'date7']}
-            # new_zaak['caseType'] = zaak['MA-casetype']
-            # new_zaak['caseStatus'] = zaak['MA-casestatus']
             new_zaken.append(new_zaak)
         return new_zaken
 
     def filter_zaken(self, zaken):
-        print(">>>>", zaken)
-        for i in zaken:
-            print(">>>>>>>>", i)
         return [zaak for zaak in zaken if zaak['fields']['text45'] in ['TVM - RVV - Object']]
 
     def get_zaken(self, bsn):
         """ Get all zaken for a bsn. """
-        print("----- get zaken", bsn)
         user_key = self._get_user_key(bsn)
         if user_key is None:
             return []
         res_zaken = self._get_zaken_for_user(user_key)
         zaken = self.filter_zaken(res_zaken['content'])
-        # self._enrich_with_case_type(res_zaken['content'])
         return self._transform(zaken)

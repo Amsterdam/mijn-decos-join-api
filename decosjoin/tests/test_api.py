@@ -29,15 +29,9 @@ class ApiTests(FlaskServerTMATestCase):
         response = self.client.get("/decosjoin/getvergunningen", headers=SAML_HEADERS)
         self.assertEqual(response.status_code, 200, response.data)
         data = response.get_json()
-        from pprint import pprint
-        pprint(data)
         self.assertEqual(data["status"], "OK")
         self.assertEqual(data["content"][0]["mark"], "Z/20/1234567")
-        # self.assertEqual(data["content"][0]["caseType"], "GPP")
         # TODO: check fields
-
-        # from pprint import pprint
-        # pprint(data)
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_getvergunningen_no_header(self):
