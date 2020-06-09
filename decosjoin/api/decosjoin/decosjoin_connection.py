@@ -65,9 +65,9 @@ class DecosJoinConnection:
                     "zaakType": f['text45'],
                     "datumVan": f['date6'],
                     "datumTotenmet": f['date7'],
-                    # "tijdVan": f['text10'],  # not coming back
+                    # "tijdVan": f['text10'],  # TODO: not delivered by API eventhough it is requested
                     "tijdTot": f['text11'],  # or is it text13?
-                    "kenteken": f['text9'],
+                    # "kenteken": f['text9'],  # TODO: not delivered by API eventhough it is requested
                 }
             new_zaken.append(new_zaak)
         return new_zaken
