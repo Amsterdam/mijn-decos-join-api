@@ -55,7 +55,20 @@ class DecosJoinConnection:
         new_zaken = []
         for zaak in zaken:
             # copy fields
-            new_zaak = {key: zaak['fields'][key] for key in zaak['fields'] if key in ['mark', 'date5', 'date6', 'date7']}
+            f = zaak['fields']
+            new_zaak = {}
+            if f['text45'] == "TVM - RVV - Object":
+                new_zaak = {
+                    "status": f['title'],  # this makes soooo much sense /s
+                    "title": f['subject1'],
+                    "mark": f['mark'],
+                    "zaakType": f['text45'],
+                    "datumVan": f['date6'],
+                    "datumTotenmet": f['date7'],
+                    # "tijdVan": f['text10'],  # not coming back
+                    "tijdTot": f['text11'],  # or is it text13?
+                    "kenteken": f['text9'],
+                }
             new_zaken.append(new_zaak)
         return new_zaken
 
