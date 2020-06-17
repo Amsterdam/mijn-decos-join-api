@@ -13,6 +13,22 @@ from decosjoin.tests.fixtures.response_mock import get_response_mock
 class ApiTests(FlaskServerTMATestCase):
     TEST_BSN = "111222333"
 
+    def _expected(self):
+        return {
+            'caseType': 'TVM - RVV - Object',
+            'dateEndInclusive': '2020-06-16',
+            'dateFrom': '2020-06-16',
+            'dateRequest': '2020-06-08T00:00:00',
+            'identifier': 'Z/20/1234567',
+            'isActual': False,
+            'kenteken': None,
+            'location': None,
+            'status': 'Ontvangen',
+            'timeEnd': None,
+            'timeStart': None,
+            'title': 'SB RVV ontheffing hele stad'
+        }
+
     def setUp(self):
         """ Setup app for testing """
         self.client = self.get_tma_test_app(app)
@@ -29,10 +45,8 @@ class ApiTests(FlaskServerTMATestCase):
         response = self.client.get("/decosjoin/getvergunningen", headers=SAML_HEADERS)
         self.assertEqual(response.status_code, 200, response.data)
         data = response.get_json()
-        # pprint(data)
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(data["content"][0]["identifier"], "Z/20/1234567")
-        # TODO: check fields
+        self.assertEqual(data["content"][0], self._expected())
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_getvergunningen_no_header(self):

@@ -1,7 +1,9 @@
 import logging
+from datetime import date, time
 
 import sentry_sdk
 from flask import Flask, request
+from flask.json import JSONEncoder
 from sentry_sdk.integrations.flask import FlaskIntegration
 from tma_saml import get_digi_d_bsn, InvalidBSNException, SamlVerificationException
 
@@ -18,6 +20,19 @@ if get_sentry_dsn():  # pragma: no cover
         integrations=[FlaskIntegration()],
         with_locals=False
     )
+
+
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, time):
+            return obj.isoformat()
+        if isinstance(obj, date):
+            return obj.isoformat()
+
+        return JSONEncoder.default(self, obj)
+
+
+app.json_encoder = CustomJSONEncoder
 
 
 def get_bsn_from_request(request):
