@@ -30,11 +30,11 @@ class DecosJoinConnection:
                                       })
         if response.status_code == 200:
             json = response.json()
-            print("response\n", json)
+            # print("response\n", json)
             return json
         else:  # TODO: for debugging. Also test this
-            print("status", response.status_code)
-            print(">>", response.content)
+            # print("status", response.status_code)
+            # print(">>", response.content)
             raise DecosJoinConnectionError(response.status_code)
 
     def _get_user_keys(self, bsn):
@@ -80,7 +80,7 @@ class DecosJoinConnection:
                     {"name": "timeEnd", "from": 'text11', "parser": to_time},
                     {"name": "kenteken", "from": 'text9', "parser": to_string},
                     {"name": "location", "from": 'text6', "parser": to_string},
-                    {"name": "dateRequest", "from": "document_date", "parser": to_datetime},  #TODO: correct from field
+                    {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
                 ]
 
                 new_zaak = _get_fields(fields, zaak)
@@ -116,12 +116,10 @@ class DecosJoinConnection:
 
 
 def _get_fields(fields, zaak):
-    print("---", zaak)
     result = {}
     for f in fields:
         key = f['name']
         val = zaak['fields'].get(f['from'])
-        print("::", key, val)
         result[key] = f['parser'](val)
 
     return result
@@ -195,7 +193,7 @@ def to_time(value) -> [time, None]:
         parsed_value = parser.isoparse(value).time()
         return parsed_value
 
-    raise ParseError(f"Unable to parse type({type(value)} with to_time")
+    raise ParseError(f"Unable to parse type({type(value)} '{value}' with to_time")
 
 
 def to_datetime(value) -> [datetime, None]:

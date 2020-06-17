@@ -1,4 +1,3 @@
-from pprint import pprint
 from unittest.mock import patch
 
 from tma_saml import FlaskServerTMATestCase
