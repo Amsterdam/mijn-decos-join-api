@@ -83,7 +83,7 @@ class DecosJoinConnection:
                     {"name": "dateFrom", "from": 'date6', "parser": to_date},
                     {"name": "dateEndInclusive", "from": 'date7', "parser": to_date},
                     {"name": "timeStart", "from": 'text10', "parser": to_time},
-                    {"name": "timeEnd", "from": 'text11', "parser": to_time},
+                    {"name": "timeEnd", "from": 'text11', "parser": to_time},  # this is a freeform text field, it can contain ANYTHING
                     {"name": "kenteken", "from": 'text9', "parser": to_string},
                     {"name": "location", "from": 'text6', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
@@ -185,18 +185,17 @@ def to_time(value) -> [time, None]:
     if not value:
         return None
 
-    if type(value) == str and value.lower() == "nvt":
-        return None
-
     if type(value) == time:
         return value
 
     if type(value) == datetime:
         return value.time()
 
-    if type(value) == str:  # TODO: probably not this
-        print(">>", value)
-        parsed_value = parser.isoparse(value).time()
+    if type(value) == str:
+        try:
+            parsed_value = parser.isoparse(value).time()  # TODO: this doesn't parse times
+        except ValueError:
+            return None
         return parsed_value
 
     raise ParseError(f"Unable to parse type({type(value)} '{value}' with to_time")
