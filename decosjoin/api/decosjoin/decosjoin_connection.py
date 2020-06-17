@@ -7,6 +7,9 @@ from requests.auth import HTTPBasicAuth
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
 
 
+log_raw = False
+
+
 class DecosJoinConnection:
     def __init__(self, username, password, api_host, adres_boeken):
         self.username = username
@@ -52,6 +55,9 @@ class DecosJoinConnection:
     def _get_zaken_for_user(self, user_key):
         url = f"{self.api_url}items/{user_key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction"
         res_json = self._get(url)
+        if log_raw:
+            from pprint import pprint
+            pprint(res_json)
         return res_json
 
     def _enrich_with_case_type(self, zaken):
