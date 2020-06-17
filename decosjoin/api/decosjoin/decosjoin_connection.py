@@ -1,7 +1,10 @@
+from datetime import datetime, date, time, timedelta
+
 import requests
+from dateutil import parser
 from requests.auth import HTTPBasicAuth
 
-from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError
+from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
 
 
 class DecosJoinConnection:
@@ -51,25 +54,49 @@ class DecosJoinConnection:
         res_json = self._get(url)
         return res_json
 
+    def _enrich_with_case_type(self, zaken):
+        for zaak in zaken:
+            zaak_key = zaak['key']
+            url = f"{self.api_url}items/{zaak_key}/casetype"
+            case_type = self._get(url)
+            zaak['MA-casetype'] = case_type['description']  # store it on the case itself with MA- prefix
+            zaak['MA-casestatus'] = case_type['currentStatus']
+
     def _transform(self, zaken):
         new_zaken = []
+
         for zaak in zaken:
-            # copy fields
             f = zaak['fields']
-            new_zaak = {}
+
             if f['text45'] == "TVM - RVV - Object":
-                new_zaak = {
-                    "status": f['title'],  # this makes soooo much sense /s
-                    "title": f['subject1'],
-                    "mark": f['mark'],
-                    "zaakType": f['text45'],
-                    "datumVan": f['date6'],
-                    "datumTotenmet": f['date7'],
-                    # "tijdVan": f['text10'],  # TODO: not delivered by API eventhough it is requested
-                    "tijdTot": f['text11'],  # or is it text13?
-                    # "kenteken": f['text9'],  # TODO: not delivered by API eventhough it is requested
-                }
-            new_zaken.append(new_zaak)
+                fields = [
+                    {"name": "status", "from": 'title', "parser": to_string},
+                    {"name": "title", "from": 'subject1', "parser": to_string},
+                    {"name": "identifier", "from": 'mark', "parser": to_string},
+                    {"name": "caseType", "from": 'text45', "parser": to_string},
+                    {"name": "dateFrom", "from": 'date6', "parser": to_date},
+                    {"name": "dateEndInclusive", "from": 'date7', "parser": to_date},
+                    {"name": "timeStart", "from": 'text10', "parser": to_time},
+                    {"name": "timeEnd", "from": 'text11', "parser": to_time},
+                    {"name": "kenteken", "from": 'text9', "parser": to_string},
+                    {"name": "location", "from": 'text6', "parser": to_string},
+                    {"name": "dateRequest", "from": "document_date", "parser": to_datetime},  #TODO: correct from field
+                ]
+
+                new_zaak = _get_fields(fields, zaak)
+
+                # if end date is not defined, its the same as date start
+                if not new_zaak['dateEndInclusive']:
+                    new_zaak['dateEndInclusive'] = new_zaak['dateFrom']
+
+                # if date range is within now, it is current
+                if _is_current(new_zaak):
+                    new_zaak['isActual'] = True
+                else:
+                    new_zaak['isActual'] = False
+
+                new_zaken.append(new_zaak)
+
         return new_zaken
 
     def filter_zaken(self, zaken):
@@ -79,13 +106,125 @@ class DecosJoinConnection:
         """ Get all zaken for a bsn. """
         zaken = []
         user_keys = self._get_user_keys(bsn)
-        # if not user_keys:
-        #     return []
+
         for key in user_keys:
             res_zaken = self._get_zaken_for_user(key)
             key_zaken = self.filter_zaken(res_zaken['content'])
             zaken.extend(key_zaken)
 
-        zaken
-
         return self._transform(zaken)
+
+
+def _get_fields(fields, zaak):
+    print("---", zaak)
+    result = {}
+    for f in fields:
+        key = f['name']
+        val = zaak['fields'].get(f['from'])
+        print("::", key, val)
+        result[key] = f['parser'](val)
+
+    return result
+
+
+def _is_current(zaak):
+    # date start
+    start = to_datetime(zaak['dateFrom'])
+    # add time start
+    if zaak.get('timeStart'):
+        start_time = zaak['timeStart']
+        start = start.replace(hour=start_time.hour, minute=start_time.minute, second=start_time.second)
+
+    # date end
+    if zaak.get('dateEnd'):
+        end = to_datetime(zaak['dateEnd'])
+    elif zaak.get('dateEndInclusive'):
+        end = to_datetime(zaak['dateEndInclusive'])
+        end = (end + timedelta(days=1)) - timedelta(seconds=1)
+    else:
+        return False
+
+    # add time end
+    if zaak.get('timeEnd'):
+        end_time = zaak['timeEnd']
+        end = end.replace(hour=end_time.hour, minute=end_time.minute, second=end_time.second)
+        # end.hour = end_time.hour
+        # end.minute = end_time.minute
+        # end.second = end_time.second
+
+    # if now between start and end it is current
+    now = datetime.now()
+    if start < now < end:
+        return True
+    return False
+
+
+def to_date(value) -> [datetime, None]:
+    if not value:
+        return None
+
+    if type(value) == date:
+        return value
+
+    if type(value) == datetime:
+        return value.date()
+
+    if type(value) == str:
+        parsed_value = parser.isoparse(value).date()
+        return parsed_value
+
+    raise ParseError(f"Unable to parse type({type(value)} with to_date")
+
+
+def to_time(value) -> [time, None]:
+    # TODO: not done, there is no example data for time from the api
+    if not value:
+        return None
+
+    if type(value) == str and value.lower() == "nvt":
+        return None
+
+    if type(value) == time:
+        return value
+
+    if type(value) == datetime:
+        return value.time()
+
+    if type(value) == str:  # TODO: probably not this
+        print(">>", value)
+        parsed_value = parser.isoparse(value).time()
+        return parsed_value
+
+    raise ParseError(f"Unable to parse type({type(value)} with to_time")
+
+
+def to_datetime(value) -> [datetime, None]:
+    if not value:
+        return None
+
+    if type(value) == date:
+        return datetime(value.year, value.month, value.day)
+
+    if type(value) == datetime:
+        return value
+
+    if type(value) == str:
+        parsed_value = parser.isoparse(value)
+        return parsed_value
+
+    raise ParseError(f"Unable to parse type({type(value)} with to_datetime")
+
+
+def to_int(value):
+    # our xml parser, automatically converts numbers. So this converter doesn't do much.
+    if value == 0:
+        return 0
+    if not value:
+        return None
+    return int(value)
+
+
+def to_string(value):
+    if not value:
+        return None
+    return str(value).strip()

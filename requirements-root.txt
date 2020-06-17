@@ -3,10 +3,12 @@ flask
 Flask-Testing
 
 requests
+python-dateutil
 
 # testing tools
 flake8
 coverage
+freezegun
 
 # error reporting
 sentry-sdk[flask]

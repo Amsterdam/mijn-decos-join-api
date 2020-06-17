@@ -17,6 +17,6 @@ class ConnectionTests(TestCase):
 
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("111222333")
-        self.assertEqual(zaken[0]["mark"], "Z/20/1234567")
-        self.assertEqual(zaken[1]["mark"], "Z/20/2345678")
+        self.assertEqual(zaken[0]["identifier"], "Z/20/1234567")
+        self.assertEqual(zaken[1]["identifier"], "Z/20/2345678")
         self.assertEqual(len(zaken), 2)
