@@ -87,6 +87,7 @@ class DecosJoinConnection:
                     {"name": "kenteken", "from": 'text9', "parser": to_string},
                     {"name": "location", "from": 'text6', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
+                    {"name": "outcome", "from": "dfunction", "parser": to_string},
                 ]
 
                 new_zaak = _get_fields(fields, zaak)
