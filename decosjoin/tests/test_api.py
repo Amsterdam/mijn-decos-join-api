@@ -23,10 +23,12 @@ class ApiTests(FlaskServerTMATestCase):
             'isActual': False,
             'kenteken': None,
             'location': None,
+            'outcome': None,
+            'outcomeDate': None,
             'status': 'Ontvangen',
             'timeEnd': None,
             'timeStart': None,
-            'title': 'SB RVV ontheffing hele stad'
+            'title': 'SB RVV ontheffing hele stad',
         }
 
     def setUp(self):
