@@ -13,7 +13,7 @@ class ConnectionTests(TestCase):
 
     def test_get_user_key(self):
         user_key = self.connection._get_user_keys("111222333")
-        self.assertEqual(user_key, ['32charsstringxxxxxxxxxxxxxxxxxxx', '32charsstringxxxxxxxxxxxxxxxxxx2'])
+        self.assertEqual(user_key, ['32charsstringxxxxxxxxxxxxxxxxxxx', '32charsstringxxxxxxxxxxxxxxxxxx2', '32charsstringxxxxxxxxxxxxxxxxxx3'])
 
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("111222333")

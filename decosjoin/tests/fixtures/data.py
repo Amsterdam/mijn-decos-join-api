@@ -30,3 +30,7 @@ def get_zaken_response():
 
 def get_zaken_response_2():
     return _load_fixture('zaken_response2.json')
+
+
+def get_zaken_response_empty():
+    return _load_fixture('zaken_response_empty.json')
