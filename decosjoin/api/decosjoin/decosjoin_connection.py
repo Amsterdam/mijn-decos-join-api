@@ -88,7 +88,7 @@ class DecosJoinConnection:
                     {"name": "kenteken", "from": 'text9', "parser": to_string},
                     {"name": "location", "from": 'text6', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
-                    {"name": "decision", "from": "dfunction", "parser": to_string},
+                    {"name": "decision", "from": "dfunction", "parser": to_decision},
                     {"name": "dateDecision", "from": "date5", "parser": to_string},  # datum afhandeling?
 
                 ]
@@ -235,3 +235,14 @@ def to_string(value):
     if not value:
         return None
     return str(value).strip()
+
+
+def to_decision(value):
+    translateValues = ["Verleend met borden",
+                       "Verleend zonder bebording",
+                       "Verleend zonder borden"]
+
+    if (value is not None and value in translateValues):
+        return 'Verleend'
+
+    return value
