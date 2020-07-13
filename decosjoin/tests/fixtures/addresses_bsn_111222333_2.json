@@ -1,5 +1,5 @@
 {
-  "count": 1,
+  "count": 2,
   "content": [
     {
       "key": "32charsstringxxxxxxxxxxxxxxxxxx2",
@@ -10,6 +10,18 @@
         {
           "rel": "self",
           "href": "https://localhost/decosweb/aspx/api/v1/itemprofiles/32charsstringxxxxxxxxxxxxxxxxxx2/list"
+        }
+      ]
+    },
+    {
+      "key": "32charsstringxxxxxxxxxxxxxxxxxx3",
+      "fields": {
+        "num1": 123460013.0
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://localhost/decosweb/aspx/api/v1/itemprofiles/32charsstringxxxxxxxxxxxxxxxxxx3/list"
         }
       ]
     }

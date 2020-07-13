@@ -47,8 +47,9 @@ class DecosJoinConnection:
             url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
             res_json = self._get(url)
             if res_json['count'] > 0:
-                user_key = res_json['content'][0]['key']
-                keys.append(user_key)
+                for item in res_json['content']:
+                    user_key = item['key']
+                    keys.append(user_key)
 
         return keys
 
