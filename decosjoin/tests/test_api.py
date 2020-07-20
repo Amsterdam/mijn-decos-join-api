@@ -4,7 +4,7 @@ from tma_saml import FlaskServerTMATestCase
 from tma_saml.for_tests.cert_and_key import server_crt
 
 from decosjoin.server import app
-from decosjoin.tests.fixtures.response_mock import get_response_mock
+from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
 @patch("decosjoin.server.get_tma_certificate", lambda: server_crt)
@@ -41,6 +41,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(response.data, b"OK")
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
+    @patch("decosjoin.server.DecosJoinConnection._post_response", post_response_mock)
     def test_getvergunningen(self):
         SAML_HEADERS = self.add_digi_d_headers(self.TEST_BSN)
 

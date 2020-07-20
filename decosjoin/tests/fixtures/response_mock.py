@@ -1,15 +1,31 @@
 from decosjoin.tests.fixtures.data import get_addresses_bsn_111222333_response_empty, \
     get_addresses_bsn_111222333_response, get_zaken_response, get_addresses_bsn_111222333_response_2, \
-    get_zaken_response_2, get_zaken_response_empty
+    get_zaken_response_2, get_zaken_response_empty, get_search_addresses_bsn_111222333_response_empty, \
+    get_search_addresses_bsn_111222333_response
 
 
 def get_response_mock(self, *args, **kwargs):
-    """ Attempt to get data from mock_urls. """
+    """ Attempt to get data from mock_get_urls. """
     try:
-        res_data = mocked_urls[args[0]]
+        res_data = mocked_get_urls[args[0]]
     except KeyError:
         raise Exception("Url not defined %s", args[0])
     return MockedResponse(res_data)
+
+
+def post_response_mock(self, *args, **kwargs):
+    """ Attempt to get data from mock_get_urls. """
+    print(args, kwargs)
+    url = args[0]
+    body = kwargs['json']
+    for item in mocked_post_urls:
+        if url == item['url']:
+            # Does the body also match?
+            if body == item['post_body']:
+                return MockedResponse(item['response'])
+
+    # if nothing is found
+    raise Exception("Url with body not defined", url, body)
 
 
 class MockedResponse:
@@ -23,7 +39,7 @@ class MockedResponse:
 
 
 # For readability sake, this is a tuple which is converted into a dict
-mocked_urls_tuple = (
+mocked_get_urls_tuple = (
     (
         "http://localhost/decosweb/aspx/api/v1/items/hexkey32chars000000000000000BSN1/addresses?filter=num1%20eq%20111222333&select=num1",
         get_addresses_bsn_111222333_response()
@@ -49,4 +65,51 @@ mocked_urls_tuple = (
         get_zaken_response_empty()
     ),
 )
-mocked_urls = dict(mocked_urls_tuple)
+mocked_get_urls = dict(mocked_get_urls_tuple)
+
+
+mocked_post_urls = (
+    {
+        "url": "http://localhost/decosweb/aspx/api/v1/search/books?properties=false",
+        "post_body": {
+            'bookKey': 'hexkey32chars000000000000000BSN1',
+            'orderBy': 'sequence',
+            'skip': 0,
+            'take': 10,
+            'searchInHierarchyPath': False,
+            'searchInPendingItemContainerKeys': False,
+            'filterFields': {
+                'num1': [
+                    {
+                        'FilterOperation': 1,
+                        'FilterValue': '111222333',
+                        'FilterOperator': '='
+                    }
+                ]
+            }
+        },
+        "response": get_search_addresses_bsn_111222333_response_empty(),
+    },
+    {
+        "url": "http://localhost/decosweb/aspx/api/v1/search/books?properties=false",
+        "post_body": {
+            'bookKey': 'hexkey32chars000000000000000BSN2',
+            'orderBy': 'sequence',
+            'skip': 0,
+            'take': 10,
+            'searchInHierarchyPath': False,
+            'searchInPendingItemContainerKeys': False,
+            'filterFields': {
+                'num1': [
+                    {
+                        'FilterOperation': 1,
+                        'FilterValue': '111222333',
+                        'FilterOperator': '='
+                    }
+                ]
+            }
+        },
+        "response": get_search_addresses_bsn_111222333_response(),
+    },
+
+)

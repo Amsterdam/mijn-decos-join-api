@@ -20,17 +20,25 @@ class DecosJoinConnection:
         self.api_url = f"{self._api_host}{self._api_location}"
 
     def _get_response(self, *args, **kwargs):
-        """ Easy to get_response_mock intermediate function. """
+        """ Easy to mock intermediate function. """
         return requests.get(*args, **kwargs)
 
-    def _get(self, url):
+    def _post_response(self, *args, **kwargs):
+        """ Easy to mock intermediate function. """
+        return requests.post(*args, **kwargs)
+
+    def _get(self, url, method='get', json=None):
         """ Makes a request to the decos join api with HTTP basic auth credentials added. """
-        print("\n------\nGetting\n", url, "\n")
-        response = self._get_response(url,
-                                      auth=HTTPBasicAuth(self.username, self.password),
-                                      headers={
-                                          "Accept": "application/itemdata",
-                                      })
+        if method == 'get':
+            response = self._get_response(url,
+                                          auth=HTTPBasicAuth(self.username, self.password),
+                                          headers={"Accept": "application/itemdata"})
+        elif method == 'post':
+            response = self._post_response(url,
+                                           auth=HTTPBasicAuth(self.username, self.password),
+                                           headers={"Accept": "application/itemdata"},
+                                           json=json)
+
         if response.status_code == 200:
             json = response.json()
             # print("response\n", json)
@@ -40,14 +48,35 @@ class DecosJoinConnection:
             # print(">>", response.content)
             raise DecosJoinConnectionError(response.status_code)
 
+    def search_query(self, bsn: str, book_key: str):
+        return {
+            "bookKey": book_key,
+            "orderBy": "sequence",
+            "skip": 0,
+            "take": 10,
+            "searchInHierarchyPath": False,
+            "searchInPendingItemContainerKeys": False,
+            "filterFields": {
+                "num1": [
+                    {
+                        "FilterOperation": 1,
+                        "FilterValue": bsn,
+                        "FilterOperator": "="
+                    }
+                ]
+            }
+        }
+
     def _get_user_keys(self, bsn):
         """ Retrieve the internal ids used for a user. """
         keys = []
         for boek in self.adres_boeken['bsn']:
-            url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
-            res_json = self._get(url)
-            if res_json['count'] > 0:
-                for item in res_json['content']:
+            # url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
+            url = f"{self.api_url}search/books?properties=false"
+            res_json = self._get(url, json=self.search_query(bsn, boek), method='post')
+            print(res_json)
+            if res_json['itemDataResultSet']['count'] > 0:
+                for item in res_json['itemDataResultSet']['content']:
                     user_key = item['key']
                     keys.append(user_key)
 
