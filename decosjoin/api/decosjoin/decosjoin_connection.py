@@ -53,7 +53,7 @@ class DecosJoinConnection:
             "bookKey": book_key,
             "orderBy": "sequence",
             "skip": 0,
-            "take": 10,
+            "take": 50,
             "searchInHierarchyPath": False,
             "searchInPendingItemContainerKeys": False,
             "filterFields": {
@@ -74,7 +74,6 @@ class DecosJoinConnection:
             # url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
             url = f"{self.api_url}search/books?properties=false"
             res_json = self._get(url, json=self.search_query(bsn, boek), method='post')
-            print(res_json)
             if res_json['itemDataResultSet']['count'] > 0:
                 for item in res_json['itemDataResultSet']['content']:
                     user_key = item['key']

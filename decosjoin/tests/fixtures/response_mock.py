@@ -1,7 +1,6 @@
-from decosjoin.tests.fixtures.data import get_addresses_bsn_111222333_response_empty, \
-    get_addresses_bsn_111222333_response, get_zaken_response, get_addresses_bsn_111222333_response_2, \
+from decosjoin.tests.fixtures.data import get_zaken_response, \
     get_zaken_response_2, get_zaken_response_empty, get_search_addresses_bsn_111222333_response_empty, \
-    get_search_addresses_bsn_111222333_response
+    get_search_addresses_bsn_111222333_response, get_search_addresses_bsn_111222333_response_2
 
 
 def get_response_mock(self, *args, **kwargs):
@@ -41,18 +40,6 @@ class MockedResponse:
 # For readability sake, this is a tuple which is converted into a dict
 mocked_get_urls_tuple = (
     (
-        "http://localhost/decosweb/aspx/api/v1/items/hexkey32chars000000000000000BSN1/addresses?filter=num1%20eq%20111222333&select=num1",
-        get_addresses_bsn_111222333_response()
-    ),
-    (
-        "http://localhost/decosweb/aspx/api/v1/items/hexkey32chars000000000000000BSN2/addresses?filter=num1%20eq%20111222333&select=num1",
-        get_addresses_bsn_111222333_response_2()
-    ),
-    (
-        "http://localhost/decosweb/aspx/api/v1/items/hexkey32chars000000000000000BSN3/addresses?filter=num1%20eq%20111222333&select=num1",
-        get_addresses_bsn_111222333_response_empty()
-    ),
-    (
         "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxxx/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction",
         get_zaken_response()
     ),
@@ -75,28 +62,7 @@ mocked_post_urls = (
             'bookKey': 'hexkey32chars000000000000000BSN1',
             'orderBy': 'sequence',
             'skip': 0,
-            'take': 10,
-            'searchInHierarchyPath': False,
-            'searchInPendingItemContainerKeys': False,
-            'filterFields': {
-                'num1': [
-                    {
-                        'FilterOperation': 1,
-                        'FilterValue': '111222333',
-                        'FilterOperator': '='
-                    }
-                ]
-            }
-        },
-        "response": get_search_addresses_bsn_111222333_response_empty(),
-    },
-    {
-        "url": "http://localhost/decosweb/aspx/api/v1/search/books?properties=false",
-        "post_body": {
-            'bookKey': 'hexkey32chars000000000000000BSN2',
-            'orderBy': 'sequence',
-            'skip': 0,
-            'take': 10,
+            'take': 50,
             'searchInHierarchyPath': False,
             'searchInPendingItemContainerKeys': False,
             'filterFields': {
@@ -110,6 +76,48 @@ mocked_post_urls = (
             }
         },
         "response": get_search_addresses_bsn_111222333_response(),
+    },
+    {
+        "url": "http://localhost/decosweb/aspx/api/v1/search/books?properties=false",
+        "post_body": {
+            'bookKey': 'hexkey32chars000000000000000BSN2',
+            'orderBy': 'sequence',
+            'skip': 0,
+            'take': 50,
+            'searchInHierarchyPath': False,
+            'searchInPendingItemContainerKeys': False,
+            'filterFields': {
+                'num1': [
+                    {
+                        'FilterOperation': 1,
+                        'FilterValue': '111222333',
+                        'FilterOperator': '='
+                    }
+                ]
+            }
+        },
+        "response": get_search_addresses_bsn_111222333_response_2(),
+    },
+    {
+        "url": "http://localhost/decosweb/aspx/api/v1/search/books?properties=false",
+        "post_body": {
+            'bookKey': 'hexkey32chars000000000000000BSN3',
+            'orderBy': 'sequence',
+            'skip': 0,
+            'take': 50,
+            'searchInHierarchyPath': False,
+            'searchInPendingItemContainerKeys': False,
+            'filterFields': {
+                'num1': [
+                    {
+                        'FilterOperation': 1,
+                        'FilterValue': '111222333',
+                        'FilterOperator': '='
+                    }
+                ]
+            }
+        },
+        "response": get_search_addresses_bsn_111222333_response_empty(),
     },
 
 )

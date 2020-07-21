@@ -12,16 +12,16 @@ def _load_fixture(json_file_name):
         return json.load(fh)
 
 
-def get_addresses_bsn_111222333_response_empty():
-    return _load_fixture('addresses_bsn_111222333_empty.json')
+def get_search_addresses_bsn_111222333_response_empty():
+    return _load_fixture('search_addresses_bsn_111222333_empty.json')
 
 
-def get_addresses_bsn_111222333_response():
-    return _load_fixture('addresses_bsn_111222333.json')
+def get_search_addresses_bsn_111222333_response():
+    return _load_fixture('search_addresses_bsn_111222333.json')
 
 
-def get_addresses_bsn_111222333_response_2():
-    return _load_fixture('addresses_bsn_111222333_2.json')
+def get_search_addresses_bsn_111222333_response_2():
+    return _load_fixture('search_addresses_bsn_111222333_2.json')
 
 
 def get_zaken_response():

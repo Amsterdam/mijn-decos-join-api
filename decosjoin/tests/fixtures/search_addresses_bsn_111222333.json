@@ -1,0 +1,20 @@
+{
+  "itemtypeBuckets": [],
+  "itemDataResultSet": {
+    "count": 2,
+    "content": [
+      {
+        "key": "32charsstringxxxxxxxxxxxxxxxxxxx",
+        "fields": {
+        },
+        "links": [
+          {
+            "rel": "self",
+            "href": "https://localhost/decosweb/aspx/api/v1.0/items/32charsstringxxxxxxxxxxxxxxxxxxx"
+          }
+        ]
+      }
+    ],
+    "links": []
+  }
+}

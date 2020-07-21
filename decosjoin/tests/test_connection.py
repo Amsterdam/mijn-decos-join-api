@@ -2,10 +2,11 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, to_decision
-from decosjoin.tests.fixtures.response_mock import get_response_mock
+from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
 @patch('decosjoin.tests.test_connection.DecosJoinConnection._get_response', get_response_mock)
+@patch("decosjoin.server.DecosJoinConnection._post_response", post_response_mock)
 class ConnectionTests(TestCase):
 
     def setUp(self) -> None:
