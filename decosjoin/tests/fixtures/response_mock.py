@@ -14,7 +14,6 @@ def get_response_mock(self, *args, **kwargs):
 
 def post_response_mock(self, *args, **kwargs):
     """ Attempt to get data from mock_get_urls. """
-    print(args, kwargs)
     url = args[0]
     body = kwargs['json']
     for item in mocked_post_urls:
