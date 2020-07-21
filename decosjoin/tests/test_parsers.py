@@ -4,7 +4,23 @@ from unittest.case import TestCase
 from freezegun import freeze_time
 
 from decosjoin.api.decosjoin.Exception import ParseError
-from decosjoin.api.decosjoin.decosjoin_connection import to_date, to_time, to_datetime, _is_current
+from decosjoin.api.decosjoin.decosjoin_connection import to_date, to_time, to_datetime, _is_current, to_decision
+
+
+class ConversionTests(TestCase):
+
+    def test_to_decision(self):
+        decision = 'Verleend met borden'
+        self.assertEqual(to_decision(decision), 'Verleend')
+
+        decision = 'Niet verleend'
+        self.assertEqual(to_decision(decision), 'Niet verleend')
+
+        decision = 'Verleend zonder bebording'
+        self.assertEqual(to_decision(decision), 'Verleend')
+
+        decision = 'Verleend zonder'
+        self.assertEqual(to_decision(decision), 'Verleend zonder')
 
 
 class DateParserTests(TestCase):

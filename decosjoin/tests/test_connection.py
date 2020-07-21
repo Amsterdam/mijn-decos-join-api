@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, to_decision
+from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
@@ -20,17 +20,6 @@ class ConnectionTests(TestCase):
         zaken = self.connection.get_zaken("111222333")
         self.assertEqual(zaken[0]["identifier"], "Z/20/1234567")
         self.assertEqual(zaken[1]["identifier"], "Z/20/2345678")
+        # Z/20/4567890 is filtered out because of subject1 contents
+        # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
         self.assertEqual(len(zaken), 2)
-
-    def test_to_decision(self):
-        decision = 'Verleend met borden'
-        self.assertEqual(to_decision(decision), 'Verleend')
-
-        decision = 'Niet verleend'
-        self.assertEqual(to_decision(decision), 'Niet verleend')
-
-        decision = 'Verleend zonder bebording'
-        self.assertEqual(to_decision(decision), 'Verleend')
-
-        decision = 'Verleend zonder'
-        self.assertEqual(to_decision(decision), 'Verleend zonder')
