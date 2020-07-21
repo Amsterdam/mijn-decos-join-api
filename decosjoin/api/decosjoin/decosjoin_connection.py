@@ -138,7 +138,13 @@ class DecosJoinConnection:
         return new_zaken
 
     def filter_zaken(self, zaken):
-        return [zaak for zaak in zaken if zaak['fields']['text45'] in ['TVM - RVV - Object']]
+        """ Filter un-parsed cases. """
+        zaken = [zaak for zaak in zaken if zaak['caseType'].lower() in ['tvm - rvv - object']]
+        zaken = [zaak for zaak in zaken if zaak['title'].lower() not in ['wacht op online betaling', 'wacht op ideal betaling']]
+
+        zaken = [zaak for zaak in zaken if not zaak['title'].lower().startswith("*verwijder")]
+
+        return zaken
 
     def get_zaken(self, bsn):
         """ Get all zaken for a bsn. """
@@ -147,10 +153,11 @@ class DecosJoinConnection:
 
         for key in user_keys:
             res_zaken = self._get_zaken_for_user(key)
-            key_zaken = self.filter_zaken(res_zaken['content'])
+            key_zaken = res_zaken['content']
             zaken.extend(key_zaken)
 
-        return self._transform(zaken)
+        zaken = self._transform(zaken)
+        return self.filter_zaken(zaken)
 
 
 def _get_fields(fields, zaak):

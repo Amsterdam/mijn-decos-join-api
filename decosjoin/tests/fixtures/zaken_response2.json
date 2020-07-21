@@ -17,7 +17,7 @@
       "links": [
         {
           "rel": "self",
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING02"
+          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING02"
         }
       ]
     },
@@ -37,7 +37,49 @@
       "links": [
         {
           "rel": "self",
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING03"
+          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING03"
+        }
+      ]
+    },
+    {
+      "key": "HEXSTRING4",
+      "fields": {
+        "date6": "2020-07-02T00:00:00",
+        "date7": "2020-07-02T00:00:00",
+        "document_date": "2020-01-01T00:00:00",
+        "mark": "Z/20/4567890",
+        "processed": false,
+        "subject1": "Wacht op online betaling",
+        "text11": "Nogniet",
+        "text45": "TVM - RVV - Object",
+        "text6": "Amstel 1 1012AA",
+        "title": "Ontvangen"
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING4"
+        }
+      ]
+    },
+    {
+      "key": "HEXSTRING5",
+      "fields": {
+        "date6": "2020-07-02T00:00:00",
+        "date7": "2020-07-02T00:00:00",
+        "document_date": "2020-01-01T00:00:00",
+        "mark": "Z/20/56789012",
+        "processed": false,
+        "subject1": "*verwijder*",
+        "text11": "Nogniet",
+        "text45": "TVM - RVV - Object",
+        "text6": "Amstel 1 1012AA",
+        "title": "Ontvangen"
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING5"
         }
       ]
     }
@@ -45,7 +87,7 @@
   "links": [
     {
       "rel": "itemprofile",
-      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/itemprofiles/32charsstringxxxxxxxxxxxxxxxxxxx/list"
+      "href": "https://localhost/decosweb/aspx/api/v1/itemprofiles/32charsstringxxxxxxxxxxxxxxxxxxx/list"
     }
   ]
 }

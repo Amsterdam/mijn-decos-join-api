@@ -17,7 +17,7 @@
       "links": [
         {
           "rel": "self",
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING01"
+          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING01"
         }
       ]
     }
@@ -25,7 +25,7 @@
   "links": [
     {
       "rel": "itemprofile",
-      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/itemprofiles/32charsstringxxxxxxxxxxxxxxxxxxx/list"
+      "href": "https://localhost/decosweb/aspx/api/v1/itemprofiles/32charsstringxxxxxxxxxxxxxxxxxxx/list"
     }
   ]
 }
