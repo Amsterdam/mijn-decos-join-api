@@ -1,3 +1,4 @@
+import math
 from datetime import datetime, date, time, timedelta
 
 import requests
@@ -8,6 +9,7 @@ from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseErr
 
 
 log_raw = False
+page_size = 10
 
 
 class DecosJoinConnection:
@@ -81,8 +83,10 @@ class DecosJoinConnection:
 
         return keys
 
-    def _get_zaken_for_user(self, user_key):
-        url = f"{self.api_url}items/{user_key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction"
+    def _get_zaken_for_user(self, user_key, offset=None):
+        url = f"{self.api_url}items/{user_key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction&top={page_size}"
+        if offset:
+            url += f'&skip={offset}'
         res_json = self._get(url)
         if log_raw:
             from pprint import pprint
@@ -152,9 +156,14 @@ class DecosJoinConnection:
         user_keys = self._get_user_keys(bsn)
 
         for key in user_keys:
+            # fetch one
             res_zaken = self._get_zaken_for_user(key)
-            key_zaken = res_zaken['content']
-            zaken.extend(key_zaken)
+            max = math.ceil(res_zaken['count'] / page_size) * page_size
+            zaken.extend(res_zaken['content'])
+            # paginate over the rest (with page sizes)
+            for offset in range(page_size, max, page_size):
+                res_zaken = self._get_zaken_for_user(key, offset)
+                zaken.extend(res_zaken['content'])
 
         zaken = self._transform(zaken)
         return self.filter_zaken(zaken)

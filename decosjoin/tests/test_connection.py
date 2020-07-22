@@ -22,4 +22,4 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[1]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
-        self.assertEqual(len(zaken), 2)
+        self.assertEqual(len(zaken), 9)

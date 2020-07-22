@@ -1,6 +1,7 @@
 from decosjoin.tests.fixtures.data import get_zaken_response, \
     get_zaken_response_2, get_zaken_response_empty, get_search_addresses_bsn_111222333_response_empty, \
-    get_search_addresses_bsn_111222333_response, get_search_addresses_bsn_111222333_response_2
+    get_search_addresses_bsn_111222333_response, get_search_addresses_bsn_111222333_response_2, \
+    get_zaken_resposne_2_part_2
 
 
 def get_response_mock(self, *args, **kwargs):
@@ -39,15 +40,19 @@ class MockedResponse:
 # For readability sake, this is a tuple which is converted into a dict
 mocked_get_urls_tuple = (
     (
-        "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxxx/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction",
+        "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxxx/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction&top=10",
         get_zaken_response()
     ),
     (
-        "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxx2/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction",
+        "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxx2/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction&top=10",
         get_zaken_response_2()
     ),
     (
-        "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxx3/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction",
+        "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxx2/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction&top=10&skip=10",
+        get_zaken_resposne_2_part_2()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxx3/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction&top=10",
         get_zaken_response_empty()
     ),
 )
