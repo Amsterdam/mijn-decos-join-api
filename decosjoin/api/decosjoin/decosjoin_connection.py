@@ -93,13 +93,13 @@ class DecosJoinConnection:
             pprint(res_json)
         return res_json
 
-    def _enrich_with_case_type(self, zaken):
-        for zaak in zaken:
-            zaak_key = zaak['key']
-            url = f"{self.api_url}items/{zaak_key}/casetype"
-            case_type = self._get(url)
-            zaak['MA-casetype'] = case_type['description']  # store it on the case itself with MA- prefix
-            zaak['MA-casestatus'] = case_type['currentStatus']
+    # def _enrich_with_case_type(self, zaken):
+    #     for zaak in zaken:
+    #         zaak_key = zaak['key']
+    #         url = f"{self.api_url}items/{zaak_key}/casetype"
+    #         case_type = self._get(url)
+    #         zaak['MA-casetype'] = case_type['description']  # store it on the case itself with MA- prefix
+    #         zaak['MA-casestatus'] = case_type['currentStatus']
 
     def _transform(self, zaken):
         new_zaken = []
@@ -266,13 +266,12 @@ def to_datetime(value) -> [datetime, None]:
     raise ParseError(f"Unable to parse type({type(value)} with to_datetime")
 
 
-def to_int(value):
-    # our xml parser, automatically converts numbers. So this converter doesn't do much.
-    if value == 0:
-        return 0
-    if not value:
-        return None
-    return int(value)
+# def to_int(value):
+#     if value == 0:
+#         return 0
+#     if not value:
+#         return None
+#     return int(value)
 
 
 def to_string(value):
@@ -282,11 +281,13 @@ def to_string(value):
 
 
 def to_decision(value):
-    translateValues = ["Verleend met borden",
-                       "Verleend zonder bebording",
-                       "Verleend zonder borden"]
+    translate_values = [
+        "verleend met borden",
+        "verleend zonder bebording",
+        "verleend zonder borden"
+    ]
 
-    if (value is not None and value in translateValues):
+    if value and value.lower() in translate_values:
         return 'Verleend'
 
     return value
