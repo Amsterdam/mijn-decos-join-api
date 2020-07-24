@@ -68,6 +68,23 @@ def get_vergunningen():
     }
 
 
+@app.route('/decosjoin/getdocument', methods=['GET'])
+def get_documents(zaak_id):
+    connection = DecosJoinConnection(
+        get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
+    try:
+        bsn = get_bsn_from_request(request)
+    except InvalidBSNException:
+        return {"status": "ERROR", "message": "Invalid BSN"}, 400
+    except SamlVerificationException as e:
+        return {"status": "ERROR", "message": e.args[0]}, 400
+    except Exception as e:
+        logger.error("Error", type(e), str(e))
+        return {"status": "ERROR", "message": "Unknown Error"}, 400
+
+    document = connection.get_documents(bsn, zaak_id)
+
+
 @app.route('/status/health')
 def health_check():
     return 'OK'

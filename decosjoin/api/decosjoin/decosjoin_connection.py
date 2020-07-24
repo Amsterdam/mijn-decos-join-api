@@ -73,7 +73,6 @@ class DecosJoinConnection:
         """ Retrieve the internal ids used for a user. """
         keys = []
         for boek in self.adres_boeken['bsn']:
-            # url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
             url = f"{self.api_url}search/books?properties=false"
             res_json = self._get(url, json=self.search_query(bsn, boek), method='post')
             if res_json['itemDataResultSet']['count'] > 0:
@@ -167,6 +166,15 @@ class DecosJoinConnection:
 
         zaken = self._transform(zaken)
         return self.filter_zaken(zaken)
+
+    def get_documents(self, bsn, zaak_id):
+        url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
+        res_json = self._get(url)
+
+        # if log_raw:
+        from pprint import pprint
+        pprint(res_json)
+        return res_json
 
 
 def _get_fields(fields, zaak):

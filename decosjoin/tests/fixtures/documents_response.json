@@ -242,7 +242,7 @@
   "links": [
     {
       "rel": "itemprofile",
-      "href": "http://localhost/decosweb/aspx/api/v1/itemprofiles/007992321A8F49E9AF5041EDF1504F20|4615E3D32E854CF48ED5B44FAEC085ED/list"
+      "href": "http://localhost/decosweb/aspx/api/v1/itemprofiles/ZAAKKEY1/list"
     }
   ]
 }

@@ -23,3 +23,6 @@ class ConnectionTests(TestCase):
         # Z/20/4567890 is filtered out because of subject1 contents
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
         self.assertEqual(len(zaken), 9)
+
+    def test_get_documents(self):
+        documents = self.connection.get_documents('', 'ZAAKKEY1')
