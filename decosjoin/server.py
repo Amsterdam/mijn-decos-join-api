@@ -68,7 +68,7 @@ def get_vergunningen():
     }
 
 
-@app.route('/decosjoin/getdocument', methods=['GET'])
+@app.route('/decosjoin/getdocuments', methods=['GET'])
 def get_documents(zaak_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())

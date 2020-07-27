@@ -187,7 +187,9 @@ class DecosJoinConnection:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
+                document_meta_data['link'] = f"/api/decosjoin/document/{document_meta_data['id']}"
                 new_docs.append(document_meta_data)
+
 
         return new_docs
 
