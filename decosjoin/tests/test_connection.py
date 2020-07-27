@@ -1,3 +1,4 @@
+from datetime import date
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -19,7 +20,12 @@ class ConnectionTests(TestCase):
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("111222333")
         self.assertEqual(zaken[0]["identifier"], "Z/20/1234567")
-        self.assertEqual(zaken[1]["identifier"], "Z/20/2345678")
+        self.assertEqual(zaken[2]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
+        # Z/20/2 is filtered out because of decision "Buiten behandeling"
+
         self.assertEqual(len(zaken), 9)
+
+        self.assertEqual(zaken[5]['decision'], 'Verleend')
+        self.assertEqual(zaken[5]['dateDecision'], date(2020, 6, 16))
