@@ -191,7 +191,7 @@ class DecosJoinConnection:
                 zaken.extend(res_zaken['content'])
 
         zaken = self._transform(zaken)
-        return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'])
+        return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
 
 def _get_fields(fields, zaak):

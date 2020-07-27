@@ -19,8 +19,8 @@ class ConnectionTests(TestCase):
 
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("111222333")
-        self.assertEqual(zaken[0]["identifier"], "Z/20/1234567")
-        self.assertEqual(zaken[2]["identifier"], "Z/20/2345678")
+        self.assertEqual(zaken[8]["identifier"], "Z/20/1234567")
+        self.assertEqual(zaken[7]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
         # Z/20/2 is filtered out because of decision "Buiten behandeling"

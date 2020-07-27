@@ -49,7 +49,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(response.status_code, 200, response.data)
         data = response.get_json()
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(data["content"][0], self._expected())
+        self.assertEqual(data["content"][-1], self._expected())
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_getvergunningen_no_header(self):
