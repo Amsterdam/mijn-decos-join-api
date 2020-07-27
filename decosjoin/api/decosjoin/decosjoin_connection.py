@@ -171,10 +171,25 @@ class DecosJoinConnection:
         url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
         res_json = self._get(url)
 
-        # if log_raw:
-        from pprint import pprint
-        pprint(res_json)
-        return res_json
+        if log_raw:
+            from pprint import pprint
+            pprint(res_json)
+
+        fields = [
+            {"name": 'fileName', "from": 'subject1', "parser": to_string},
+            {"name": 'sequence', "from": 'sequence', "parser": to_int},
+            {"name": 'id', "from": 'mark', "parser": to_string},
+        ]
+
+        new_docs = []
+
+        for item in res_json['content']:
+            f = item['fields']
+            if f['itemtype_key'].lower() == 'document':
+                document_meta_data = _get_fields(fields, item)
+                new_docs.append(document_meta_data)
+
+        return new_docs
 
 
 def _get_fields(fields, zaak):
@@ -274,12 +289,12 @@ def to_datetime(value) -> [datetime, None]:
     raise ParseError(f"Unable to parse type({type(value)} with to_datetime")
 
 
-# def to_int(value):
-#     if value == 0:
-#         return 0
-#     if not value:
-#         return None
-#     return int(value)
+def to_int(value):
+    if value == 0:
+        return 0
+    if not value:
+        return None
+    return int(value)
 
 
 def to_string(value):

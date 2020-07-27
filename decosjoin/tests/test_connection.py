@@ -26,3 +26,4 @@ class ConnectionTests(TestCase):
 
     def test_get_documents(self):
         documents = self.connection.get_documents('', 'ZAAKKEY1')
+        print(documents)
