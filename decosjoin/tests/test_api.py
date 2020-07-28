@@ -35,7 +35,6 @@ class ApiTests(FlaskServerTMATestCase):
         }
 
     def _client_get(self, location):
-        print("> getting", location)
         SAML_HEADERS = self.add_digi_d_headers(self.TEST_BSN)
         return self.client.get(location, headers=SAML_HEADERS)
 
@@ -72,9 +71,6 @@ class ApiTests(FlaskServerTMATestCase):
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_listdocuments(self):
         response = self._client_get(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1')}")
-        # response = self._client_get(f"/decosjoin/listdocuments/gAAAAABfIB_0ZcOCAgAreZpMLQYyLE4ehpjHjMvS69fNUYterK9Tbp3ingBKUvwpDPZLpeSvyVtvnflucY53QfTqBTmcGaUnUg==")
-        print(response)
-        print(response.data)
         data = response.json['content']
         self.assertEqual(data[0]['fileName'], "Training voorbeelddocument.docx")
         self.assertTrue(data[0]['downloadUrl'].startswith("/api/decosjoin/document/"))
@@ -82,3 +78,8 @@ class ApiTests(FlaskServerTMATestCase):
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_listdocuments_expired_token(self):
         pass
+
+    @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
+    def test_get_document(self):
+        response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01')}")
+        print(response)

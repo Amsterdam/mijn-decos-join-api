@@ -3,6 +3,7 @@ from datetime import datetime, date, time, timedelta
 
 import requests
 from dateutil import parser
+from flask import make_response
 from requests.auth import HTTPBasicAuth
 
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
@@ -168,7 +169,7 @@ class DecosJoinConnection:
         zaken = self._transform(zaken)
         return self.filter_zaken(zaken)
 
-    def list_documents(self, bsn, zaak_id):
+    def list_documents(self, zaak_id):
         url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
         res_json = self._get(url)
 
@@ -188,10 +189,23 @@ class DecosJoinConnection:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
-                document_meta_data['downloadUrl'] = f"/api/decosjoin/document/{encrypt(document_meta_data['id'])}"
+                document_meta_data['downloadUrl'] = f"/api/decosjoin/document/{encrypt(item['key'])}"
                 new_docs.append(document_meta_data)
 
         return new_docs
+
+    def get_document(self, document_id):
+        url = f"{self.api_url}items/{document_id}/BLOB/content"
+
+        document_response = self._get_response(
+            url,
+            auth=HTTPBasicAuth(self.username, self.password),
+            headers={"Accept": "application/octet-stream"}
+        )
+
+        new_response = make_response(document_response.data)
+        new_response.headers["Content-Type"] = document_response.headers["Content-Type"]
+        return new_response
 
 
 def _get_fields(fields, zaak):

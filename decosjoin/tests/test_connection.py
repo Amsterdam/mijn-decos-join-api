@@ -26,5 +26,6 @@ class ConnectionTests(TestCase):
         self.assertEqual(len(zaken), 9)
 
     def test_get_documents(self):
-        documents = self.connection.list_documents('', 'ZAAKKEY1')
-        print(documents)
+        document = self.connection.list_documents('ZAAKKEY1')
+        print(document)
+

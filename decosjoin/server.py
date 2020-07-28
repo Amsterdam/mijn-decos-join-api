@@ -84,14 +84,15 @@ def list_documents(encrypted_zaak_id):
         return {"status": "ERROR", "message": "Unknown Error"}, 400
 
     zaak_id = decrypt(encrypted_zaak_id)
-    documents = connection.list_documents(bsn, zaak_id)
+    documents = connection.list_documents(zaak_id)
     return {
         'status': 'OK',
         'content': documents
     }
 
 
-def get_document(doc_id):
+@app.route('/decosjoin/document/<string:encrypted_doc_id>', methods=['GET'])
+def get_document(encrypted_doc_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
     try:
@@ -104,7 +105,8 @@ def get_document(doc_id):
         logger.error("Error", type(e), str(e))
         return {"status": "ERROR", "message": "Unknown Error"}, 400
 
-    document = connection.get_document(bsn, doc_id)
+    doc_id = decrypt(encrypted_doc_id)
+    document = connection.get_document(doc_id)
     return {
         'status': 'OK',
         'content': document
