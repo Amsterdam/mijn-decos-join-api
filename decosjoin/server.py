@@ -10,6 +10,7 @@ from tma_saml import get_digi_d_bsn, InvalidBSNException, SamlVerificationExcept
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.config import get_sentry_dsn, get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, \
     get_decosjoin_adres_boeken, get_tma_certificate
+from decosjoin.crypto import decrypt
 
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
@@ -68,8 +69,8 @@ def get_vergunningen():
     }
 
 
-@app.route('/decosjoin/getdocuments', methods=['GET'])
-def get_documents(zaak_id):
+@app.route('/decosjoin/listdocuments/<string:encrypted_zaak_id>', methods=['GET'])
+def list_documents(encrypted_zaak_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
     try:
@@ -82,7 +83,32 @@ def get_documents(zaak_id):
         logger.error("Error", type(e), str(e))
         return {"status": "ERROR", "message": "Unknown Error"}, 400
 
-    document = connection.get_documents(bsn, zaak_id)
+    zaak_id = decrypt(encrypted_zaak_id)
+    documents = connection.list_documents(bsn, zaak_id)
+    return {
+        'status': 'OK',
+        'content': documents
+    }
+
+
+def get_document(doc_id):
+    connection = DecosJoinConnection(
+        get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
+    try:
+        bsn = get_bsn_from_request(request)
+    except InvalidBSNException:
+        return {"status": "ERROR", "message": "Invalid BSN"}, 400
+    except SamlVerificationException as e:
+        return {"status": "ERROR", "message": e.args[0]}, 400
+    except Exception as e:
+        logger.error("Error", type(e), str(e))
+        return {"status": "ERROR", "message": "Unknown Error"}, 400
+
+    document = connection.get_document(bsn, doc_id)
+    return {
+        'status': 'OK',
+        'content': document
+    }
 
 
 @app.route('/status/health')

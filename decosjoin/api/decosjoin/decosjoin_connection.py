@@ -6,7 +6,7 @@ from dateutil import parser
 from requests.auth import HTTPBasicAuth
 
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
-
+from decosjoin.crypto import encrypt
 
 log_raw = False
 page_size = 10
@@ -121,10 +121,11 @@ class DecosJoinConnection:
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
                     {"name": "decision", "from": "dfunction", "parser": to_decision},
                     {"name": "dateDecision", "from": "date5", "parser": to_string},  # datum afhandeling?
-
                 ]
 
                 new_zaak = _get_fields(fields, zaak)
+
+                new_zaak['documents_url'] = f"/api/decosjoin/listdocument/{encrypt(new_zaak['identifier'])}"
 
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEndInclusive']:
@@ -167,7 +168,7 @@ class DecosJoinConnection:
         zaken = self._transform(zaken)
         return self.filter_zaken(zaken)
 
-    def get_documents(self, bsn, zaak_id):
+    def list_documents(self, bsn, zaak_id):
         url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
         res_json = self._get(url)
 
@@ -187,9 +188,8 @@ class DecosJoinConnection:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
-                document_meta_data['link'] = f"/api/decosjoin/document/{document_meta_data['id']}"
+                document_meta_data['downloadUrl'] = f"/api/decosjoin/document/{encrypt(document_meta_data['id'])}"
                 new_docs.append(document_meta_data)
-
 
         return new_docs
 

@@ -5,6 +5,7 @@ from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
+@patch("decosjoin.crypto.get_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
 @patch('decosjoin.tests.test_connection.DecosJoinConnection._get_response', get_response_mock)
 @patch("decosjoin.server.DecosJoinConnection._post_response", post_response_mock)
 class ConnectionTests(TestCase):
@@ -25,5 +26,5 @@ class ConnectionTests(TestCase):
         self.assertEqual(len(zaken), 9)
 
     def test_get_documents(self):
-        documents = self.connection.get_documents('', 'ZAAKKEY1')
+        documents = self.connection.list_documents('', 'ZAAKKEY1')
         print(documents)

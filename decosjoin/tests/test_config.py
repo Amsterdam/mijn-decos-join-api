@@ -4,7 +4,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from decosjoin.config import get_sentry_dsn, get_decosjoin_adres_boeken, get_decosjoin_api_host, get_decosjoin_password, \
-    get_decosjoin_username, get_tma_certificate
+    get_decosjoin_username, get_tma_certificate, get_key
 
 
 @patch.dict(os.environ, {
@@ -15,6 +15,7 @@ from decosjoin.config import get_sentry_dsn, get_decosjoin_adres_boeken, get_dec
     "DECOS_JOIN_API_HOST": "host",
     "DECOS_JOIN_ADRES_BOEKEN_BSN": "address1,address2",
     "DECOS_JOIN_ADRES_BOEKEN_KVK": "address3,address4",
+    "MIJN_DECOS_KEY": "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=",
 })
 class ConfigTests(TestCase):
     def test_config(self):
@@ -24,3 +25,4 @@ class ConfigTests(TestCase):
         self.assertEqual(get_decosjoin_api_host(), "host")
         self.assertEqual(get_decosjoin_adres_boeken(), {'bsn': ['address1', 'address2'], 'kvk': ['address3', 'address4']})
         self.assertEqual(get_sentry_dsn(), "sentry")
+        self.assertEqual(get_key(), "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")

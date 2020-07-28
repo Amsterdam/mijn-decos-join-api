@@ -36,6 +36,10 @@ def get_decosjoin_adres_boeken():
     }
 
 
+def get_key():
+    return os.getenv("MIJN_DECOS_KEY")
+
+
 def get_tma_certificate():
     tma_cert_location = os.getenv('TMA_CERTIFICATE')
     with open(tma_cert_location) as f:
