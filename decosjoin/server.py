@@ -2,7 +2,8 @@ import logging
 from datetime import date, time
 
 import sentry_sdk
-from flask import Flask, request
+from cryptography.fernet import InvalidToken
+from flask import Flask, request, make_response
 from flask.json import JSONEncoder
 from sentry_sdk.integrations.flask import FlaskIntegration
 from tma_saml import get_digi_d_bsn, InvalidBSNException, SamlVerificationException
@@ -83,7 +84,10 @@ def list_documents(encrypted_zaak_id):
         logger.error("Error", type(e), str(e))
         return {"status": "ERROR", "message": "Unknown Error"}, 400
 
-    zaak_id = decrypt(encrypted_zaak_id)
+    try:
+        zaak_id = decrypt(encrypted_zaak_id)
+    except InvalidToken:
+        return {'status': "ERROR", "message": "decryption zaak ID invalid"}, 400
     documents = connection.list_documents(zaak_id)
     return {
         'status': 'OK',
@@ -105,12 +109,20 @@ def get_document(encrypted_doc_id):
         logger.error("Error", type(e), str(e))
         return {"status": "ERROR", "message": "Unknown Error"}, 400
 
-    doc_id = decrypt(encrypted_doc_id)
-    document = connection.get_document(doc_id)
-    return {
-        'status': 'OK',
-        'content': document
-    }
+    try:
+        doc_id = decrypt(encrypted_doc_id)
+    except InvalidToken:
+        return {"status": "ERROR", "message": "decryption zaak ID invalid"}, 400
+
+    try:
+        document = connection.get_document(doc_id)
+    except Exception as e:
+        logging.error("Failed to retrieve document", type(e), e)
+        return {"status": "ERROR", "message": "Failed to retrieve document from source"}
+
+    new_response = make_response(document['file_data'])
+    new_response.headers["Content-Type"] = document["Content-Type"]
+    return new_response
 
 
 @app.route('/status/health')

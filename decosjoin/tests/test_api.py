@@ -1,15 +1,21 @@
+import time
 from unittest.mock import patch
 
+from cryptography.fernet import Fernet, InvalidToken
 from tma_saml import FlaskServerTMATestCase
 from tma_saml.for_tests.cert_and_key import server_crt
 
 from decosjoin.crypto import encrypt
 from decosjoin.server import app
+from decosjoin.tests.fixtures.data import get_document
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
+TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
+
+
 @patch("decosjoin.server.get_tma_certificate", lambda: server_crt)
-@patch("decosjoin.crypto.get_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
+@patch("decosjoin.crypto.get_key", lambda: TESTKEY)
 @patch("decosjoin.server.get_decosjoin_api_host", lambda: "http://localhost")
 @patch("decosjoin.server.get_decosjoin_adres_boeken", lambda: {'bsn': ["hexkey32chars000000000000000BSN1", "hexkey32chars000000000000000BSN2"], 'kvk': ['hexkey32chars0000000000000000KVK']})
 class ApiTests(FlaskServerTMATestCase):
@@ -34,9 +40,11 @@ class ApiTests(FlaskServerTMATestCase):
             # 'documents_url': '/api/decos/listdocuments/...'
         }
 
+    def _saml_headers(self):
+        return self.add_digi_d_headers(self.TEST_BSN)
+
     def _client_get(self, location):
-        SAML_HEADERS = self.add_digi_d_headers(self.TEST_BSN)
-        return self.client.get(location, headers=SAML_HEADERS)
+        return self.client.get(location, headers=self._saml_headers())
 
     def setUp(self):
         """ Setup app for testing """
@@ -76,10 +84,30 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertTrue(data[0]['downloadUrl'].startswith("/api/decosjoin/document/"))
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
+    def test_listdocuments_unencrypted(self):
+        response = self._client_get(f"/decosjoin/listdocuments/ZAAKKEY1")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})
+
+    @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_listdocuments_expired_token(self):
-        pass
+        f = Fernet(TESTKEY)
+        value = "ZAAKKEY1".encode()
+        expired_time = int(time.time()) - (60 * 60 + 2)  # one hour + 2 seconds
+        encrypted_token = f.encrypt_at_time(value, expired_time)
+
+        response = self._client_get(f"/decosjoin/listdocuments/{encrypted_token}")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_get_document(self):
-        response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01')}")
-        print(response)
+        response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01')}", headers=self._saml_headers())
+        self.assertEqual(response.data, get_document())
+        self.assertEqual(response.headers['Content-Type'], 'application/pdf')
+
+    @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
+    def test_get_document(self):
+        response = self.client.get(f"/decosjoin/document/DOCUMENTKEY01", headers=self._saml_headers())
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})

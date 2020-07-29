@@ -192,6 +192,8 @@ class DecosJoinConnection:
                 document_meta_data['downloadUrl'] = f"/api/decosjoin/document/{encrypt(item['key'])}"
                 new_docs.append(document_meta_data)
 
+        new_docs.sort(key=lambda x: x['sequence'])
+
         return new_docs
 
     def get_document(self, document_id):
@@ -203,9 +205,15 @@ class DecosJoinConnection:
             headers={"Accept": "application/octet-stream"}
         )
 
-        new_response = make_response(document_response.data)
-        new_response.headers["Content-Type"] = document_response.headers["Content-Type"]
-        return new_response
+        if log_raw:
+            from pprint import pprint
+            pprint(document_response.data)
+            pprint(document_response.headers)
+
+        return {
+            'Content-Type': document_response.headers['Content-Type'],
+            'file_data': document_response.data
+        }
 
 
 def _get_fields(fields, zaak):
