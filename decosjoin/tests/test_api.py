@@ -1,7 +1,7 @@
 import time
 from unittest.mock import patch
 
-from cryptography.fernet import Fernet, InvalidToken
+from cryptography.fernet import Fernet
 from tma_saml import FlaskServerTMATestCase
 from tma_saml.for_tests.cert_and_key import server_crt
 
@@ -85,7 +85,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_listdocuments_unencrypted(self):
-        response = self._client_get(f"/decosjoin/listdocuments/ZAAKKEY1")
+        response = self._client_get("/decosjoin/listdocuments/ZAAKKEY1")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})
 
@@ -107,7 +107,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(response.headers['Content-Type'], 'application/pdf')
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
-    def test_get_document(self):
-        response = self.client.get(f"/decosjoin/document/DOCUMENTKEY01", headers=self._saml_headers())
+    def test_get_document_unencrypted(self):
+        response = self.client.get("/decosjoin/document/DOCUMENTKEY01", headers=self._saml_headers())
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})

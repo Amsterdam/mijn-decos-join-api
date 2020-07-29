@@ -10,4 +10,4 @@ def encrypt(plain_text: str) -> str:
 
 def decrypt(encrypted: str) -> str:
     f = Fernet(get_key())
-    return f.decrypt(encrypted.encode(), ttl=60*60).decode()
+    return f.decrypt(encrypted.encode(), ttl=60 * 60).decode()

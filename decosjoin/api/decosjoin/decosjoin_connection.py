@@ -3,7 +3,6 @@ from datetime import datetime, date, time, timedelta
 
 import requests
 from dateutil import parser
-from flask import make_response
 from requests.auth import HTTPBasicAuth
 
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError

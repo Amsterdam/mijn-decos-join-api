@@ -75,7 +75,7 @@ def list_documents(encrypted_zaak_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
     try:
-        bsn = get_bsn_from_request(request)
+        get_bsn_from_request(request)
     except InvalidBSNException:
         return {"status": "ERROR", "message": "Invalid BSN"}, 400
     except SamlVerificationException as e:
@@ -100,25 +100,18 @@ def get_document(encrypted_doc_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
     try:
-        bsn = get_bsn_from_request(request)
+        get_bsn_from_request(request)
+        doc_id = decrypt(encrypted_doc_id)
+        document = connection.get_document(doc_id)
     except InvalidBSNException:
         return {"status": "ERROR", "message": "Invalid BSN"}, 400
     except SamlVerificationException as e:
         return {"status": "ERROR", "message": e.args[0]}, 400
+    except InvalidToken:
+        return {"status": "ERROR", "message": "decryption zaak ID invalid"}, 400
     except Exception as e:
         logger.error("Error", type(e), str(e))
         return {"status": "ERROR", "message": "Unknown Error"}, 400
-
-    try:
-        doc_id = decrypt(encrypted_doc_id)
-    except InvalidToken:
-        return {"status": "ERROR", "message": "decryption zaak ID invalid"}, 400
-
-    try:
-        document = connection.get_document(doc_id)
-    except Exception as e:
-        logging.error("Failed to retrieve document", type(e), e)
-        return {"status": "ERROR", "message": "Failed to retrieve document from source"}
 
     new_response = make_response(document['file_data'])
     new_response.headers["Content-Type"] = document["Content-Type"]
