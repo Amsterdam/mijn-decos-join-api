@@ -1,0 +1,26 @@
+{
+  "content": [
+    {
+      "fields": {
+      },
+      "key": "BLOBKEY01",
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/BLOBKEY01",
+          "rel": "self"
+        },
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/BLOBKEY01/content",
+          "rel": "content"
+        },
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/BLOBKEY01/thumbnail",
+          "rel": "thumbnail"
+        }
+      ]
+    }
+  ],
+  "count": 1,
+  "links": [
+  ]
+}

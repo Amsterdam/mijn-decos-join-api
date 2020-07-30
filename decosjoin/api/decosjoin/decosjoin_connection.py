@@ -221,22 +221,29 @@ class DecosJoinConnection:
         return new_docs
 
     def get_document(self, document_id):
-        url = f"{self.api_url}items/{document_id}/BLOB/content"
+        url = f"{self.api_url}items/{document_id}/blobs"
+        document_meta = self._get(url)
+
+        if log_raw:
+            from pprint import pprint
+            pprint(document_meta)
+
+        url_blob_content = f"{self.api_url}items/{document_meta['content'][0]['key']}/content"
 
         document_response = self._get_response(
-            url,
+            url_blob_content,
             auth=HTTPBasicAuth(self.username, self.password),
             headers={"Accept": "application/octet-stream"}
         )
 
         if log_raw:
             from pprint import pprint
-            pprint(document_response.data)
+            pprint(document_response.content)
             pprint(document_response.headers)
 
         return {
             'Content-Type': document_response.headers['Content-Type'],
-            'file_data': document_response.data
+            'file_data': document_response.content
         }
 
 

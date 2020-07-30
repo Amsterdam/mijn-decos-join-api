@@ -19,4 +19,4 @@ connection = DecosJoinConnection(
     get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
 
 document = connection.get_document(document_id)
-pprint(document)
+# printing is done by log_raw

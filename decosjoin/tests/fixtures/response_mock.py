@@ -1,7 +1,7 @@
 from decosjoin.tests.fixtures.data import get_zaken_response, \
     get_zaken_response_2, get_zaken_response_empty, get_search_addresses_bsn_111222333_response_empty, \
     get_search_addresses_bsn_111222333_response, get_search_addresses_bsn_111222333_response_2, \
-    get_zaken_resposne_2_part_2, get_documents_response, get_document
+    get_zaken_resposne_2_part_2, get_documents_response, get_document, get_blob_response
 
 
 def get_response_mock(self, *args, **kwargs):
@@ -36,6 +36,10 @@ class MockedResponse:
     def json(self):
         return self.data
 
+    @property
+    def content(self):
+        return self.data
+
     headers = {'Content-Type': 'application/pdf'}
 
 
@@ -62,8 +66,12 @@ mocked_get_urls_tuple = (
         get_documents_response()
     ),
     (
-        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01/BLOB/content",
+        "http://localhost/decosweb/aspx/api/v1/items/BLOBKEY01/content",
         get_document()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01/blobs",
+        get_blob_response()
     )
 )
 mocked_get_urls = dict(mocked_get_urls_tuple)
