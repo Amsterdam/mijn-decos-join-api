@@ -63,7 +63,7 @@ class ApiTests(FlaskServerTMATestCase):
         data = response.get_json()
         self.assertEqual(data["status"], "OK")
 
-        self.assertTrue(data["content"][0]["documents_url"].startswith("/api/decosjoin/listdocument/"))
+        self.assertTrue(data["content"][0]["documents_url"].startswith("/api/decosjoin/listdocuments/"))
 
         # remove the encrypted url, it is time based
         del(data["content"][-1]["documents_url"])
