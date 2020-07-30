@@ -1,8 +1,9 @@
 import math
-from datetime import datetime, date, time, timedelta
+from datetime import datetime, date, time
 
 import requests
 from dateutil import parser
+from dateutil.relativedelta import relativedelta
 from requests.auth import HTTPBasicAuth
 
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
@@ -120,7 +121,7 @@ class DecosJoinConnection:
                     {"name": "location", "from": 'text6', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
                     {"name": "decision", "from": "dfunction", "parser": to_decision},
-                    {"name": "dateDecision", "from": "date5", "parser": to_string},  # datum afhandeling?
+                    {"name": "dateDecision", "from": "date5", "parser": to_date},  # datum afhandeling?
                 ]
 
                 new_zaak = _get_fields(fields, zaak)
@@ -141,12 +142,36 @@ class DecosJoinConnection:
 
         return new_zaken
 
+    def _deny_list_filter(self, value, deny_list):
+        if value is None:
+            return True
+        value = value.lower()
+        return value not in deny_list
+
     def filter_zaken(self, zaken):
         """ Filter un-parsed cases. """
         zaken = [zaak for zaak in zaken if zaak['caseType'].lower() in ['tvm - rvv - object']]
-        zaken = [zaak for zaak in zaken if zaak['title'].lower() not in ['wacht op online betaling', 'wacht op ideal betaling']]
+        zaken = [zaak for zaak in zaken if self._deny_list_filter(
+            zaak['title'],
+            ['wacht op online betaling', 'wacht op ideal betaling']
+        )]
+        zaken = [zaak for zaak in zaken if self._deny_list_filter(
+            zaak['decision'],
+            ['buiten behandeling']
+        )]
 
         zaken = [zaak for zaak in zaken if not zaak['title'].lower().startswith("*verwijder")]
+
+        # not needed now, maybe in the future
+        # one_year_ago = relativedelta(years=1)
+        # today = date.today()
+
+        # def date_filter(zaak):
+        #     if zaak['dateDecision'] and zaak['dateDecision'] + one_year_ago < today:
+        #         return False
+        #     return True
+        #
+        # zaken = [zaak for zaak in zaken if date_filter(zaak)]
 
         return zaken
 
@@ -166,7 +191,7 @@ class DecosJoinConnection:
                 zaken.extend(res_zaken['content'])
 
         zaken = self._transform(zaken)
-        return self.filter_zaken(zaken)
+        return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def list_documents(self, zaak_id):
         url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
@@ -238,7 +263,7 @@ def _is_current(zaak):
         end = to_datetime(zaak['dateEnd'])
     elif zaak.get('dateEndInclusive'):
         end = to_datetime(zaak['dateEndInclusive'])
-        end = (end + timedelta(days=1)) - timedelta(seconds=1)
+        end = (end + relativedelta(days=1)) - relativedelta(seconds=1)
     else:
         return False
 

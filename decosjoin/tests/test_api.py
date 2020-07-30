@@ -68,7 +68,7 @@ class ApiTests(FlaskServerTMATestCase):
         # remove the encrypted url, it is time based
         del(data["content"][0]["documents_url"])
 
-        self.assertEqual(data["content"][0], self._expected_zaak())
+        self.assertEqual(data["content"][-1], self._expected_zaak())
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_getvergunningen_no_header(self):

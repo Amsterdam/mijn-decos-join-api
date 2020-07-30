@@ -20,6 +20,29 @@
           "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING01"
         }
       ]
+    },
+    {
+      "fields": {
+        "date5": "2020-06-24T00:00:00",
+        "date6": "2020-07-02T00:00:00",
+        "date7": "2020-07-02T00:00:00",
+        "dfunction": "Buiten behandeling",
+        "document_date": "2020-06-24T00:00:00",
+        "mark": "Z/20/2",
+        "processed": true,
+        "subject1": "test",
+        "text11": "Nvt",
+        "text45": "TVM - RVV - Object",
+        "text6": "Amstel 1 1012AA",
+        "title": "Afgehandeld"
+      },
+      "key": "HEXSTRING10",
+      "links": [
+        {
+          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING10",
+          "rel": "self"
+        }
+      ]
     }
   ],
   "links": [
