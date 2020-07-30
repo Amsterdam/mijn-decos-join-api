@@ -1,4 +1,3 @@
-from pprint import pprint
 from sys import argv
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
