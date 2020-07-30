@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from requests.auth import HTTPBasicAuth
 
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
-
+from decosjoin.crypto import encrypt
 
 log_raw = False
 page_size = 10
@@ -74,7 +74,6 @@ class DecosJoinConnection:
         """ Retrieve the internal ids used for a user. """
         keys = []
         for boek in self.adres_boeken['bsn']:
-            # url = f"{self.api_url}items/{boek}/addresses?filter=num1%20eq%20{bsn}&select=num1"
             url = f"{self.api_url}search/books?properties=false"
             res_json = self._get(url, json=self.search_query(bsn, boek), method='post')
             if res_json['itemDataResultSet']['count'] > 0:
@@ -123,10 +122,11 @@ class DecosJoinConnection:
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
                     {"name": "decision", "from": "dfunction", "parser": to_decision},
                     {"name": "dateDecision", "from": "date5", "parser": to_date},  # datum afhandeling?
-
                 ]
 
                 new_zaak = _get_fields(fields, zaak)
+
+                new_zaak['documents_url'] = f"/api/decosjoin/listdocument/{encrypt(new_zaak['identifier'])}"
 
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEndInclusive']:
@@ -192,6 +192,52 @@ class DecosJoinConnection:
 
         zaken = self._transform(zaken)
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
+
+    def list_documents(self, zaak_id):
+        url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
+        res_json = self._get(url)
+
+        if log_raw:
+            from pprint import pprint
+            pprint(res_json)
+
+        fields = [
+            {"name": 'fileName', "from": 'subject1', "parser": to_string},
+            {"name": 'sequence', "from": 'sequence', "parser": to_int},
+            {"name": 'id', "from": 'mark', "parser": to_string},
+        ]
+
+        new_docs = []
+
+        for item in res_json['content']:
+            f = item['fields']
+            if f['itemtype_key'].lower() == 'document':
+                document_meta_data = _get_fields(fields, item)
+                document_meta_data['downloadUrl'] = f"/api/decosjoin/document/{encrypt(item['key'])}"
+                new_docs.append(document_meta_data)
+
+        new_docs.sort(key=lambda x: x['sequence'])
+
+        return new_docs
+
+    def get_document(self, document_id):
+        url = f"{self.api_url}items/{document_id}/BLOB/content"
+
+        document_response = self._get_response(
+            url,
+            auth=HTTPBasicAuth(self.username, self.password),
+            headers={"Accept": "application/octet-stream"}
+        )
+
+        if log_raw:
+            from pprint import pprint
+            pprint(document_response.data)
+            pprint(document_response.headers)
+
+        return {
+            'Content-Type': document_response.headers['Content-Type'],
+            'file_data': document_response.data
+        }
 
 
 def _get_fields(fields, zaak):
@@ -291,12 +337,12 @@ def to_datetime(value) -> [datetime, None]:
     raise ParseError(f"Unable to parse type({type(value)} with to_datetime")
 
 
-# def to_int(value):
-#     if value == 0:
-#         return 0
-#     if not value:
-#         return None
-#     return int(value)
+def to_int(value):
+    if value == 0:
+        return 0
+    if not value:
+        return None
+    return int(value)
 
 
 def to_string(value):

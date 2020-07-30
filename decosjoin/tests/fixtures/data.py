@@ -38,3 +38,12 @@ def get_zaken_resposne_2_part_2():
 
 def get_zaken_response_empty():
     return _load_fixture('zaken_response_empty.json')
+
+
+def get_documents_response():
+    return _load_fixture('documents_response.json')
+
+
+def get_document():
+    with open(os.path.join(FIXTURE_PATH, 'test.pdf'), 'rb') as fh:
+        return fh.read()
