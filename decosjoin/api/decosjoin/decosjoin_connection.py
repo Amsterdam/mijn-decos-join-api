@@ -103,7 +103,7 @@ class DecosJoinConnection:
     #         zaak['MA-casetype'] = case_type['description']  # store it on the case itself with MA- prefix
     #         zaak['MA-casestatus'] = case_type['currentStatus']
 
-    def _transform(self, zaken):
+    def _transform(self, bsn, zaken):
         new_zaken = []
 
         for zaak in zaken:
@@ -128,7 +128,7 @@ class DecosJoinConnection:
 
                 new_zaak = _get_fields(fields, zaak)
 
-                new_zaak['documents_url'] = f"/api/decosjoin/listdocuments/{encrypt(zaak['key'])}"
+                new_zaak['documents_url'] = f"/api/decosjoin/listdocuments/{encrypt(zaak['key'], bsn)}"
 
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEndInclusive']:
@@ -192,10 +192,10 @@ class DecosJoinConnection:
                 res_zaken = self._get_zaken_for_user(key, offset)
                 zaken.extend(res_zaken['content'])
 
-        zaken = self._transform(zaken)
+        zaken = self._transform(bsn, zaken)
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
-    def list_documents(self, zaak_id):
+    def list_documents(self, zaak_id, bsn):
         url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
         res_json = self._get(url)
 
@@ -215,7 +215,7 @@ class DecosJoinConnection:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
-                document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'])}"
+                document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
                 new_docs.append(document_meta_data)
 
         new_docs.sort(key=lambda x: x['sequence'])

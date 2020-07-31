@@ -75,7 +75,7 @@ def list_documents(encrypted_zaak_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
     try:
-        get_bsn_from_request(request)
+        bsn = get_bsn_from_request(request)
     except InvalidBSNException:
         return {"status": "ERROR", "message": "Invalid BSN"}, 400
     except SamlVerificationException as e:
@@ -85,10 +85,10 @@ def list_documents(encrypted_zaak_id):
         return {"status": "ERROR", "message": "Unknown Error"}, 400
 
     try:
-        zaak_id = decrypt(encrypted_zaak_id)
+        zaak_id = decrypt(encrypted_zaak_id, bsn)
     except InvalidToken:
         return {'status': "ERROR", "message": "decryption zaak ID invalid"}, 400
-    documents = connection.list_documents(zaak_id)
+    documents = connection.list_documents(zaak_id, bsn)
     return {
         'status': 'OK',
         'content': documents
@@ -100,8 +100,8 @@ def get_document(encrypted_doc_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
     try:
-        get_bsn_from_request(request)
-        doc_id = decrypt(encrypted_doc_id)
+        bsn = get_bsn_from_request(request)
+        doc_id = decrypt(encrypted_doc_id, bsn)
         document = connection.get_document(doc_id)
     except InvalidBSNException:
         return {"status": "ERROR", "message": "Invalid BSN"}, 400

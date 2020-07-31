@@ -78,7 +78,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_listdocuments(self):
-        response = self._client_get(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1')}")
+        response = self._client_get(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}")
         data = response.json['content']
         self.assertEqual(data[0]['title'], "Training voorbeelddocument.docx")
         self.assertTrue(data[0]['url'].startswith("/api/decosjoin/document/"))
@@ -92,7 +92,7 @@ class ApiTests(FlaskServerTMATestCase):
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_listdocuments_expired_token(self):
         f = Fernet(TESTKEY)
-        value = "ZAAKKEY1".encode()
+        value = f"{self.TEST_BSN}:ZAAKKEY1".encode()
         expired_time = int(time.time()) - (60 * 60 + 2)  # one hour + 2 seconds
         encrypted_token = f.encrypt_at_time(value, expired_time)
 
@@ -102,7 +102,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_get_document(self):
-        response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01')}", headers=self._saml_headers())
+        response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}", headers=self._saml_headers())
         self.assertEqual(response.data, get_document())
         self.assertEqual(response.headers['Content-Type'], 'application/pdf')
 

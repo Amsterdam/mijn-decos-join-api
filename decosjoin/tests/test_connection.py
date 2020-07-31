@@ -33,7 +33,7 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[5]['dateDecision'], date(2020, 6, 16))
 
     def test_list_documents(self):
-        documents = self.connection.list_documents('ZAAKKEY1')
+        documents = self.connection.list_documents('ZAAKKEY1', "111222333")
         self.assertEqual(len(documents), 9)
         self.assertEqual(documents[0]['sequence'], 1)
         self.assertEqual(documents[1]['sequence'], 2)
