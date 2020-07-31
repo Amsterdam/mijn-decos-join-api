@@ -103,7 +103,7 @@ class DecosJoinConnection:
     #         zaak['MA-casetype'] = case_type['description']  # store it on the case itself with MA- prefix
     #         zaak['MA-casestatus'] = case_type['currentStatus']
 
-    def _transform(self, bsn, zaken):
+    def _transform(self, zaken, bsn):
         new_zaken = []
 
         for zaak in zaken:
@@ -192,7 +192,7 @@ class DecosJoinConnection:
                 res_zaken = self._get_zaken_for_user(key, offset)
                 zaken.extend(res_zaken['content'])
 
-        zaken = self._transform(bsn, zaken)
+        zaken = self._transform(zaken, bsn)
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def list_documents(self, zaak_id, bsn):
