@@ -202,7 +202,7 @@ class DecosJoinConnection:
             pprint(res_json)
 
         fields = [
-            {"name": 'fileName', "from": 'subject1', "parser": to_string},
+            {"name": 'title', "from": 'subject1', "parser": to_string},  # file name
             {"name": 'sequence', "from": 'sequence', "parser": to_int},
             {"name": 'id', "from": 'mark', "parser": to_string},
         ]
@@ -213,7 +213,7 @@ class DecosJoinConnection:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
-                document_meta_data['downloadUrl'] = f"/api/decosjoin/document/{encrypt(item['key'])}"
+                document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'])}"
                 new_docs.append(document_meta_data)
 
         new_docs.sort(key=lambda x: x['sequence'])
