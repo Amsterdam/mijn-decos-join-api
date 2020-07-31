@@ -41,6 +41,8 @@ class DecosJoinConnection:
                                            auth=HTTPBasicAuth(self.username, self.password),
                                            headers={"Accept": "application/itemdata"},
                                            json=json)
+        else:
+            raise RuntimeError("Method needs to be GET or POST")
 
         if response.status_code == 200:
             json = response.json()
@@ -183,10 +185,10 @@ class DecosJoinConnection:
         for key in user_keys:
             # fetch one
             res_zaken = self._get_zaken_for_user(key)
-            max = math.ceil(res_zaken['count'] / page_size) * page_size
+            end = math.ceil(res_zaken['count'] / page_size) * page_size
             zaken.extend(res_zaken['content'])
             # paginate over the rest (with page sizes)
-            for offset in range(page_size, max, page_size):
+            for offset in range(page_size, end, page_size):
                 res_zaken = self._get_zaken_for_user(key, offset)
                 zaken.extend(res_zaken['content'])
 
