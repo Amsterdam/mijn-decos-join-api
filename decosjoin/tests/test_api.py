@@ -37,7 +37,7 @@ class ApiTests(FlaskServerTMATestCase):
             'timeEnd': None,
             'timeStart': None,
             'title': 'SB RVV ontheffing hele stad',
-            # 'documents_url': '/api/decos/listdocuments/...'
+            # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 
     def _saml_headers(self):
@@ -63,10 +63,10 @@ class ApiTests(FlaskServerTMATestCase):
         data = response.get_json()
         self.assertEqual(data["status"], "OK")
 
-        self.assertTrue(data["content"][0]["documents_url"].startswith("/api/decosjoin/listdocuments/"))
+        self.assertTrue(data["content"][0]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
 
         # remove the encrypted url, it is time based
-        del(data["content"][-1]["documents_url"])
+        del(data["content"][-1]["documentsUrl"])
 
         self.assertEqual(data["content"][-1], self._expected_zaak())
 
