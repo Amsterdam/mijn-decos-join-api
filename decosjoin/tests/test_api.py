@@ -80,8 +80,9 @@ class ApiTests(FlaskServerTMATestCase):
     def test_listdocuments(self):
         response = self._client_get(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}")
         data = response.json['content']
-        self.assertEqual(data[0]['title'], "Training voorbeelddocument.docx")
-        self.assertTrue(data[0]['url'].startswith("/api/decosjoin/document/"))
+        self.assertEqual(len(data), 0)
+        # self.assertEqual(data[0]['title'], "Training voorbeelddocument.docx")
+        # self.assertTrue(data[0]['url'].startswith("/api/decosjoin/document/"))
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_listdocuments_unencrypted(self):
