@@ -37,7 +37,7 @@ def get_decosjoin_adres_boeken():
 
 
 def get_key():
-    return os.getenv("MIJN_DECOS_KEY")
+    return os.getenv("FERNET_KEY")
 
 
 def get_tma_certificate():
