@@ -48,9 +48,10 @@ class DecosJoinConnection:
             json = response.json()
             # print("response\n", json)
             return json
-        else:  # TODO: for debugging. Also test this
-            # print("status", response.status_code)
-            # print(">>", response.content)
+        else:
+            if log_raw:
+                print("status", response.status_code, url)
+                print(">>", response.content)
             raise DecosJoinConnectionError(response.status_code)
 
     def search_query(self, bsn: str, book_key: str):
@@ -92,16 +93,9 @@ class DecosJoinConnection:
         res_json = self._get(url)
         if log_raw:
             from pprint import pprint
+            print("request:", url)
             pprint(res_json)
         return res_json
-
-    # def _enrich_with_case_type(self, zaken):
-    #     for zaak in zaken:
-    #         zaak_key = zaak['key']
-    #         url = f"{self.api_url}items/{zaak_key}/casetype"
-    #         case_type = self._get(url)
-    #         zaak['MA-casetype'] = case_type['description']  # store it on the case itself with MA- prefix
-    #         zaak['MA-casestatus'] = case_type['currentStatus']
 
     def _transform(self, zaken, bsn):
         new_zaken = []
@@ -196,7 +190,7 @@ class DecosJoinConnection:
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def list_documents(self, zaak_id, bsn):
-        return []
+        return []  # disabled for now.
         url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
         res_json = self._get(url)
 
