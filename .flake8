@@ -1,5 +1,5 @@
 [flake8]
-max-complexity=7
+max-complexity=9
 ignore=E501,W504
 # E501: line length check
 # W504: line break after binary operator

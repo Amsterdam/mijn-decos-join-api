@@ -16,11 +16,11 @@ class ConnectionTests(TestCase):
         self.connection = DecosJoinConnection('username', 'password', 'http://localhost', {'bsn': ['hexkey32chars000000000000000BSN1', 'hexkey32chars000000000000000BSN2']})
 
     def test_get_user_key(self):
-        user_key = self.connection._get_user_keys("111222333")
+        user_key = self.connection._get_user_keys("bsn", "111222333")
         self.assertEqual(user_key, ['32charsstringxxxxxxxxxxxxxxxxxxx', '32charsstringxxxxxxxxxxxxxxxxxx2', '32charsstringxxxxxxxxxxxxxxxxxx3'])
 
     def test_get_zaken(self):
-        zaken = self.connection.get_zaken("111222333")
+        zaken = self.connection.get_zaken("bsn", "111222333")
         self.assertEqual(zaken[8]["identifier"], "Z/20/1234567")
         self.assertEqual(zaken[7]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents

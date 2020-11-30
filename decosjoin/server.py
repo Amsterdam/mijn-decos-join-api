@@ -6,7 +6,8 @@ from cryptography.fernet import InvalidToken
 from flask import Flask, request, make_response
 from flask.json import JSONEncoder
 from sentry_sdk.integrations.flask import FlaskIntegration
-from tma_saml import get_digi_d_bsn, InvalidBSNException, SamlVerificationException
+from tma_saml import get_digi_d_bsn, InvalidBSNException, SamlVerificationException, get_e_herkenning_attribs, \
+    HR_KVK_NUMBER_KEY
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.config import get_sentry_dsn, get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, \
@@ -49,21 +50,48 @@ def get_bsn_from_request(request):
     return bsn
 
 
+def get_kvk_number_from_request(request):
+    """
+    Get the KVK number from the request headers.
+    """
+    # Load the TMA certificate
+    tma_certificate = get_tma_certificate()
+
+    # Decode the BSN from the request with the TMA certificate
+    attribs = get_e_herkenning_attribs(request, tma_certificate)
+    kvk = attribs[HR_KVK_NUMBER_KEY]
+    print("!kvk", attribs, kvk)
+    return kvk
+
+
 @app.route('/decosjoin/getvergunningen', methods=['GET'])
 def get_vergunningen():
-    connection = DecosJoinConnection(
-        get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
-    try:
-        bsn = get_bsn_from_request(request)
-    except InvalidBSNException:
-        return {"status": "ERROR", "message": "Invalid BSN"}, 400
-    except SamlVerificationException as e:
-        return {"status": "ERROR", "message": e.args[0]}, 400
-    except Exception as e:
-        logger.error("Error", type(e), str(e))
-        return {"status": "ERROR", "message": "Unknown Error"}, 400
+    kind = None
+    identifier = None
 
-    zaken = connection.get_zaken(bsn)
+    try:
+        identifier = get_kvk_number_from_request(request)
+        kind = 'kvk'
+    except SamlVerificationException:
+        return {'status': 'ERROR', 'message': 'Missing SAML token'}, 400
+    except KeyError:
+        # does not contain kvk number, might still contain BSN
+        pass
+
+    if not identifier:
+        try:
+            identifier = get_bsn_from_request(request)
+            kind = 'bsn'
+        except InvalidBSNException:
+            return {"status": "ERROR", "message": "Invalid BSN"}, 400
+        except SamlVerificationException as e:
+            return {"status": "ERROR", "message": e.args[0]}, 400
+        except Exception as e:
+            logger.error("Error", type(e), str(e))
+            return {"status": "ERROR", "message": "Unknown Error"}, 400
+
+    connection = DecosJoinConnection(get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
+    zaken = connection.get_zaken(kind, identifier)
     return {
         'status': 'OK',
         'content': zaken,

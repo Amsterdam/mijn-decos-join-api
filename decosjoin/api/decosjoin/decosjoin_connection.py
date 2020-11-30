@@ -73,12 +73,15 @@ class DecosJoinConnection:
             }
         }
 
-    def _get_user_keys(self, bsn):
+    def _get_user_keys(self, kind, identifier):
         """ Retrieve the internal ids used for a user. """
         keys = []
-        for boek in self.adres_boeken['bsn']:
+
+        adres_boeken = self.adres_boeken[kind]
+
+        for boek in adres_boeken:
             url = f"{self.api_url}search/books?properties=false"
-            res_json = self._get(url, json=self.search_query(bsn, boek), method='post')
+            res_json = self._get(url, json=self.search_query(identifier, boek), method='post')
             if res_json['itemDataResultSet']['count'] > 0:
                 for item in res_json['itemDataResultSet']['content']:
                     user_key = item['key']
@@ -97,7 +100,7 @@ class DecosJoinConnection:
             pprint(res_json)
         return res_json
 
-    def _transform(self, zaken, bsn):
+    def _transform(self, zaken, user_identifier):
         new_zaken = []
 
         for zaak in zaken:
@@ -122,7 +125,7 @@ class DecosJoinConnection:
 
                 new_zaak = _get_fields(fields, zaak)
 
-                new_zaak['documentsUrl'] = f"/api/decosjoin/listdocuments/{encrypt(zaak['key'], bsn)}"
+                new_zaak['documentsUrl'] = f"/api/decosjoin/listdocuments/{encrypt(zaak['key'], user_identifier)}"
 
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEndInclusive']:
@@ -171,10 +174,10 @@ class DecosJoinConnection:
 
         return zaken
 
-    def get_zaken(self, bsn):
+    def get_zaken(self, kind, identifier):
         """ Get all zaken for a bsn. """
         zaken = []
-        user_keys = self._get_user_keys(bsn)
+        user_keys = self._get_user_keys(kind, identifier)
 
         for key in user_keys:
             # fetch one
@@ -186,7 +189,7 @@ class DecosJoinConnection:
                 res_zaken = self._get_zaken_for_user(key, offset)
                 zaken.extend(res_zaken['content'])
 
-        zaken = self._transform(zaken, bsn)
+        zaken = self._transform(zaken, identifier)
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def list_documents(self, zaak_id, bsn):
