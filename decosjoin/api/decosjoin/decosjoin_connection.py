@@ -35,12 +35,14 @@ class DecosJoinConnection:
         if method == 'get':
             response = self._get_response(url,
                                           auth=HTTPBasicAuth(self.username, self.password),
-                                          headers={"Accept": "application/itemdata"})
+                                          headers={"Accept": "application/itemdata"},
+                                          timeout=9)
         elif method == 'post':
             response = self._post_response(url,
                                            auth=HTTPBasicAuth(self.username, self.password),
                                            headers={"Accept": "application/itemdata"},
-                                           json=json)
+                                           json=json,
+                                           timeout=9)
         else:
             raise RuntimeError("Method needs to be GET or POST")
 
@@ -175,7 +177,7 @@ class DecosJoinConnection:
         return zaken
 
     def get_zaken(self, kind, identifier):
-        """ Get all zaken for a bsn. """
+        """ Get all zaken for a kind ['bsn' or 'kvk']. """
         zaken = []
         user_keys = self._get_user_keys(kind, identifier)
 
