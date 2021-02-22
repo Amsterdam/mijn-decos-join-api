@@ -194,7 +194,7 @@ class DecosJoinConnection:
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def list_documents(self, zaak_id, bsn):
-        url = f"{self.api_url}items/{zaak_id}/DOCUMENTS?select=title,sequence,id,text39,text40,text41"
+        url = f"{self.api_url}items/{zaak_id}/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key"
         res_json = self._get(url)
 
         if log_raw:
