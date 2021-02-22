@@ -216,9 +216,11 @@ class DecosJoinConnection:
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
 
-                if f['text39'] == "Definitief" \
-                        and f['text40'] in ["Openbaar", "Beperkt openbaar"] \
-                        and f['text41'] != 'Nvt':
+                if (
+                        f['text39'].lower() == "definitief"
+                        and f['text40'].lower() in ["openbaar", "beperkt openbaar"]
+                        and f['text41'].lower() != 'nvt'
+                ):
                     document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
                 new_docs.append(document_meta_data)
 
