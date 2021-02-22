@@ -46,14 +46,15 @@ class DecosJoinConnection:
         else:
             raise RuntimeError("Method needs to be GET or POST")
 
+        if log_raw:
+            print("status", response.status_code, url)
+            print(">>", response.content)
+
         if response.status_code == 200:
             json = response.json()
             # print("response\n", json)
             return json
         else:
-            if log_raw:
-                print("status", response.status_code, url)
-                print(">>", response.content)
             raise DecosJoinConnectionError(response.status_code)
 
     def search_query(self, bsn: str, book_key: str):
@@ -127,8 +128,6 @@ class DecosJoinConnection:
 
                 new_zaak = _get_fields(fields, zaak)
 
-                new_zaak['documentsUrl'] = f"/api/decosjoin/listdocuments/{encrypt(zaak['key'], user_identifier)}"
-
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEndInclusive']:
                     new_zaak['dateEndInclusive'] = new_zaak['dateFrom']
@@ -195,8 +194,7 @@ class DecosJoinConnection:
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def list_documents(self, zaak_id, bsn):
-        return []  # disabled for now.
-        url = f"{self.api_url}items/{zaak_id}/DOCUMENTS"
+        url = f"{self.api_url}items/{zaak_id}/DOCUMENTS?select=title,sequence,id,text39,text40,text41"
         res_json = self._get(url)
 
         if log_raw:
@@ -215,7 +213,11 @@ class DecosJoinConnection:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
-                document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
+
+                if f['text39'] == "Definitief" \
+                        and f['text40'] in ["Openbaar", "Beperkt openbaar"] \
+                        and f['text41'] != 'Nvt':
+                    document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
                 new_docs.append(document_meta_data)
 
         new_docs.sort(key=lambda x: x['sequence'])
