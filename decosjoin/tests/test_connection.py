@@ -34,16 +34,28 @@ class ConnectionTests(TestCase):
 
     def test_list_documents(self):
         documents = self.connection.list_documents('ZAAKKEY1', "111222333")
-        self.assertEqual(len(documents), 0)
-        # self.assertEqual(len(documents), 9)
-        # self.assertEqual(documents[0]['sequence'], 1)
-        # self.assertEqual(documents[1]['sequence'], 2)
-        #
-        # doc0 = documents[0]
-        # self.assertEqual(doc0['title'], 'Training voorbeelddocument.docx')
-        # self.assertEqual(doc0['sequence'], 1)
-        # self.assertEqual(doc0['id'], 'D/1')
-        # self.assertTrue(doc0['url'].startswith('/api/decosjoin/document/'))
+        self.assertEqual(len(documents), 9)
+        self.assertEqual(documents[0]['sequence'], 1)
+        self.assertEqual(documents[1]['sequence'], 2)
+
+        doc0 = documents[0]
+        self.assertEqual(doc0['title'], 'Training voorbeelddocument.docx')
+        self.assertEqual(doc0['sequence'], 1)
+        self.assertEqual(doc0['id'], 'D/1')
+        self.assertTrue(doc0['url'].startswith('/api/decosjoin/document/'))
+
+        # check exclusions
+        doc6 = documents[6]
+        self.assertEqual(doc6['sequence'], 7)
+        self.assertFalse(hasattr(doc6, 'url'))
+
+        doc7 = documents[7]
+        self.assertEqual(doc7['sequence'], 8)
+        self.assertFalse(hasattr(doc7, 'url'))
+
+        doc8 = documents[8]
+        self.assertEqual(doc8['sequence'], 9)
+        self.assertFalse(hasattr(doc8, 'url'))
 
     def test_get_document(self):
         documents = self.connection.get_document('DOCUMENTKEY01')

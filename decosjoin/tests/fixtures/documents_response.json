@@ -5,20 +5,12 @@
       "key": "DOCUMENTKEY01",
       "fields": {
         "sequence": 1.0,
-        "document_date": "2020-06-17T00:00:00",
         "subject1": "Training voorbeelddocument.docx",
-        "company": "test",
-        "text2": "Z/20/1234567",
         "mark": "D/1",
-        "received_date": "2020-06-17T00:00:00",
-        "processed": true,
-        "date3": "2020-06-17T00:00:00",
-        "text10": "Naam",
-        "barcode": "barcode1",
-        "email1": "mail@example.com",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "Definitief",
+        "text40": "Openbaar",
+        "text41": "Something"
       },
       "links": [
         {
@@ -31,20 +23,12 @@
       "key": "DOCUMENTKEY02",
       "fields": {
         "sequence": 2.0,
-        "document_date": "2020-06-17T00:00:00",
         "subject1": "Samenvatting-.pdf",
-        "company": "test",
-        "text2": "Z/20/1234567",
         "mark": "D/2",
-        "received_date": "2020-06-17T00:00:00",
-        "processed": true,
-        "date3": "2020-06-17T00:00:00",
-        "text10": "Naam",
-        "barcode": "barcode2",
-        "email1": "mail@example.com",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "Definitief",
+        "text40": "Openbaar",
+        "text41": "Something"
       },
       "links": [
         {
@@ -57,20 +41,12 @@
       "key": "DOCUMENTKEY03",
       "fields": {
         "sequence": 8.0,
-        "document_date": "2020-06-24T00:00:00",
-        "company": "test",
-        "text2": "Z/20/1234567",
         "mark": "D/3",
-        "received_date": "2020-06-24T00:00:00",
         "processed": false,
-        "text10": "Naam",
-        "barcode": "barcode3",
-        "city": "AMSTERDAM",
-        "zipcode": "1011 PN",
-        "mailaddress": "Amstel 1",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "Definitief",
+        "text40": "Openbaar",
+        "text41": "Nvt"
       },
       "links": [
         {
@@ -83,16 +59,11 @@
       "key": "DOCUMENTKEY04",
       "fields": {
         "sequence": 7.0,
-        "document_date": "2020-06-24T00:00:00",
-        "text2": "Z/20/1234567",
         "mark": "D/4",
-        "received_date": "2020-06-24T00:00:00",
-        "processed": false,
-        "text10": "Naam",
-        "barcode": "barcode4",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "NIET Definitief",
+        "text40": "Openbaar",
+        "text41": "Something"
       },
       "links": [
         {
@@ -105,25 +76,12 @@
       "key": "DOCUMENTKEY05",
       "fields": {
         "sequence": 3.0,
-        "document_date": "2020-06-17T00:00:00",
         "subject1": "SB RVV ontheffing hele stad",
-        "company": "test",
-        "text2": "Z/20/1234567",
         "mark": "D/5",
-        "received_date": "2020-06-17T00:00:00",
-        "processed": true,
-        "date3": "2020-06-17T00:00:00",
-        "text10": "Naam",
-        "barcode": "barcode5",
-        "email1": "mail@example.com",
-        "city": "Amsterdam",
-        "zipcode": "1102 PN",
-        "mailaddress": "Amstel 1",
-        "text3": "Email",
-        "title": "Afhandelen",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "Definitief",
+        "text40": "Openbaar",
+        "text41": "Something"
       },
       "links": [
         {
@@ -136,22 +94,11 @@
       "key": "DOCUMENTKEY06",
       "fields": {
         "sequence": 5.0,
-        "document_date": "2020-06-23T00:00:00",
-        "company": "test",
-        "text2": "Z/20/1234567",
         "mark": "D/6",
-        "received_date": "2020-06-23T00:00:00",
-        "processed": false,
-        "text10": "Naam",
-        "barcode": "barcode6",
-        "email1": "mail@example.com",
-        "city": "Amsterdam",
-        "zipcode": "1102 PN",
-        "mailaddress": "Amstel 1",
-        "text3": "Email",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "Definitief",
+        "text40": "Openbaar",
+        "text41": "Something"
       },
       "links": [
         {
@@ -164,24 +111,12 @@
       "key": "DOCUMENTKEY07",
       "fields": {
         "sequence": 4.0,
-        "document_date": "2020-06-17T00:00:00",
         "subject1": "SB RVV ontheffing hele stad",
-        "company": "test",
-        "text2": "Z/20/1234567",
         "mark": "D/7",
-        "received_date": "2020-06-17T00:00:00",
-        "processed": true,
-        "date3": "2020-06-17T00:00:00",
-        "text10": "Naam",
-        "barcode": "barcode7",
-        "email1": "mail@example.com",
-        "city": "Amsterdam",
-        "zipcode": "1102 PN",
-        "mailaddress": "Amstel 1",
-        "title": "Afhandelen",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "Definitief",
+        "text40": "Openbaar",
+        "text41": "Something"
       },
       "links": [
         {
@@ -194,16 +129,11 @@
       "key": "DOCUMENTKEY08",
       "fields": {
         "sequence": 6.0,
-        "document_date": "2020-06-24T00:00:00",
-        "text2": "Z/20/1234567",
         "mark": "D/8",
-        "received_date": "2020-06-24T00:00:00",
-        "processed": false,
-        "text10": "Naam",
-        "barcode": "barcode8",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "Definitief",
+        "text40": "Openbaar",
+        "text41": "Something"
       },
       "links": [
         {
@@ -216,20 +146,11 @@
       "key": "DOCUMENTKEY09",
       "fields": {
         "sequence": 9.0,
-        "document_date": "2020-06-24T00:00:00",
-        "company": "test",
-        "text2": "Z/20/1234567",
         "mark": "D/9",
-        "received_date": "2020-06-24T00:00:00",
-        "processed": false,
-        "text10": "Naam",
-        "barcode": "barcode9",
-        "city": "AMSTERDAM",
-        "zipcode": "1011 PN",
-        "mailaddress": "Amstel 1",
         "itemtype_key": "DOCUMENT",
-        "parentKey": "",
-        "itemrel_key": ""
+        "text39": "Definitief",
+        "text40": "niet Openbaar",
+        "text41": "Something"
       },
       "links": [
         {
