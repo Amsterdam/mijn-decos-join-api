@@ -128,6 +128,8 @@ class DecosJoinConnection:
 
                 new_zaak = _get_fields(fields, zaak)
 
+                new_zaak['documentsUrl'] = f"/api/decosjoin/listdocuments/{encrypt(zaak['key'], user_identifier)}"
+
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEndInclusive']:
                     new_zaak['dateEndInclusive'] = new_zaak['dateFrom']
