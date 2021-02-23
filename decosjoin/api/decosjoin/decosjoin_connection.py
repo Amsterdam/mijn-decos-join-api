@@ -220,7 +220,7 @@ class DecosJoinConnection:
                         and f['text40'].lower() in ["openbaar", "beperkt openbaar"]\
                         and f['text41'].lower() != 'nvt':
                     document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
-                new_docs.append(document_meta_data)
+                    new_docs.append(document_meta_data)
 
         new_docs.sort(key=lambda x: x['sequence'])
 
