@@ -38,7 +38,6 @@ class ConnectionTests(TestCase):
         self.assertEqual(documents[0]['sequence'], 1)
         self.assertEqual(documents[1]['sequence'], 2)
 
-
         doc0 = documents[0]
         self.assertEqual(doc0['title'], 'Training voorbeelddocument.docx')
         self.assertEqual(doc0['sequence'], 1)
