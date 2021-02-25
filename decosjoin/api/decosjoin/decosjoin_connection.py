@@ -195,6 +195,16 @@ class DecosJoinConnection:
         zaken = self._transform(zaken, identifier)
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
+    def get_document_data(self, doc_id: str):
+        res_json = self._get(f"{self.api_url}items/{doc_id}")
+
+        fields = [
+            {"name": "filename", "from": "subject", "parser": to_string}
+        ]
+
+        document_meta_data = _get_fields(fields, res_json)
+        return document_meta_data
+
     def list_documents(self, zaak_id, bsn):
         url = f"{self.api_url}items/{zaak_id}/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key"
         res_json = self._get(url)
@@ -204,7 +214,8 @@ class DecosJoinConnection:
             pprint(res_json)
 
         fields = [
-            {"name": 'title', "from": 'subject1', "parser": to_string},  # file name
+            # {"name": 'filename', "from": 'subject1', "parser": to_string},
+            {"name": 'title', "from": 'text41', "parser": to_string},
             {"name": 'sequence', "from": 'sequence', "parser": to_int},
             {"name": 'id', "from": 'mark', "parser": to_string},
         ]
@@ -214,11 +225,15 @@ class DecosJoinConnection:
         for item in res_json['content']:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
+                doc_data = self.get_document_data(item['key'])
+
                 document_meta_data = _get_fields(fields, item)
+                document_meta_data['filename'] = doc_data['filename']
 
                 if f['text39'].lower() == "definitief"\
                         and f['text40'].lower() in ["openbaar", "beperkt openbaar"]\
-                        and f['text41'].lower() != 'nvt':
+                        and f['text41'].lower() != 'nvt'\
+                        and document_meta_data['filename'].lower()[-4:] == '.pdf':
                     document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
                     new_docs.append(document_meta_data)
 

@@ -1,0 +1,38 @@
+{
+  "key": "documenthexkey111111111111111111",
+  "fields": {
+    "documentDate": "2020-11-23T00:00:00",
+    "mark": "D/2292060",
+    "dateReceived": "2020-11-23T00:00:00",
+    "subject": "Samenvatting-11111111-1111-1111-1111-111111111111.pdf",
+    "identifier": 2292060.0,
+    "isProcessed": false,
+    "parentKey": "33333333333333333333333333333333"
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey111111111111111111"
+    },
+    {
+      "rel": "itemprofile",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/itemprofiles/hexkey11111111111111111111111111|hexkey222222222222222222222222/form"
+    },
+    {
+      "rel": "memo",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey111111111111111111/memo"
+    },
+    {
+      "rel": "address",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey111111111111111111/addresses"
+    },
+    {
+      "rel": "blob",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey111111111111111111/blobs"
+    },
+    {
+      "rel": "folder",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey111111111111111111/folders"
+    }
+  ]
+}

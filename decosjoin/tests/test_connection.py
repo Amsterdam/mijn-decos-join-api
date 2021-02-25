@@ -34,19 +34,19 @@ class ConnectionTests(TestCase):
 
     def test_list_documents(self):
         documents = self.connection.list_documents('ZAAKKEY1', "111222333")
-        self.assertEqual(len(documents), 6)
+        self.assertEqual(len(documents), 2)
         self.assertEqual(documents[0]['sequence'], 1)
-        self.assertEqual(documents[1]['sequence'], 2)
+        self.assertEqual(documents[1]['sequence'], 3)
 
         doc0 = documents[0]
-        self.assertEqual(doc0['title'], 'Training voorbeelddocument.docx')
+        self.assertEqual(doc0['filename'], 'Samenvatting-11111111-1111-1111-1111-111111111111.pdf')
         self.assertEqual(doc0['sequence'], 1)
         self.assertEqual(doc0['id'], 'D/1')
         self.assertTrue(doc0['url'].startswith('/api/decosjoin/document/'))
 
         # check exclusions
         sequence_numbers = [d['sequence'] for d in documents]
-        self.assertEqual([1, 2, 3, 4, 5, 6], sequence_numbers)
+        self.assertEqual([1, 3], sequence_numbers)
 
         self.assertNotIn(7, sequence_numbers)
         self.assertNotIn(8, sequence_numbers)

@@ -1,7 +1,8 @@
 from decosjoin.tests.fixtures.data import get_zaken_response, \
     get_zaken_response_2, get_zaken_response_empty, get_search_addresses_bsn_111222333_response_empty, \
     get_search_addresses_bsn_111222333_response, get_search_addresses_bsn_111222333_response_2, \
-    get_zaken_resposne_2_part_2, get_documents_response, get_document, get_blob_response
+    get_zaken_resposne_2_part_2, get_documents_response, get_document, get_blob_response, get_document_response, \
+    get_document2_response
 
 
 def get_response_mock(self, *args, **kwargs):
@@ -73,6 +74,42 @@ mocked_get_urls_tuple = (
     (
         "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01/blobs",
         get_blob_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01",
+        get_document_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY02",
+        get_document2_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY03",
+        get_document2_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY04",
+        get_document2_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY05",
+        get_document_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY06",
+        get_document2_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY07",
+        get_document2_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY08",
+        get_document2_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY09",
+        get_document2_response()
     )
 )
 mocked_get_urls = dict(mocked_get_urls_tuple)

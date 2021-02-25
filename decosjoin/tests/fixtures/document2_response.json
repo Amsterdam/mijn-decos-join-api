@@ -1,0 +1,38 @@
+{
+  "key": "documenthexkey222222222222222222",
+  "fields": {
+    "documentDate": "2020-11-23T00:00:00",
+    "mark": "D/2292059",
+    "dateReceived": "2020-11-23T00:00:00",
+    "subject": "blablabla.txt",
+    "identifier": 2292059.0,
+    "isProcessed": false,
+    "parentKey": "44444444444444444444444444444444"
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey222222222222222222"
+    },
+    {
+      "rel": "itemprofile",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/itemprofiles/55555555555555555555555555555555|66666666666666666666666666666666/form"
+    },
+    {
+      "rel": "memo",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey222222222222222222/memo"
+    },
+    {
+      "rel": "address",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey222222222222222222/addresses"
+    },
+    {
+      "rel": "blob",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey222222222222222222/blobs"
+    },
+    {
+      "rel": "folder",
+      "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/documenthexkey222222222222222222/folders"
+    }
+  ]
+}
