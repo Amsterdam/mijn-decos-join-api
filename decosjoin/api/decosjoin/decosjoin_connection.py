@@ -218,6 +218,9 @@ class DecosJoinConnection:
             {"name": 'title', "from": 'text41', "parser": to_string},
             {"name": 'sequence', "from": 'sequence', "parser": to_int},
             {"name": 'id', "from": 'mark', "parser": to_string},
+            {"name": "text39", "from": "text39", "parser": to_string_or_empty_string},
+            {"name": "text40", "from": "text40", "parser": to_string_or_empty_string},
+            {"name": "text41", "from": "text41", "parser": to_string_or_empty_string},
         ]
 
         new_docs = []
@@ -230,11 +233,15 @@ class DecosJoinConnection:
                 document_meta_data = _get_fields(fields, item)
                 document_meta_data['filename'] = doc_data['filename']
 
-                if f.get('text39', '').lower() == "definitief"\
-                        and f.get('text40', '').lower() in ["openbaar", "beperkt openbaar"]\
-                        and f.get('text41', '').lower() != 'nvt'\
-                        and document_meta_data.get('filename', '').lower()[-4:] == '.pdf':
+                if document_meta_data['text39'].lower() == "definitief"\
+                        and document_meta_data['text40'].lower() in ["openbaar", "beperkt openbaar"]\
+                        and document_meta_data['text41'].lower() != 'nvt'\
+                        and document_meta_data['filename'].lower()[-4:] == '.pdf':
                     document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
+
+                    del(document_meta_data['text39'])
+                    del(document_meta_data['text40'])
+                    del(document_meta_data['text41'])
                     new_docs.append(document_meta_data)
 
         new_docs.sort(key=lambda x: x['sequence'])
@@ -376,6 +383,12 @@ def to_int(value):
 def to_string(value):
     if not value:
         return None
+    return str(value).strip()
+
+
+def to_string_or_empty_string(value):
+    if not value:
+        return ''
     return str(value).strip()
 
 

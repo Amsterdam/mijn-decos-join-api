@@ -158,6 +158,22 @@
           "href": "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY09"
         }
       ]
+    },{
+      "key": "DOCUMENTKEY09",
+      "fields": {
+        "sequence": 10.0,
+        "mark": "D/9",
+        "itemtype_key": "DOCUMENT",
+        "text39": null,
+        "text40": null,
+        "text41": null
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY09"
+        }
+      ]
     }
   ],
   "links": [
