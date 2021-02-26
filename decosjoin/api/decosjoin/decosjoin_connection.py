@@ -199,7 +199,7 @@ class DecosJoinConnection:
         res_json = self._get(f"{self.api_url}items/{doc_id}")
 
         fields = [
-            {"name": "filename", "from": "subject", "parser": to_string}
+            {"name": "filename", "from": "subject", "parser": to_string_or_empty_string}
         ]
 
         document_meta_data = _get_fields(fields, res_json)
