@@ -230,7 +230,7 @@ class DecosJoinConnection:
                 document_meta_data = _get_fields(fields, item)
                 document_meta_data['filename'] = doc_data['filename']
 
-                if f['text39'].lower() == "definitief"\
+                if f.get('text39', '').lower() == "definitief"\
                         and f.get('text40', '').lower() in ["openbaar", "beperkt openbaar"]\
                         and f.get('text41', '').lower() != 'nvt'\
                         and document_meta_data.get('filename', '').lower()[-4:] == '.pdf':
