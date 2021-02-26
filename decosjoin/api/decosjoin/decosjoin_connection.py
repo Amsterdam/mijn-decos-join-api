@@ -231,8 +231,8 @@ class DecosJoinConnection:
                 document_meta_data['filename'] = doc_data['filename']
 
                 if f['text39'].lower() == "definitief"\
-                        and f['text40'].lower() in ["openbaar", "beperkt openbaar"]\
-                        and f['text41'].lower() != 'nvt'\
+                        and f.get('text40', '').lower() in ["openbaar", "beperkt openbaar"]\
+                        and f.get('text41', '').lower() != 'nvt'\
                         and document_meta_data.get('filename', '').lower()[-4:] == '.pdf':
                     document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
                     new_docs.append(document_meta_data)
