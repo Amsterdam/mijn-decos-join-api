@@ -47,7 +47,7 @@ class DecosJoinConnection:
             raise RuntimeError("Method needs to be GET or POST")
 
         if log_raw:
-            print("status", response.status_code, url)
+            print("\nstatus", response.status_code, url)
             print(">>", response.content)
 
         if response.status_code == 200:
@@ -211,6 +211,7 @@ class DecosJoinConnection:
 
         if log_raw:
             from pprint import pprint
+            print("Documents list")
             pprint(res_json)
 
         fields = [
@@ -228,21 +229,23 @@ class DecosJoinConnection:
         for item in res_json['content']:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
-                doc_data = self.get_document_data(item['key'])
-
                 document_meta_data = _get_fields(fields, item)
-                document_meta_data['filename'] = doc_data['filename']
 
                 if document_meta_data['text39'].lower() == "definitief"\
                         and document_meta_data['text40'].lower() in ["openbaar", "beperkt openbaar"]\
-                        and document_meta_data['text41'].lower() != 'nvt'\
-                        and document_meta_data['filename'].lower()[-4:] == '.pdf':
-                    document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
+                        and document_meta_data['text41'].lower() != 'nvt':
 
-                    del(document_meta_data['text39'])
-                    del(document_meta_data['text40'])
-                    del(document_meta_data['text41'])
-                    new_docs.append(document_meta_data)
+                    doc_data = self.get_document_data(item['key'])
+
+                    document_meta_data['filename'] = doc_data['filename']
+
+                    if document_meta_data['filename'].lower()[-4:] == '.pdf':
+                        document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
+
+                        del(document_meta_data['text39'])
+                        del(document_meta_data['text40'])
+                        del(document_meta_data['text41'])
+                        new_docs.append(document_meta_data)
 
         new_docs.sort(key=lambda x: x['sequence'])
 
