@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: Sample API
+  description: API description in Markdown.
+  version: 1.0.0
+servers:
+  - url: 'https://mijn.amsterdam.nl'
+paths:
+  /decosjoin/getvergunningen:
+    get:
+      summary: Returns a list verguningen.
+      description: Returns a list of vergunningen
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vergunningenlist'
+  /decosjoin/listdocuments/{encrypted_zaak_id}:
+    parameters:
+      - name: encrypted_zaak_id
+        in: path
+        description: fernet encoded string of zaak id
+        schema:
+          type: string
+    get:
+      summary: Returns a list of documents for zaak
+      #      description: ""
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/docomentlist'
+        '400':
+          description: errors
+  /decosjoin/document/{encrypted_doc_id}:
+    parameters:
+      - name: encrypted_doc_id
+        in: path
+        description: fernet encoded string of document id
+        schema:
+          type: string
+    get:
+      summary: Returns a document as http download
+      responses:
+        '200':
+          description: document blob
+  /status/health:
+    get:
+      summary: returns "OK"
+      responses:
+        '200':
+          description: Returns "OK"
+components:
+  schemas:
+    vergunningenlist:
+      type: array
+      items:
+        $ref: '#/components/schemas/vergunning'
+    vergunning:
+      type: object
+      properties:
+        'caseType':
+          type: string
+          example: 'TVM - RVV - Object'
+        'dateEndInclusive':
+          type: string
+          format: date
+          example: '2020-06-16'
+        'dateFrom':
+          type: string
+          format: date
+          example: '2020-06-16'
+        'dateRequest':
+          type: string
+          format: 'date-time'
+          example: '2020-06-08T00:00:00'
+        'identifier':
+          type: string
+          example: 'Z/20/1234567'
+        'isActual':
+          type: bool
+          example: False
+        'kenteken':
+          type: string
+          example: 'aa-11-aa'
+        'location':
+          type: string
+        'decision':
+          type: string
+          example: '?'
+        'dateDecision':
+          type: string
+          format: datetime
+        'status':
+          type: string
+          example: 'Ontvangen'
+        'timeEnd':
+          type: string
+        'timeStart':
+          type: string
+        'title':
+          type: string
+          example: 'SB RVV ontheffing hele stad'
+        documentsUrl:
+          type: string
+          example: '/api/decos/listdocuments/<fernetstring>'
+    docomentlist:
+      type: array
+      items:
+        $ref: '#/components/schemas/document'
+    document:
+      type: object
+      properties:
+        id:
+          type: string
+          example: D/2296393
+        sequence:
+          type: number
+          example: 1
+        title:
+          type: string
+          example: Besluit toekenning
+        url:
+          type: string
+          example: "api/decosjoin/document/<fernetstring>"
