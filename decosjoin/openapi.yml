@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Sample API
-  description: API description in Markdown.
+  title: Decos join koppel api API
+  description: Dit is het koppelstuk tussen mijn amsterdam en decos join
   version: 1.0.0
 servers:
   - url: 'https://mijn.amsterdam.nl'
