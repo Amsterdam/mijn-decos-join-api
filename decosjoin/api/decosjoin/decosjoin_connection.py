@@ -196,7 +196,7 @@ class DecosJoinConnection:
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def get_document_data(self, doc_id: str):
-        res_json = self._get(f"{self.api_url}items/{doc_id}")
+        res_json = self._get(f"{self.api_url}items/{doc_id}?select=subject,bol10")
 
         fields = [
             {"name": "filename", "from": "subject", "parser": to_string_or_empty_string}
@@ -237,9 +237,9 @@ class DecosJoinConnection:
 
                     doc_data = self.get_document_data(item['key'])
 
-                    document_meta_data['filename'] = doc_data['filename']
+                    # document_meta_data['filename'] = doc_data['filename']
 
-                    if document_meta_data['filename'].lower()[-4:] == '.pdf':
+                    if doc_data['bol10']:
                         document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
 
                         del(document_meta_data['text39'])
