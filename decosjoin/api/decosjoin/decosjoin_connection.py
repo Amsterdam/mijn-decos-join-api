@@ -1,3 +1,4 @@
+import logging
 import math
 from datetime import datetime, date, time
 
@@ -11,6 +12,8 @@ from decosjoin.crypto import encrypt
 
 log_raw = False
 page_size = 10
+
+logger = logging.getLogger(__name__)
 
 
 class DecosJoinConnection:
@@ -196,14 +199,18 @@ class DecosJoinConnection:
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def get_document_data(self, doc_id: str):
-        res_json = self._get(f"{self.api_url}items/{doc_id}?select=subject,bol10")
+        res_json = self._get(f"{self.api_url}items/{doc_id}/blob?select=subject,bol10")
 
-        fields = [
-            {"name": "filename", "from": "subject", "parser": to_string_or_empty_string}
-        ]
+        is_pdf = False
+        content = res_json['content']
+        if content:
+            is_pdf = content[0]['fields'].get('bol10', False)
+            if len(content) > 1:
+                logger.error("more than one blob")
 
-        document_meta_data = _get_fields(fields, res_json)
-        return document_meta_data
+        return {
+            'is_pdf': is_pdf
+        }
 
     def list_documents(self, zaak_id, bsn):
         url = f"{self.api_url}items/{zaak_id}/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key"
@@ -237,9 +244,7 @@ class DecosJoinConnection:
 
                     doc_data = self.get_document_data(item['key'])
 
-                    # document_meta_data['filename'] = doc_data['filename']
-
-                    if doc_data['bol10']:
+                    if doc_data['is_pdf']:
                         document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
 
                         del(document_meta_data['text39'])
