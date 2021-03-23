@@ -204,7 +204,7 @@ class DecosJoinConnection:
         is_pdf = False
         content = res_json['content']
         if content:
-            is_pdf = content[0]['fields'].get('bol10', False)
+            is_pdf = content[-1]['fields'].get('bol10', False)
             if len(content) > 1:
                 logger.error("more than one blob")
 
