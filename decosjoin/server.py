@@ -60,7 +60,6 @@ def get_kvk_number_from_request(request):
     # Decode the BSN from the request with the TMA certificate
     attribs = get_e_herkenning_attribs(request, tma_certificate)
     kvk = attribs[HR_KVK_NUMBER_KEY]
-    print("!kvk", attribs, kvk)
     return kvk
 
 

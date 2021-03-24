@@ -1,4 +1,3 @@
-import logging
 import math
 from datetime import datetime, date, time
 
@@ -12,8 +11,6 @@ from decosjoin.crypto import encrypt
 
 log_raw = False
 page_size = 10
-
-logger = logging.getLogger(__name__)
 
 
 class DecosJoinConnection:
@@ -51,6 +48,7 @@ class DecosJoinConnection:
 
         if log_raw:
             print("\nstatus", response.status_code, url)
+            print("\npost", json)
             print(">>", response.content)
 
         if response.status_code == 200:
@@ -199,18 +197,21 @@ class DecosJoinConnection:
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def get_document_data(self, doc_id: str):
-        res_json = self._get(f"{self.api_url}items/{doc_id}/blob?select=subject,bol10")
+        res_json = self._get(f"{self.api_url}items/{doc_id}/blob?select=bol10")
 
-        is_pdf = False
         content = res_json['content']
         if content:
-            is_pdf = content[-1]['fields'].get('bol10', False)
-            if len(content) > 1:
-                logger.error("more than one blob")
-
-        return {
-            'is_pdf': is_pdf
-        }
+            for i in content.reverse[::-1]:
+                is_pdf = i['fields'].get('bol10', False)
+                if is_pdf:
+                    return {
+                        'is_pdf': is_pdf,
+                        'doc_key:': i['key']
+                    }
+        else:
+            return {
+                'is_pdf': False,
+            }
 
     def list_documents(self, zaak_id, bsn):
         url = f"{self.api_url}items/{zaak_id}/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key"
@@ -222,7 +223,6 @@ class DecosJoinConnection:
             pprint(res_json)
 
         fields = [
-            # {"name": 'filename', "from": 'subject1', "parser": to_string},
             {"name": 'title', "from": 'text41', "parser": to_string},
             {"name": 'sequence', "from": 'sequence', "parser": to_int},
             {"name": 'id', "from": 'mark', "parser": to_string},
@@ -238,14 +238,16 @@ class DecosJoinConnection:
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
 
-                if document_meta_data['text39'].lower() == "definitief"\
-                        and document_meta_data['text40'].lower() in ["openbaar", "beperkt openbaar"]\
+                if document_meta_data['text39'].lower() == "definitief" \
+                        and document_meta_data['text40'].lower() in ["openbaar", "beperkt openbaar"] \
                         and document_meta_data['text41'].lower() != 'nvt':
 
                     doc_data = self.get_document_data(item['key'])
 
+                    # document_meta_data['filename'] = doc_data['filename']
+
                     if doc_data['is_pdf']:
-                        document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(item['key'], bsn)}"
+                        document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(doc_data['doc_key'], bsn)}"
 
                         del(document_meta_data['text39'])
                         del(document_meta_data['text40'])
