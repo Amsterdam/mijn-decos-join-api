@@ -1,8 +1,8 @@
 from decosjoin.tests.fixtures.data import get_zaken_response, \
     get_zaken_response_2, get_zaken_response_empty, get_search_addresses_bsn_111222333_response_empty, \
     get_search_addresses_bsn_111222333_response, get_search_addresses_bsn_111222333_response_2, \
-    get_zaken_resposne_2_part_2, get_documents_response, get_document, get_blob_response, get_document_response, \
-    get_document2_response
+    get_zaken_resposne_2_part_2, get_documents_response, get_document, get_blobs_response, get_document_response, \
+    get_document2_response, get_blob_response, get_blob_response_no_pdf
 
 
 def get_response_mock(self, *args, **kwargs):
@@ -73,7 +73,31 @@ mocked_get_urls_tuple = (
     ),
     (
         "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01/blobs",
+        get_blobs_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01/blob?select=bol10",
+        get_blob_response_no_pdf()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY02/blob?select=bol10",
         get_blob_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY05/blob?select=bol10",
+        get_blob_response_no_pdf()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY06/blob?select=bol10",
+        get_blob_response()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY07/blob?select=bol10",
+        get_blob_response_no_pdf()
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY08/blob?select=bol10",
+        get_blob_response_no_pdf()
     ),
     (
         "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01",

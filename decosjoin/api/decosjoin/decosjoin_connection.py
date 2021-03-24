@@ -201,17 +201,16 @@ class DecosJoinConnection:
 
         content = res_json['content']
         if content:
-            for i in content.reverse[::-1]:
+            for i in content[::-1]:
                 is_pdf = i['fields'].get('bol10', False)
                 if is_pdf:
                     return {
                         'is_pdf': is_pdf,
-                        'doc_key:': i['key']
+                        'doc_key': i['key']
                     }
-        else:
-            return {
-                'is_pdf': False,
-            }
+        return {
+            'is_pdf': False,
+        }
 
     def list_documents(self, zaak_id, bsn):
         url = f"{self.api_url}items/{zaak_id}/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key"

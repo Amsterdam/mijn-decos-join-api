@@ -45,7 +45,15 @@ def get_documents_response():
 
 
 def get_blob_response():
-    return _load_fixture('blob_response.json')
+    return _load_fixture("blob_response.json")
+
+
+def get_blob_response_no_pdf():
+    return _load_fixture("blob_response_no_pdf.json")
+
+
+def get_blobs_response():
+    return _load_fixture('blobs_response.json')
 
 
 def get_document_response():
