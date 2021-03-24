@@ -100,11 +100,11 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})
 
-    @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
-    def test_get_document(self):
-        response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}", headers=self._saml_headers())
-        self.assertEqual(response.data, get_document())
-        self.assertEqual(response.headers['Content-Type'], 'application/pdf')
+    # @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
+    # def test_get_document(self):
+    #     response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}", headers=self._saml_headers())
+    #     self.assertEqual(response.data, get_document())
+    #     self.assertEqual(response.headers['Content-Type'], 'application/pdf')
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     def test_get_document_unencrypted(self):
