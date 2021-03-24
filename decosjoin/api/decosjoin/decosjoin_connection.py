@@ -258,14 +258,15 @@ class DecosJoinConnection:
         return new_docs
 
     def get_document(self, document_id):
-        url = f"{self.api_url}items/{document_id}/blobs"
-        document_meta = self._get(url)
+        # url = f"{self.api_url}items/{document_id}/blobs"
+        # document_meta = self._get(url)
 
-        if log_raw:
-            from pprint import pprint
-            pprint(document_meta)
+        # if log_raw:
+        #     from pprint import pprint
+        #     pprint(document_meta)
 
-        url_blob_content = f"{self.api_url}items/{document_meta['content'][0]['key']}/content"
+        # url_blob_content = f"{self.api_url}items/{document_meta['content'][0]['key']}/content"
+        url_blob_content = f"{self.api_url}items/{document_id}/content"
 
         document_response = self._get_response(
             url_blob_content,
