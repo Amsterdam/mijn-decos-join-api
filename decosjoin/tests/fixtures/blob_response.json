@@ -1,26 +1,37 @@
 {
-  "content": [
-    {
-      "fields": {
-      },
-      "key": "BLOBKEY01",
-      "links": [
+    "count": 2,
+    "content": [
         {
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/BLOBKEY01",
-          "rel": "self"
+            "key": "11111111111111111111111111111111",
+            "fields": {},
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/11111111111111111111111111111111"
+                }
+            ]
         },
         {
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/BLOBKEY01/content",
-          "rel": "content"
-        },
-        {
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/BLOBKEY01/thumbnail",
-          "rel": "thumbnail"
+            "key": "22222222222222222222222222222222",
+            "fields": {
+                "bol10": true
+            },
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/22222222222222222222222222222222"
+                }
+            ]
         }
-      ]
-    }
-  ],
-  "count": 1,
-  "links": [
-  ]
+    ],
+    "links": [
+        {
+            "rel": "itemprofile",
+            "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/itemprofiles/????????????????????????????????|????????????????????????????????/list"
+        },
+        {
+            "rel": "filetypefilters",
+            "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/????????????????????????????????/filetypefilters"
+        }
+    ]
 }
