@@ -7,7 +7,7 @@ from tma_saml.for_tests.cert_and_key import server_crt
 
 from decosjoin.crypto import encrypt
 from decosjoin.server import app
-from decosjoin.tests.fixtures.data import get_document
+# from decosjoin.tests.fixtures.data import get_document
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
