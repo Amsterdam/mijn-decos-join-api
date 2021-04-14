@@ -42,9 +42,6 @@ class DateParserTests(TestCase):
         self.assertEqual(to_time(time(1, 0, 0)), time(1, 0, 0))
         self.assertEqual(to_time(datetime(2020, 6, 16, 1, 1, 1)), time(1, 1, 1))
 
-        print(to_time("09:00"))
-        print(to_time("09.00"))
-
         with self.assertRaises(ParseError):
             to_time(1)
 
