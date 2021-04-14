@@ -243,8 +243,6 @@ class DecosJoinConnection:
 
                     doc_data = self.get_document_data(item['key'])
 
-                    # document_meta_data['filename'] = doc_data['filename']
-
                     if doc_data['is_pdf']:
                         document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(doc_data['doc_key'], bsn)}"
 
@@ -258,14 +256,6 @@ class DecosJoinConnection:
         return new_docs
 
     def get_document(self, document_id):
-        # url = f"{self.api_url}items/{document_id}/blobs"
-        # document_meta = self._get(url)
-
-        # if log_raw:
-        #     from pprint import pprint
-        #     pprint(document_meta)
-
-        # url_blob_content = f"{self.api_url}items/{document_meta['content'][0]['key']}/content"
         url_blob_content = f"{self.api_url}items/{document_id}/content"
 
         document_response = self._get_response(
