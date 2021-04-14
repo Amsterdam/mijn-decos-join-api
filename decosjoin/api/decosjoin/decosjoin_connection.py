@@ -212,8 +212,8 @@ class DecosJoinConnection:
             'is_pdf': False,
         }
 
-    def list_documents(self, zaak_id, bsn):
-        url = f"{self.api_url}items/{zaak_id}/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key"
+    def list_documents(self, zaak_id, identifier):
+        url = f"{self.api_url}items/{zaak_id}/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key?top={page_size}"
         res_json = self._get(url)
 
         if log_raw:
@@ -244,7 +244,7 @@ class DecosJoinConnection:
                     doc_data = self.get_document_data(item['key'])
 
                     if doc_data['is_pdf']:
-                        document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(doc_data['doc_key'], bsn)}"
+                        document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(doc_data['doc_key'], identifier)}"
 
                         del(document_meta_data['text39'])
                         del(document_meta_data['text40'])
