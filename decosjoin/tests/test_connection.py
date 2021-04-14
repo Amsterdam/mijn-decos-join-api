@@ -19,8 +19,11 @@ class ConnectionTests(TestCase):
         user_key = self.connection._get_user_keys("bsn", "111222333")
         self.assertEqual(user_key, ['32charsstringxxxxxxxxxxxxxxxxxxx', '32charsstringxxxxxxxxxxxxxxxxxx2', '32charsstringxxxxxxxxxxxxxxxxxx3'])
 
+    @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
+        from pprint import pprint
+        pprint(zaken)
         self.assertEqual(zaken[8]["identifier"], "Z/20/1234567")
         self.assertEqual(zaken[7]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents
@@ -32,6 +35,7 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[5]['decision'], 'Verleend')
         self.assertEqual(zaken[5]['dateDecision'], date(2020, 6, 16))
 
+    @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_list_documents(self):
         documents = self.connection.list_documents('ZAAKKEY1', "111222333")
         self.assertEqual(len(documents), 2)

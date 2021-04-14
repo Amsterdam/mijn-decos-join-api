@@ -57,6 +57,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
     @patch("decosjoin.server.DecosJoinConnection._post_response", post_response_mock)
+    @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_getvergunningen(self):
         response = self._client_get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 200, response.data)
@@ -77,6 +78,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(response.json, {'message': 'Missing SAML token', 'status': 'ERROR'})
 
     @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
+    @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_listdocuments(self):
         response = self._client_get(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}")
         data = response.json['content']
