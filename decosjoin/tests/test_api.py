@@ -96,7 +96,6 @@ class ApiTests(FlaskServerTMATestCase):
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_listdocuments_kvk(self):
         response = self._client_get_kvk(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY2', self.TEST_KVK)}")
-        print(response.data)
         data = response.json['content']
         self.assertEqual(len(data), 2)
         self.assertTrue(data[0]['url'].startswith("/api/decosjoin/document/"))

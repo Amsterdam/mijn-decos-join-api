@@ -192,12 +192,12 @@ class DecosJoinConnection:
     def get_all_pages(self, url):
         """ Get 'content' from all pages for the provided url """
 
-        # fetch one. to get the count
-        if '?' in url:
+        if '?' in url:  # 'proper' url arguments...
             url = f'{url}&top={page_size}'
         else:
             url = f'{url}?top={page_size}'
         items = []
+        # fetch one. to get the count
         res = self._get_page(url)
 
         end = math.ceil(res['count'] / page_size) * page_size
