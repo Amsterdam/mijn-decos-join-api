@@ -64,11 +64,11 @@ mocked_get_urls_tuple = (
         get_zaken_response_empty()
     ),
     (
-        "http://localhost/decosweb/aspx/api/v1/items/ZAAKKEY1/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key?top=10",
+        "http://localhost/decosweb/aspx/api/v1/items/ZAAKKEY1/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key&top=10",
         get_documents_response()
     ),
     (
-        "http://localhost/decosweb/aspx/api/v1/items/ZAAKKEY2/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key?top=10",
+        "http://localhost/decosweb/aspx/api/v1/items/ZAAKKEY2/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key&top=10",
         get_documents_response()
     ),
     (
