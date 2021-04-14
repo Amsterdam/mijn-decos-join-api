@@ -20,6 +20,7 @@ TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 @patch("decosjoin.server.get_decosjoin_adres_boeken", lambda: {'bsn': ["hexkey32chars000000000000000BSN1", "hexkey32chars000000000000000BSN2"], 'kvk': ['hexkey32chars0000000000000000KVK']})
 class ApiTests(FlaskServerTMATestCase):
     TEST_BSN = "111222333"
+    TEST_KVK = "90001354"  # test kvk taken from kvk website
 
     def _expected_zaak(self):
         return {
@@ -43,8 +44,14 @@ class ApiTests(FlaskServerTMATestCase):
     def _saml_headers(self):
         return self.add_digi_d_headers(self.TEST_BSN)
 
+    def _saml_headers_kvk(self):
+        return self.add_e_herkenning_headers(self.TEST_KVK)
+
     def _client_get(self, location):
         return self.client.get(location, headers=self._saml_headers())
+
+    def _client_get_kvk(self, location):
+        return self.client.get(location, headers=self._saml_headers_kvk())
 
     def setUp(self):
         """ Setup app for testing """
@@ -81,6 +88,15 @@ class ApiTests(FlaskServerTMATestCase):
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_listdocuments(self):
         response = self._client_get(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}")
+        data = response.json['content']
+        self.assertEqual(len(data), 2)
+        self.assertTrue(data[0]['url'].startswith("/api/decosjoin/document/"))
+
+    @patch("decosjoin.server.DecosJoinConnection._get_response", get_response_mock)
+    @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
+    def test_listdocuments_kvk(self):
+        response = self._client_get_kvk(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY2', self.TEST_KVK)}")
+        print(response.data)
         data = response.json['content']
         self.assertEqual(len(data), 2)
         self.assertTrue(data[0]['url'].startswith("/api/decosjoin/document/"))

@@ -135,14 +135,15 @@ def list_documents(encrypted_zaak_id):
 def get_document(encrypted_doc_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
+
     try:
-        bsn = get_bsn_from_request(request)
-        doc_id = decrypt(encrypted_doc_id, bsn)
+        kind, identifier = _get_kind_and_identifier_or_error(request)
+    except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
+        return e.message, e.status_code
+
+    try:
+        doc_id = decrypt(encrypted_doc_id, identifier)
         document = connection.get_document(doc_id)
-    except tma_saml.InvalidBSNException:
-        return {"status": "ERROR", "message": "Invalid BSN"}, 400
-    except SamlVerificationException as e:
-        return {"status": "ERROR", "message": e.args[0]}, 400
     except InvalidToken:
         return {"status": "ERROR", "message": "decryption zaak ID invalid"}, 400
     except Exception as e:
