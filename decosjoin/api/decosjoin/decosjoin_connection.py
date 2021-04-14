@@ -10,7 +10,7 @@ from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseErr
 from decosjoin.crypto import encrypt
 
 log_raw = False
-page_size = 10
+page_size = 30
 
 
 class DecosJoinConnection:
