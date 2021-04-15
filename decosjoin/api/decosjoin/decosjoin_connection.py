@@ -4,6 +4,7 @@ from datetime import datetime, date, time
 import requests
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
+from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
 
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
@@ -192,12 +193,12 @@ class DecosJoinConnection:
     def get_all_pages(self, url):
         """ Get 'content' from all pages for the provided url """
 
-        if '?' in url:  # 'proper' url arguments...
-            url = f'{url}&top={page_size}'
-        else:
-            url = f'{url}?top={page_size}'
+        req = PreparedRequest()
+        req.prepare_url(url, {"top": page_size})  # append top get param
+        url = req.url
+
         items = []
-        # fetch one. to get the count
+        # fetch one page to get the first part of the data and item count
         res = self._get_page(url)
 
         end = math.ceil(res['count'] / page_size) * page_size
