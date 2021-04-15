@@ -6,9 +6,13 @@ from cryptography.fernet import InvalidToken
 from flask import Flask, request, make_response
 from flask.json import JSONEncoder
 from sentry_sdk.integrations.flask import FlaskIntegration
-from tma_saml import get_digi_d_bsn, InvalidBSNException, SamlVerificationException, get_e_herkenning_attribs, \
+from tma_saml import get_digi_d_bsn, SamlVerificationException, get_e_herkenning_attribs, \
     HR_KVK_NUMBER_KEY
 
+import tma_saml
+
+from decosjoin.api.decosjoin.Exception import MissingSamlTokenException, InvalidBSNException, SamlException, \
+    GeneralError
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.config import get_sentry_dsn, get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, \
     get_decosjoin_adres_boeken, get_tma_certificate
@@ -63,8 +67,7 @@ def get_kvk_number_from_request(request):
     return kvk
 
 
-@app.route('/decosjoin/getvergunningen', methods=['GET'])
-def get_vergunningen():
+def _get_kind_and_identifier_or_error(request):
     kind = None
     identifier = None
 
@@ -72,7 +75,7 @@ def get_vergunningen():
         identifier = get_kvk_number_from_request(request)
         kind = 'kvk'
     except SamlVerificationException:
-        return {'status': 'ERROR', 'message': 'Missing SAML token'}, 400
+        raise MissingSamlTokenException
     except KeyError:
         # does not contain kvk number, might still contain BSN
         pass
@@ -81,13 +84,23 @@ def get_vergunningen():
         try:
             identifier = get_bsn_from_request(request)
             kind = 'bsn'
-        except InvalidBSNException:
-            return {"status": "ERROR", "message": "Invalid BSN"}, 400
+        except tma_saml.InvalidBSNException:
+            raise InvalidBSNException
         except SamlVerificationException as e:
-            return {"status": "ERROR", "message": e.args[0]}, 400
+            raise SamlException(e.args[0])
         except Exception as e:
             logger.error("Error", type(e), str(e))
-            return {"status": "ERROR", "message": "Unknown Error"}, 400
+            raise GeneralError
+
+    return kind, identifier
+
+
+@app.route('/decosjoin/getvergunningen', methods=['GET'])
+def get_vergunningen():
+    try:
+        kind, identifier = _get_kind_and_identifier_or_error(request)
+    except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
+        return e.message, e.status_code
 
     connection = DecosJoinConnection(get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
     zaken = connection.get_zaken(kind, identifier)
@@ -101,21 +114,17 @@ def get_vergunningen():
 def list_documents(encrypted_zaak_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
-    try:
-        bsn = get_bsn_from_request(request)
-    except InvalidBSNException:
-        return {"status": "ERROR", "message": "Invalid BSN"}, 400
-    except SamlVerificationException as e:
-        return {"status": "ERROR", "message": e.args[0]}, 400
-    except Exception as e:
-        logger.error("Error", type(e), str(e))
-        return {"status": "ERROR", "message": "Unknown Error"}, 400
 
     try:
-        zaak_id = decrypt(encrypted_zaak_id, bsn)
+        kind, identifier = _get_kind_and_identifier_or_error(request)
+    except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
+        return e.message, e.status_code
+
+    try:
+        zaak_id = decrypt(encrypted_zaak_id, identifier)
     except InvalidToken:
         return {'status': "ERROR", "message": "decryption zaak ID invalid"}, 400
-    documents = connection.list_documents(zaak_id, bsn)
+    documents = connection.list_documents(zaak_id, identifier)
     return {
         'status': 'OK',
         'content': documents
@@ -126,14 +135,15 @@ def list_documents(encrypted_zaak_id):
 def get_document(encrypted_doc_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
+
     try:
-        bsn = get_bsn_from_request(request)
-        doc_id = decrypt(encrypted_doc_id, bsn)
+        kind, identifier = _get_kind_and_identifier_or_error(request)
+    except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
+        return e.message, e.status_code
+
+    try:
+        doc_id = decrypt(encrypted_doc_id, identifier)
         document = connection.get_document(doc_id)
-    except InvalidBSNException:
-        return {"status": "ERROR", "message": "Invalid BSN"}, 400
-    except SamlVerificationException as e:
-        return {"status": "ERROR", "message": e.args[0]}, 400
     except InvalidToken:
         return {"status": "ERROR", "message": "decryption zaak ID invalid"}, 400
     except Exception as e:

@@ -4,13 +4,14 @@ from datetime import datetime, date, time
 import requests
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
+from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
 
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
 from decosjoin.crypto import encrypt
 
 log_raw = False
-page_size = 10
+page_size = 30
 
 
 class DecosJoinConnection:
@@ -178,20 +179,45 @@ class DecosJoinConnection:
 
         return zaken
 
+    def _get_page(self, url, offset=None):
+        """ Get a single page for url. When offset is provided add that to the url. """
+        if offset:
+            url += f'&skip={offset}'
+        res_json = self._get(url)
+        if log_raw:
+            from pprint import pprint
+            print("request:", url)
+            pprint(res_json)
+        return res_json
+
+    def get_all_pages(self, url):
+        """ Get 'content' from all pages for the provided url """
+
+        req = PreparedRequest()
+        req.prepare_url(url, {"top": page_size})  # append top get param
+        url = req.url
+
+        items = []
+        # fetch one page to get the first part of the data and item count
+        res = self._get_page(url)
+
+        end = math.ceil(res['count'] / page_size) * page_size
+        items.extend(res['content'])
+
+        for offset in range(page_size, end, page_size):
+            res = self._get_page(url, offset)
+            items.extend(res['content'])
+
+        return items
+
     def get_zaken(self, kind, identifier):
         """ Get all zaken for a kind ['bsn' or 'kvk']. """
         zaken = []
         user_keys = self._get_user_keys(kind, identifier)
 
         for key in user_keys:
-            # fetch one
-            res_zaken = self._get_zaken_for_user(key)
-            end = math.ceil(res_zaken['count'] / page_size) * page_size
-            zaken.extend(res_zaken['content'])
-            # paginate over the rest (with page sizes)
-            for offset in range(page_size, end, page_size):
-                res_zaken = self._get_zaken_for_user(key, offset)
-                zaken.extend(res_zaken['content'])
+            url = f"{self.api_url}items/{key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction"
+            zaken.extend(self.get_all_pages(url))
 
         zaken = self._transform(zaken, identifier)
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
@@ -212,14 +238,15 @@ class DecosJoinConnection:
             'is_pdf': False,
         }
 
-    def list_documents(self, zaak_id, bsn):
+    def list_documents(self, zaak_id, identifier):
         url = f"{self.api_url}items/{zaak_id}/documents?select=subject1,sequence,mark,text39,text40,text41,itemtype_key"
-        res_json = self._get(url)
+
+        res = self.get_all_pages(url)
 
         if log_raw:
             from pprint import pprint
             print("Documents list")
-            pprint(res_json)
+            pprint(res)
 
         fields = [
             {"name": 'title', "from": 'text41', "parser": to_string},
@@ -232,7 +259,7 @@ class DecosJoinConnection:
 
         new_docs = []
 
-        for item in res_json['content']:
+        for item in res:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
                 document_meta_data = _get_fields(fields, item)
@@ -244,7 +271,7 @@ class DecosJoinConnection:
                     doc_data = self.get_document_data(item['key'])
 
                     if doc_data['is_pdf']:
-                        document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(doc_data['doc_key'], bsn)}"
+                        document_meta_data['url'] = f"/api/decosjoin/document/{encrypt(doc_data['doc_key'], identifier)}"
 
                         del(document_meta_data['text39'])
                         del(document_meta_data['text40'])
