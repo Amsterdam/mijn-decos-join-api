@@ -378,7 +378,7 @@ def to_time(value) -> [time, None]:
         if matches:
             return time(int(matches.group(1)), int(matches.group(2)))
 
-    raise ParseError(f"Unable to parse type({type(value)} '{value}' with to_time")
+    return None
 
 
 def to_datetime(value) -> [datetime, None]:
