@@ -121,7 +121,7 @@ class DecosJoinConnection:
                     {"name": "dateFrom", "from": 'date6', "parser": to_date},
                     {"name": "dateEndInclusive", "from": 'date7', "parser": to_date},
                     {"name": "timeStart", "from": 'text10', "parser": to_time},
-                    {"name": "timeEnd", "from": 'text13', "parser": to_time},  # this is a freeform text field, it can contain ANYTHING
+                    {"name": "timeEnd", "from": 'text13', "parser": to_time},
                     {"name": "kenteken", "from": 'text9', "parser": to_string},
                     {"name": "location", "from": 'text6', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
