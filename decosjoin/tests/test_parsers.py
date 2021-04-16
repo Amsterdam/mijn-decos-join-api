@@ -36,11 +36,13 @@ class DateParserTests(TestCase):
             to_date(1)
 
     def test_to_time(self):
-        self.assertEqual(to_time("2020-06-16T01:00:00"), time(1, 0, 0))
-        # self.assertEqual(to_time("01:00:00"), time(1, 0, 0))
-
         self.assertEqual(to_time(time(1, 0, 0)), time(1, 0, 0))
-        self.assertEqual(to_time(datetime(2020, 6, 16, 1, 1, 1)), time(1, 1, 1))
+
+        self.assertEqual(to_time("14:30"), time(14, 30))
+        self.assertEqual(to_time("14.30"), time(14, 30))
+
+        with self.assertRaises(ParseError):
+            self.assertEqual(to_time("text"), time(14, 30))
 
         with self.assertRaises(ParseError):
             to_time(1)
