@@ -32,7 +32,7 @@ if get_sentry_dsn():  # pragma: no cover
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, time):
-            return obj.isoformat()
+            return obj.isoformat(timespec='minutes')
         if isinstance(obj, date):
             return obj.isoformat()
 

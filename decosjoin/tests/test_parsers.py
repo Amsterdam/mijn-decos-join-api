@@ -70,7 +70,7 @@ class IsCurrentTest(TestCase):
     def test_is_current_date_same_date_inclusive(self):
         zaak = {
             "dateFrom": date(2020, 6, 16),
-            "dateEndInclusive": date(2020, 6, 16)
+            "dateEnd": date(2020, 6, 16)
         }
         self.assertTrue(_is_current(zaak))
 

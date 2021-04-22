@@ -25,19 +25,19 @@ class ApiTests(FlaskServerTMATestCase):
     def _expected_zaak(self):
         return {
             'caseType': 'TVM - RVV - Object',
-            'dateEndInclusive': '2020-06-16',
-            'dateFrom': '2020-06-16',
-            'dateRequest': '2020-06-08T00:00:00',
+            'dateEnd': '2021-04-28',
+            'dateFrom': '2021-04-27',
+            'dateRequest': '2021-04-16',
             'identifier': 'Z/20/1234567',
             'isActual': False,
             'kenteken': None,
-            'location': None,
+            'location': 'Amstel 1 1000AB',
             'decision': None,
             'dateDecision': None,
             'status': 'Ontvangen',
-            'timeEnd': None,
-            'timeStart': None,
-            'title': 'SB RVV ontheffing hele stad',
+            'timeEnd': '16:00',
+            'timeStart': '10:00',
+            'title': 'Test MA MIJN-3031',
             # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 
@@ -56,6 +56,7 @@ class ApiTests(FlaskServerTMATestCase):
     def setUp(self):
         """ Setup app for testing """
         self.client = self.get_tma_test_app(app)
+        self.maxDiff = None
 
     def test_status(self):
         response = self.client.get("/status/health")
@@ -69,6 +70,7 @@ class ApiTests(FlaskServerTMATestCase):
         response = self._client_get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 200, response.data)
         data = response.get_json()
+        # print('response', response.json)
         self.assertEqual(data["status"], "OK")
 
         self.assertTrue(data["content"][0]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))

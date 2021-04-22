@@ -68,7 +68,7 @@ components:
         caseType:
           type: string
           example: 'TVM - RVV - Object'
-        dateEndInclusive:
+        dateEnd:
           type: string
           format: date
           example: '2020-06-16'
@@ -78,7 +78,7 @@ components:
           example: '2020-06-16'
         dateRequest:
           type: string
-          format: 'date-time'
+          format: date-time
           example: '2020-06-08T00:00:00'
         identifier:
           type: string
@@ -96,7 +96,7 @@ components:
           example: '?'
         dateDecision:
           type: string
-          format: datetime
+          format: date-time
         status:
           type: string
           example: 'Ontvangen'
