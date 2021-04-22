@@ -24,6 +24,7 @@ paths:
         description: fernet encoded string of zaak id
         schema:
           type: string
+        required: true
     get:
       summary: Returns a list of documents for zaak
       #      description: ""
@@ -43,6 +44,7 @@ paths:
         description: fernet encoded string of document id
         schema:
           type: string
+        required: true
     get:
       summary: Returns a document as http download
       responses:
@@ -63,46 +65,46 @@ components:
     vergunning:
       type: object
       properties:
-        'caseType':
+        caseType:
           type: string
           example: 'TVM - RVV - Object'
-        'dateEndInclusive':
+        dateEnd:
           type: string
           format: date
           example: '2020-06-16'
-        'dateFrom':
+        dateStart:
           type: string
           format: date
           example: '2020-06-16'
-        'dateRequest':
+        dateRequest:
           type: string
-          format: 'date-time'
+          format: date-time
           example: '2020-06-08T00:00:00'
-        'identifier':
+        identifier:
           type: string
           example: 'Z/20/1234567'
-        'isActual':
-          type: bool
+        isActual:
+          type: boolean
           example: False
-        'kenteken':
+        kenteken:
           type: string
           example: 'aa-11-aa'
-        'location':
+        location:
           type: string
-        'decision':
+        decision:
           type: string
           example: '?'
-        'dateDecision':
+        dateDecision:
           type: string
-          format: datetime
-        'status':
+          format: date-time
+        status:
           type: string
           example: 'Ontvangen'
-        'timeEnd':
+        timeEnd:
           type: string
-        'timeStart':
+        timeStart:
           type: string
-        'title':
+        title:
           type: string
           example: 'SB RVV ontheffing hele stad'
         documentsUrl:
@@ -126,4 +128,4 @@ components:
           example: Besluit toekenning
         url:
           type: string
-          example: "api/decosjoin/document/<fernetstring>"
+          example: 'api/decosjoin/document/<fernetstring>'

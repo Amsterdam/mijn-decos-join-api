@@ -7,17 +7,22 @@
         "title": "Ontvangen",
         "mark": "Z/20/1234567",
         "text45": "TVM - RVV - Object",
-        "subject1": "SB RVV ontheffing hele stad",
-        "text11": "Nvt",
-        "date6": "2020-06-16T00:00:00",
-        "date7": "2020-06-16T00:00:00",
-        "document_date": "2020-06-08T00:00:00",
+        "subject1": "Test MA MIJN-3031",
+        "text11": "Nogniet",
+        "text12": "Er is iets misgegaan, controleer online betaling!",
+        "text13": "16:00",
+        "text6": "Amstel 1 1000AB",
+        "date6": "2021-04-27T00:00:00",
+        "text7": "TEST MA Decos",
+        "text10": "10:00",
+        "date7": "2021-04-28T00:00:00",
+        "document_date": "2021-04-16T00:00:00",
         "processed": false
       },
       "links": [
         {
           "rel": "self",
-          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING01"
+          "href": "https://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxxx"
         }
       ]
     },
@@ -32,6 +37,7 @@
         "processed": true,
         "subject1": "test",
         "text11": "Nvt",
+        "text13": "17:12",
         "text45": "TVM - RVV - Object",
         "text6": "Amstel 1 1012AA",
         "title": "Afgehandeld"
