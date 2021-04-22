@@ -26,7 +26,7 @@ class ApiTests(FlaskServerTMATestCase):
         return {
             'caseType': 'TVM - RVV - Object',
             'dateEnd': '2021-04-28',
-            'dateFrom': '2021-04-27',
+            'dateStart': '2021-04-27',
             'dateRequest': '2021-04-16',
             'identifier': 'Z/20/1234567',
             'isActual': False,

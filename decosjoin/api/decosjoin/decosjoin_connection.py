@@ -118,7 +118,7 @@ class DecosJoinConnection:
                     {"name": "title", "from": 'subject1', "parser": to_string},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
                     {"name": "caseType", "from": 'text45', "parser": to_string},
-                    {"name": "dateFrom", "from": 'date6', "parser": to_date},
+                    {"name": "dateStart", "from": 'date6', "parser": to_date},
                     {"name": "dateEnd", "from": 'date7', "parser": to_date},
                     {"name": "timeStart", "from": 'text10', "parser": to_time},
                     {"name": "timeEnd", "from": 'text13', "parser": to_time},
@@ -135,7 +135,7 @@ class DecosJoinConnection:
 
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEnd']:
-                    new_zaak['dateEnd'] = new_zaak['dateFrom']
+                    new_zaak['dateEnd'] = new_zaak['dateStart']
 
                 # if date range is within now, it is current
                 if _is_current(new_zaak):
@@ -315,7 +315,7 @@ def _get_fields(fields, zaak):
 
 def _is_current(zaak):
     # date start
-    start = to_datetime(zaak['dateFrom'])
+    start = to_datetime(zaak['dateStart'])
     # add time start
     if zaak.get('timeStart'):
         start_time = zaak['timeStart']
@@ -324,8 +324,7 @@ def _is_current(zaak):
     # date end
     if zaak.get('dateEnd'):
         end = to_datetime(zaak['dateEnd'])
-    elif zaak.get('dateEnd'):
-        end = to_datetime(zaak['dateEnd'])
+        # add-up to the last time available this day (23:59) so we can compare any time on this day to datetime.now()
         end = (end + relativedelta(days=1)) - relativedelta(seconds=1)
     else:
         return False
@@ -334,13 +333,10 @@ def _is_current(zaak):
     if zaak.get('timeEnd'):
         end_time = zaak['timeEnd']
         end = end.replace(hour=end_time.hour, minute=end_time.minute, second=end_time.second)
-        # end.hour = end_time.hour
-        # end.minute = end_time.minute
-        # end.second = end_time.second
 
     # if now between start and end it is current
     now = datetime.now()
-    if start < now < end:
+    if start <= now <= end:
         return True
     return False
 
