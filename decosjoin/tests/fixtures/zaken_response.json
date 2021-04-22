@@ -22,7 +22,7 @@
       "links": [
         {
           "rel": "self",
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxxx"
+          "href": "https://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxxx"
         }
       ]
     },
