@@ -1,3 +1,4 @@
+import logging
 import math
 import re
 from datetime import datetime, date, time
@@ -372,7 +373,10 @@ def to_time(value) -> [time, None]:
         time_pattern = r'([0-9]{2})[\.:]([0-9]{2})'
         matches = re.match(time_pattern, value)
         if matches:
-            return time(int(matches.group(1)), int(matches.group(2)))
+            try:
+                return time(int(matches.group(1)), int(matches.group(2)))
+            except ValueError as e:
+                logging.error(f"Error parsing time {e}, value: {value}")
 
     return None
 

@@ -41,6 +41,7 @@ class DateParserTests(TestCase):
         self.assertEqual(to_time("14:30"), time(14, 30))
         self.assertEqual(to_time("14.30"), time(14, 30))
 
+        self.assertIsNone(to_time("30:70"))
         self.assertIsNone(to_time("not parsable"))
         self.assertIsNone(to_time(1))
         self.assertIsNone(None)
