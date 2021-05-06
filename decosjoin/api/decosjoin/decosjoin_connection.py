@@ -138,14 +138,30 @@ class DecosJoinConnection:
                 if not new_zaak['dateEnd']:
                     new_zaak['dateEnd'] = new_zaak['dateStart']
 
-                # if date range is within now, it is current
-                if _is_current(new_zaak):
-                    new_zaak['isActual'] = True
-                else:
-                    new_zaak['isActual'] = False
+            elif f['text45'] in ['Vakantieverhuur', 'Vakantieverhuur afmelding', 'Vakantieverhuur vergunningaanvraag']:  # Vakantieverhuur of vakantie verhuur afmelden of vakantie verhuur vergunning
+                fields = [
+                    {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "dateRequest", "from": "document_date", "parser": to_date},
+                    {"name": "identifier", "from": 'mark', "parser": to_string},
+                    {"name": "title", "from": 'subject1', "parser": to_string},
+                    {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
+                    {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Datum tot
+                    {"name": "location", "from": 'text6', "parser": to_string},
+                ]
 
-                new_zaken.append(new_zaak)
+                new_zaak = _get_fields(fields, zaak)
 
+            else:
+                # zaak does not match one of the known ones
+                continue
+
+            # if date range is within now, it is current
+            if _is_current(new_zaak):
+                new_zaak['isActual'] = True
+            else:
+                new_zaak['isActual'] = False
+
+            new_zaken.append(new_zaak)
         return new_zaken
 
     def _deny_list_filter(self, value, deny_list):
