@@ -138,7 +138,7 @@ class DecosJoinConnection:
                 if not new_zaak['dateEnd']:
                     new_zaak['dateEnd'] = new_zaak['dateStart']
 
-            elif f['text45'] in ['Vakantieverhuur', 'Vakantieverhuur afmelding', 'Vakantieverhuur vergunningaanvraag']:  # Vakantieverhuur of vakantie verhuur afmelden of vakantie verhuur vergunning
+            elif f['text45'] in ['Vakantieverhuur', 'Vakantieverhuur afmelding', 'Vakantieverhuur vergunningaanvraag']:
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
