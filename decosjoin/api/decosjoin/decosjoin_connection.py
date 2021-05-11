@@ -1,16 +1,16 @@
 import logging
 import math
 import re
-from datetime import datetime, date, time
+from datetime import date, datetime, time
 from typing import Union
 
 import requests
 from dateutil import parser
-from dateutil.relativedelta import relativedelta
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
 
-from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
+from decosjoin.api.decosjoin.Exception import (DecosJoinConnectionError,
+                                               ParseError)
 from decosjoin.crypto import encrypt
 
 log_raw = False

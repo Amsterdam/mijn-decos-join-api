@@ -1,10 +1,9 @@
 from datetime import date, datetime, time
 from unittest.case import TestCase
 
-from freezegun import freeze_time
-
+from decosjoin.api.decosjoin.decosjoin_connection import (to_date, to_datetime,
+                                                          to_decision, to_time)
 from decosjoin.api.decosjoin.Exception import ParseError
-from decosjoin.api.decosjoin.decosjoin_connection import to_date, to_time, to_datetime, to_decision
 
 
 class ConversionTests(TestCase):
