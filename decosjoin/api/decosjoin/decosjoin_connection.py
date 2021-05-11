@@ -151,6 +151,15 @@ class DecosJoinConnection:
 
                 new_zaak = _get_fields(fields, zaak)
 
+            elif f['text45'] == 'B&B Vergunning':
+                fields = [
+                    {"name": "dateRequest", "from": "document_date", "parser": to_date},  # Startdatum zaak
+                    {"name": "location", "from": 'text6', "parser": to_string},
+                    {"name": "identifier", "from": 'mark', "parser": to_string},
+                    {"name": "title", "from": 'subject1', "parser": to_string},
+                ]
+                new_zaak = _get_fields(fields, zaak)
+
             else:
                 # zaak does not match one of the known ones
                 continue
