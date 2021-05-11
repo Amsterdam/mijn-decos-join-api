@@ -4,7 +4,7 @@ from unittest.case import TestCase
 from freezegun import freeze_time
 
 from decosjoin.api.decosjoin.Exception import ParseError
-from decosjoin.api.decosjoin.decosjoin_connection import to_date, to_time, to_datetime, _is_current, to_decision
+from decosjoin.api.decosjoin.decosjoin_connection import to_date, to_time, to_datetime, to_decision
 
 
 class ConversionTests(TestCase):
@@ -55,42 +55,3 @@ class DateParserTests(TestCase):
 
         with self.assertRaises(ParseError):
             to_date(1)
-
-
-class IsCurrentTest(TestCase):
-
-    @freeze_time("2020-06-16")
-    def test_is_current_date(self):
-        zaak = {
-            "dateStart": date(2020, 5, 16),
-            "dateEnd": date(2020, 7, 16)
-        }
-        self.assertTrue(_is_current(zaak))
-
-    @freeze_time("2020-06-16T18:33:00")
-    def test_is_current_date_same_date(self):
-        zaak = {
-            "dateStart": date(2020, 6, 16),
-            "dateEnd": date(2020, 6, 16)
-        }
-        self.assertTrue(_is_current(zaak))
-
-    @freeze_time("2020-06-16T18:33:00")
-    def test_is_current_datetime(self):
-        zaak = {
-            "dateStart": date(2020, 6, 16),
-            "dateEnd": date(2020, 6, 16),
-            "timeStart": time(18, 0, 0),
-            "timeEnd": time(19, 0, 0),
-        }
-        self.assertTrue(_is_current(zaak))
-
-    @freeze_time("2020-06-16T18:33:00")
-    def test_is_current_datetime_false(self):
-        zaak = {
-            "dateStart": date(2020, 6, 16),
-            "dateEnd": date(2020, 6, 16),
-            "timeStart": time(17, 0, 0),
-            "timeEnd": time(18, 0, 0),
-        }
-        self.assertFalse(_is_current(zaak))

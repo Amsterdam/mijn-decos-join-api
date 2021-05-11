@@ -2,6 +2,7 @@ import logging
 import math
 import re
 from datetime import datetime, date, time
+from typing import Union
 
 import requests
 from dateutil import parser
@@ -137,12 +138,6 @@ class DecosJoinConnection:
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEnd']:
                     new_zaak['dateEnd'] = new_zaak['dateStart']
-
-                # if date range is within now, it is current
-                if _is_current(new_zaak):
-                    new_zaak['isActual'] = True
-                else:
-                    new_zaak['isActual'] = False
 
                 new_zaken.append(new_zaak)
 
@@ -314,35 +309,7 @@ def _get_fields(fields, zaak):
     return result
 
 
-def _is_current(zaak):
-    # date start
-    start = to_datetime(zaak['dateStart'])
-    # add time start
-    if zaak.get('timeStart'):
-        start_time = zaak['timeStart']
-        start = start.replace(hour=start_time.hour, minute=start_time.minute, second=start_time.second)
-
-    # date end
-    if zaak.get('dateEnd'):
-        end = to_datetime(zaak['dateEnd'])
-        # add-up to the last time available this day (23:59) so we can compare any time on this day to datetime.now()
-        end = (end + relativedelta(days=1)) - relativedelta(seconds=1)
-    else:
-        return False
-
-    # add time end
-    if zaak.get('timeEnd'):
-        end_time = zaak['timeEnd']
-        end = end.replace(hour=end_time.hour, minute=end_time.minute, second=end_time.second)
-
-    # if now between start and end it is current
-    now = datetime.now()
-    if start <= now <= end:
-        return True
-    return False
-
-
-def to_date(value) -> [datetime, None]:
+def to_date(value) -> Union[datetime, None]:
     if not value:
         return None
 
@@ -359,7 +326,7 @@ def to_date(value) -> [datetime, None]:
     raise ParseError(f"Unable to parse type({type(value)} with to_date")
 
 
-def to_time(value) -> [time, None]:
+def to_time(value) -> Union[time, None]:
     if not value:
         return None
 
@@ -381,7 +348,7 @@ def to_time(value) -> [time, None]:
     return None
 
 
-def to_datetime(value) -> [datetime, None]:
+def to_datetime(value) -> Union[datetime, None]:
     if not value:
         return None
 
