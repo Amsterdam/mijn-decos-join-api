@@ -5,7 +5,6 @@ from datetime import datetime, date, time
 
 import requests
 from dateutil import parser
-from dateutil.relativedelta import relativedelta
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
 
@@ -154,12 +153,6 @@ class DecosJoinConnection:
             else:
                 # zaak does not match one of the known ones
                 continue
-
-            # if date range is within now, it is current
-            if _is_current(new_zaak):
-                new_zaak['isActual'] = True
-            else:
-                new_zaak['isActual'] = False
 
             new_zaken.append(new_zaak)
         return new_zaken
@@ -328,34 +321,6 @@ def _get_fields(fields, zaak):
         result[key] = f['parser'](val)
 
     return result
-
-
-def _is_current(zaak):
-    # date start
-    start = to_datetime(zaak['dateStart'])
-    # add time start
-    if zaak.get('timeStart'):
-        start_time = zaak['timeStart']
-        start = start.replace(hour=start_time.hour, minute=start_time.minute, second=start_time.second)
-
-    # date end
-    if zaak.get('dateEnd'):
-        end = to_datetime(zaak['dateEnd'])
-        # add-up to the last time available this day (23:59) so we can compare any time on this day to datetime.now()
-        end = (end + relativedelta(days=1)) - relativedelta(seconds=1)
-    else:
-        return False
-
-    # add time end
-    if zaak.get('timeEnd'):
-        end_time = zaak['timeEnd']
-        end = end.replace(hour=end_time.hour, minute=end_time.minute, second=end_time.second)
-
-    # if now between start and end it is current
-    now = datetime.now()
-    if start <= now <= end:
-        return True
-    return False
 
 
 def to_date(value) -> [datetime, None]:
