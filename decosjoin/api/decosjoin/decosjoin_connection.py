@@ -2,6 +2,7 @@ import logging
 import math
 import re
 from datetime import datetime, date, time
+from typing import Union
 
 import requests
 from dateutil import parser
@@ -323,7 +324,7 @@ def _get_fields(fields, zaak):
     return result
 
 
-def to_date(value) -> [datetime, None]:
+def to_date(value) -> Union[date, None]:
     if not value:
         return None
 
@@ -340,7 +341,7 @@ def to_date(value) -> [datetime, None]:
     raise ParseError(f"Unable to parse type({type(value)} with to_date")
 
 
-def to_time(value) -> [time, None]:
+def to_time(value) -> Union[time, None]:
     if not value:
         return None
 
@@ -362,7 +363,7 @@ def to_time(value) -> [time, None]:
     return None
 
 
-def to_datetime(value) -> [datetime, None]:
+def to_datetime(value) -> Union[datetime, None]:
     if not value:
         return None
 
