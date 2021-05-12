@@ -15,6 +15,14 @@ from decosjoin.crypto import encrypt
 log_raw = False
 page_size = 30
 
+ALLOWED_ZAAKTYPES = [
+    'tvm - rvv - object',
+    'Vakantieverhuur',
+    'Vakantieverhuur afmelding',
+    'Vakantieverhuur vergunningaanvraag',
+    'B&B Vergunning',
+]
+
 
 class DecosJoinConnection:
     def __init__(self, username, password, api_host, adres_boeken):
@@ -175,7 +183,7 @@ class DecosJoinConnection:
 
     def filter_zaken(self, zaken):
         """ Filter un-parsed cases. """
-        zaken = [zaak for zaak in zaken if zaak['caseType'].lower() in ['tvm - rvv - object']]
+        zaken = [zaak for zaak in zaken if zaak['caseType'].lower() in ALLOWED_ZAAKTYPES]
         zaken = [zaak for zaak in zaken if self._deny_list_filter(
             zaak['title'],
             ['wacht op online betaling', 'wacht op ideal betaling']
