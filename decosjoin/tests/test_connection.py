@@ -22,16 +22,18 @@ class ConnectionTests(TestCase):
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
-        self.assertEqual(zaken[8]["identifier"], "Z/20/1234567")
-        self.assertEqual(zaken[7]["identifier"], "Z/20/2345678")
+        self.assertEqual(len(zaken), 10)
+
+        self.assertEqual(zaken[0]["identifier"], "Z/21/67890123")
+
+        self.assertEqual(zaken[9]["identifier"], "Z/20/1234567")
+        self.assertEqual(zaken[8]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
 
-        self.assertEqual(len(zaken), 9)
-
-        self.assertEqual(zaken[5]['decision'], 'Verleend')
-        self.assertEqual(zaken[5]['dateDecision'], date(2020, 6, 16))
+        self.assertEqual(zaken[6]['decision'], 'Verleend')
+        self.assertEqual(zaken[6]['dateDecision'], date(2020, 6, 16))
 
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_list_documents(self):

@@ -17,10 +17,10 @@ page_size = 30
 
 ALLOWED_ZAAKTYPES = [
     'tvm - rvv - object',
-    'Vakantieverhuur',
-    'Vakantieverhuur afmelding',
-    'Vakantieverhuur vergunningaanvraag',
-    'B&B Vergunning',
+    'vakantieverhuur',
+    'vakantieverhuur afmelding',
+    'vakantieverhuur vergunningaanvraag',
+    'b&b vergunning',
 ]
 
 
@@ -146,6 +146,11 @@ class DecosJoinConnection:
                 if not new_zaak['dateEnd']:
                     new_zaak['dateEnd'] = new_zaak['dateStart']
 
+                if not self._deny_list_filter(new_zaak['title'], ['wacht op online betaling', 'wacht op ideal betaling']):
+                    continue
+                if not self._deny_list_filter(new_zaak['decision'], ['buiten behandeling']):
+                    continue
+
             elif f['text45'] in ['Vakantieverhuur', 'Vakantieverhuur afmelding', 'Vakantieverhuur vergunningaanvraag']:
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
@@ -184,27 +189,7 @@ class DecosJoinConnection:
     def filter_zaken(self, zaken):
         """ Filter un-parsed cases. """
         zaken = [zaak for zaak in zaken if zaak['caseType'].lower() in ALLOWED_ZAAKTYPES]
-        zaken = [zaak for zaak in zaken if self._deny_list_filter(
-            zaak['title'],
-            ['wacht op online betaling', 'wacht op ideal betaling']
-        )]
-        zaken = [zaak for zaak in zaken if self._deny_list_filter(
-            zaak['decision'],
-            ['buiten behandeling']
-        )]
-
         zaken = [zaak for zaak in zaken if not zaak['title'].lower().startswith("*verwijder")]
-
-        # not needed now, maybe in the future
-        # one_year_ago = relativedelta(years=1)
-        # today = date.today()
-
-        # def date_filter(zaak):
-        #     if zaak['dateDecision'] and zaak['dateDecision'] + one_year_ago < today:
-        #         return False
-        #     return True
-        #
-        # zaken = [zaak for zaak in zaken if date_filter(zaak)]
 
         return zaken
 
