@@ -164,7 +164,7 @@ class DecosJoinConnection:
 
                 new_zaak = _get_fields(fields, zaak)
 
-            elif f['text45'] == 'B&B Vergunning':
+            elif f['text45'] == 'B&B - vergunning':
                 fields = [
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},  # Startdatum zaak
                     {"name": "location", "from": 'text6', "parser": to_string},
