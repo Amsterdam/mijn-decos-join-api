@@ -166,6 +166,7 @@ class DecosJoinConnection:
 
             elif f['text45'] == 'B&B - vergunning':
                 fields = [
+                    {"name": "caseType", "from": 'text45', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},  # Startdatum zaak
                     {"name": "location", "from": 'text6', "parser": to_string},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
