@@ -19,8 +19,8 @@ ALLOWED_ZAAKTYPES = [
     'tvm - rvv - object',
     'vakantieverhuur',
     'vakantieverhuur afmelding',
-    'vakantieverhuur vergunningaanvraag',
-    'b&b vergunning',
+    'vakantieverhuur vergunningsaanvraag',
+    'b&b - vergunning',
 ]
 
 
@@ -151,7 +151,7 @@ class DecosJoinConnection:
                 if not self._deny_list_filter(new_zaak['decision'], ['buiten behandeling']):
                     continue
 
-            elif f['text45'] in ['Vakantieverhuur', 'Vakantieverhuur afmelding', 'Vakantieverhuur vergunningaanvraag']:
+            elif f['text45'] in ['Vakantieverhuur', 'Vakantieverhuur afmelding', 'Vakantieverhuur vergunningsaanvraag']:
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
