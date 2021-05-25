@@ -344,24 +344,27 @@ def to_date(value) -> Union[date, None]:
     raise ParseError(f"Unable to parse type({type(value)} with to_date")
 
 
-def to_time(value) -> Union[time, None]:
+def to_time(value) -> Union[str, None]:
     if not value:
         return None
 
     if type(value) == time:
-        return value
+        return f'{value.hour:02}:{value.minute:02}'
 
     if type(value) == datetime:
-        return value.time()
+        return to_time(value.time())
 
     if type(value) == str:
         time_pattern = r'([0-9]{2})[\.:]([0-9]{2})'
         matches = re.match(time_pattern, value)
         if matches:
-            try:
-                return time(int(matches.group(1)), int(matches.group(2)))
-            except ValueError as e:
-                logging.error(f"Error parsing time {e}, value: {value}")
+            hour = int(matches.group(1))
+            minute = int(matches.group(2))
+
+            if (0 <= hour <= 23 and 0 <= minute <= 59) or (hour == 24 and minute == 00):
+                return f'{hour:02}:{minute:02}'
+            logging.error(f"Error parsing time, value: {value}")
+            return None
 
     return None
 
