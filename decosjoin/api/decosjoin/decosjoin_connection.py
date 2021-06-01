@@ -1,7 +1,7 @@
 import logging
 import math
 import re
-from datetime import datetime, date, time, timedelta
+from datetime import datetime, date, time
 from typing import Union
 
 import requests
