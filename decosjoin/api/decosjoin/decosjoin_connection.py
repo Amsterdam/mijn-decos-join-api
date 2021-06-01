@@ -175,17 +175,12 @@ class DecosJoinConnection:
                     {"name": "status", "from": 'title', "parser": to_string},
                     {"name": "requester", "from": 'company', "parser": to_string},
                     {"name": "dateStart", "from": "document_date", "parser": to_date},  # Startdatum zaak
-                    # dateEnd is set programatically
+                    # dateEnd is set programmatically  Datum tot
                 ]
                 new_zaak = _get_fields(fields, zaak)
 
-                # these cases are valid until next 1st april
-                if new_zaak['dateRequest'] < date(new_zaak['dateRequest'].year, 4, 1):
-                    next1stapril = date(new_zaak['dateRequest'].year, 4, 1)
-                else:
-                    next1stapril = date(new_zaak['dateRequest'].year + 1, 4, 1)
-
-                new_zaak['dateEnd'] = next1stapril - timedelta(days=1)
+                # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
+                new_zaak['dateEnd'] = self.next_april_first(new_zaak['dateRequest'])
 
             else:
                 # zaak does not match one of the known ones
@@ -193,6 +188,12 @@ class DecosJoinConnection:
 
             new_zaken.append(new_zaak)
         return new_zaken
+
+    def next_april_first(self, case_date: date):
+        if case_date < date(case_date.year, 4, 1):
+            return date(case_date.year, 4, 1)
+        else:
+            return date(case_date.year + 1, 4, 1)
 
     def _deny_list_filter(self, value, deny_list):
         if value is None:

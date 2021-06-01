@@ -73,7 +73,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(data["status"], "OK")
         self.assertEqual(data["content"][0]["caseType"], "B&B - vergunning")
         self.assertEqual(data["content"][0]["dateStart"], "2021-05-19")
-        self.assertEqual(data["content"][0]["dateEnd"], "2022-03-31")
+        self.assertEqual(data["content"][0]["dateEnd"], "2022-04-01")
         self.assertEqual(data["content"][1]["caseType"], "Vakantieverhuur")
 
         self.assertEqual(data["content"][2]["caseType"], "TVM - RVV - Object")

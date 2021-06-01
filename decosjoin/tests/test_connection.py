@@ -56,6 +56,11 @@ class ConnectionTests(TestCase):
         self.assertNotIn(8, sequence_numbers)
         self.assertNotIn(9, sequence_numbers)
 
+    def test_next_april_first(self):
+        self.assertEqual(self.connection.next_april_first(date(2021, 3, 1)), date(2021, 4, 1))
+        self.assertEqual(self.connection.next_april_first(date(2021, 4, 1)), date(2022, 4, 1))
+        self.assertEqual(self.connection.next_april_first(date(2021, 6, 1)), date(2022, 4, 1))
+
     # def test_get_document(self):
     #     documents = self.connection.get_document('DOCUMENTKEY01')
     #     self.assertEqual(documents['Content-Type'], "application/pdf")
