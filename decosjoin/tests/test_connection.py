@@ -22,18 +22,19 @@ class ConnectionTests(TestCase):
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
-        self.assertEqual(len(zaken), 10)
+        self.assertEqual(len(zaken), 11)
 
-        self.assertEqual(zaken[0]["identifier"], "Z/21/67890123")
+        self.assertEqual(zaken[0]["identifier"], "Z/21/78901234")
+        self.assertEqual(zaken[1]["identifier"], "Z/21/67890123")
 
-        self.assertEqual(zaken[9]["identifier"], "Z/20/1234567")
-        self.assertEqual(zaken[8]["identifier"], "Z/20/2345678")
+        self.assertEqual(zaken[10]["identifier"], "Z/20/1234567")
+        self.assertEqual(zaken[9]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
 
-        self.assertEqual(zaken[6]['decision'], 'Verleend')
-        self.assertEqual(zaken[6]['dateDecision'], date(2020, 6, 16))
+        self.assertEqual(zaken[7]['decision'], 'Verleend')
+        self.assertEqual(zaken[7]['dateDecision'], date(2020, 6, 16))
 
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_list_documents(self):
@@ -54,6 +55,11 @@ class ConnectionTests(TestCase):
         self.assertNotIn(7, sequence_numbers)
         self.assertNotIn(8, sequence_numbers)
         self.assertNotIn(9, sequence_numbers)
+
+    def test_next_april_first(self):
+        self.assertEqual(self.connection.next_april_first(date(2021, 3, 1)), date(2021, 4, 1))
+        self.assertEqual(self.connection.next_april_first(date(2021, 4, 1)), date(2022, 4, 1))
+        self.assertEqual(self.connection.next_april_first(date(2021, 6, 1)), date(2022, 4, 1))
 
     # def test_get_document(self):
     #     documents = self.connection.get_document('DOCUMENTKEY01')

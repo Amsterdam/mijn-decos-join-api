@@ -160,6 +160,7 @@ class DecosJoinConnection:
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
                     {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Datum tot
                     {"name": "location", "from": 'text6', "parser": to_string},
+                    {"name": "status", "from": 'title', "parser": to_string},
                 ]
 
                 new_zaak = _get_fields(fields, zaak)
@@ -171,8 +172,15 @@ class DecosJoinConnection:
                     {"name": "location", "from": 'text6', "parser": to_string},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
                     {"name": "title", "from": 'subject1', "parser": to_string},
+                    {"name": "status", "from": 'title', "parser": to_string},
+                    {"name": "requester", "from": 'company', "parser": to_string},
+                    {"name": "dateStart", "from": "document_date", "parser": to_date},  # Startdatum zaak
+                    # dateEnd is set programmatically  Datum tot
                 ]
                 new_zaak = _get_fields(fields, zaak)
+
+                # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
+                new_zaak['dateEnd'] = self.next_april_first(new_zaak['dateRequest'])
 
             else:
                 # zaak does not match one of the known ones
@@ -180,6 +188,12 @@ class DecosJoinConnection:
 
             new_zaken.append(new_zaak)
         return new_zaken
+
+    def next_april_first(self, case_date: date):
+        if case_date < date(case_date.year, 4, 1):
+            return date(case_date.year, 4, 1)
+        else:
+            return date(case_date.year + 1, 4, 1)
 
     def _deny_list_filter(self, value, deny_list):
         if value is None:
@@ -231,7 +245,7 @@ class DecosJoinConnection:
         user_keys = self._get_user_keys(kind, identifier)
 
         for key in user_keys:
-            url = f"{self.api_url}items/{key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction"
+            url = f"{self.api_url}items/{key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction,company"
             zaken.extend(self.get_all_pages(url))
 
         zaken = self._transform(zaken, identifier)
