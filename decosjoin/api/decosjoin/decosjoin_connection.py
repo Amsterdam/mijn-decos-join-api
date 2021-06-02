@@ -167,14 +167,13 @@ class DecosJoinConnection:
 
             elif f['text45'] == 'B&B - vergunning':
                 fields = [
-                    {"name": "caseType", "from": 'text45', "parser": to_string},
+                    {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},  # Startdatum zaak
-                    {"name": "location", "from": 'text6', "parser": to_string},
-                    {"name": "identifier", "from": 'mark', "parser": to_string},
-                    {"name": "title", "from": 'subject1', "parser": to_string},
-                    {"name": "status", "from": 'title', "parser": to_string},
-                    {"name": "requester", "from": 'company', "parser": to_string},
-                    {"name": "dateStart", "from": "document_date", "parser": to_date},  # Startdatum zaak
+                    {"name": "location", "from": "text6", "parser": to_string},
+                    {"name": "identifier", "from": "mark", "parser": to_string},
+                    {"name": "title", "from": "subject1", "parser": to_string},
+                    {"name": "status", "from": "title", "parser": to_string},
+                    {"name": "requester", "from": "company", "parser": to_string},
                     # dateEnd is set programmatically  Datum tot
                 ]
                 new_zaak = _get_fields(fields, zaak)
@@ -182,6 +181,32 @@ class DecosJoinConnection:
                 # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
                 new_zaak['dateEnd'] = self.next_april_first(new_zaak['dateRequest'])
 
+            elif f['text45'] == 'GPP':
+                fields = [
+                    {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "title", "from": "subject1", "parser": to_string},
+                    {"name": "identifier", "from": "mark", "parser": to_string},
+                    {"name": "dateHandled", "from": "date5", "parser": to_string},  # Datum afhandeling
+                    {"name": "dateRequest", "from": "document_date", "parser": to_string},
+                    {"name": "result", "from": "dfunction", "parser": to_string},
+                    {"name": "kenteken", "from": "text7", "parser": to_string},
+                    {"name": "location", "from": "text8", "parser": to_string},
+                    {"name": "status", "from": "title", "parser": to_string},
+                ]
+                new_zaak = _get_fields(fields, zaak)
+
+            elif f['text45'] == 'GPK':
+                fields = [
+                    {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "identifier", "from": "mark", "parser": to_string},
+                    {"name": "dateHandled", "from": "date5", "parser": to_string},  # Datum afhandeling
+                    {"name": "dateRequest", "from": "document_date", "parser": to_string},
+                    {"name": "result", "from": "dfunction", "parser": to_string},
+                    {"name": "location", "from": "text6", "parser": to_string},
+                    {"name": "driverpassenger", "from": "text7", "parser": to_string},
+                    {"name": "reasonrequest", "from": "text7", "parser": to_string},
+                ]
+                new_zaak = _get_fields(fields, zaak)
             else:
                 # zaak does not match one of the known ones
                 continue
