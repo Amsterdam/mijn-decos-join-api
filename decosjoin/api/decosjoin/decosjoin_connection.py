@@ -196,6 +196,15 @@ class DecosJoinConnection:
                     {"name": "status", "from": "title", "parser": to_string},
                 ]
                 new_zaak = _get_fields(fields, zaak)
+                translations = [
+                    ["Buiten behandeling", "Buiten behandeling", False],
+                    ["Ingetrokken", "Ingetrokken", True],
+                    ["Ingetrokken i.v.m. overlijden of verhuizing", "Ingetrokken", True],
+                    ["Niet verleend", "Niet verleend", True],
+                    ["Nog niet bekend", "", False],
+                    ["Verleend", "Verleend", True],
+                ]
+                new_zaak['result'] = _get_translation(new_zaak['result'], translations)
 
             elif f['text45'] == 'GPK':
                 fields = [
@@ -211,6 +220,24 @@ class DecosJoinConnection:
                 ]
                 new_zaak = _get_fields(fields, zaak)
 
+                # Copied from RD
+                translations = [
+                    ["Buiten behandeling", "Buiten behandeling", False],
+                    ["Ingetrokken", "Ingetrokken", True],
+                    ["Ingetrokken i.v.m. overlijden of verhuizing", "Ingetrokken", True],
+                    ["Ingetrokken verleende GPK wegens overlijden", "Ingetrokken", True],
+                    ["Niet verleend", "Niet verleend", True],
+                    ["Nog niet bekend", "", False],
+                    ["Verleend", "Verleend", True],
+                    ["Verleend Bestuurder met GPP (niet verleend passagier)", "Verleend Bestuurder, niet verleend Passagier", True],
+                    ["Verleend Bestuurder, niet verleend Passagier", "Verleend Bestuurder, niet verleend Passagier", True],
+                    ["Verleend met GPP", "Verleend", True],
+                    ["Verleend Passagier met GPP (niet verleend Bestuurder)", "Verleend Passagier, niet verleend Bestuurder", True],
+                    ["Verleend Passagier, niet verleend Bestuurder", "Verleend Passagier, niet verleend Bestuurder", True],
+                    ["Verleend vervangend GPK", "Verleend", True],
+                ]
+                new_zaak['result'] = _get_translation(new_zaak['result'], translations)
+
             elif f['text45'] == 'Evenement melding':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
@@ -225,6 +252,18 @@ class DecosJoinConnection:
                     {"name": "result", "from": "dfunction", "parser": to_string},
                 ]
                 new_zaak = _get_fields(fields, zaak)
+                translations = [
+                    ["Ingetrokken", "Ingetrokken", True],
+                    ["Buiten behandeling", "Buiten behandeling", False],
+                    ["Niet verleend", "Geweigerd", True],
+                    ["Verleend", "Gemeld", True],
+                    ["Nog niet  bekend", "", False],
+                    ["Nog niet bekend", "", False],
+                    ["Verleend", "Verleend", True],
+                    ["Verleend (Bijzonder/Bewaren)", "Verleend", True],
+                    ["Verleend zonder borden", "Verleend", True],
+                ]
+                new_zaak['result'] = _get_translation(new_zaak['result'], translations)
 
             elif f['text45'] == 'Evenement vergunning':
                 fields = [
@@ -241,6 +280,19 @@ class DecosJoinConnection:
                 ]
                 new_zaak = _get_fields(fields, zaak)
 
+                translations = [
+                    ["Afgebroken (Ingetrokken)", "Afgebroken (Ingetrokken)", True],
+                    ["Buiten behandeling", "Buiten behandeling", False],
+                    ["Geweigerd", "Geweigerd", True],
+                    ["Nog niet  bekend", "", False],
+                    ["Nog niet  bekend", "", False],
+                    ["Nog niet bekend", "", False],
+                    ["Verleend", "Verleend", True],
+                    ["Verleend (Bijzonder/Bewaren)", "Verleend", True],
+                    ["Verleend zonder borden", "Verleend", True],
+                ]
+                new_zaak['result'] = _get_translation(new_zaak['result'], translations)
+
             elif f['text45'] == 'Omzettingsvergunning':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
@@ -253,6 +305,18 @@ class DecosJoinConnection:
                     {"name": "result", "from": "dfunction", "parser": to_string},
                 ]
                 new_zaak = _get_fields(fields, zaak)
+                translations = [
+                    ["Buiten behandeling", "Buiten behandeling", False],
+                    ["Geweigerd", "Geweigerd", True],
+                    ["Ingetrokken door gemeente", "Ingetrokken door gemeente", True],
+                    ["Ingetrokken op eigen verzoek", "Ingetrokken op eigen verzoek", True],
+                    ["Nog niet bekend", "", False],
+                    ["Van rechtswege verleend", "Verleend", True],
+                    ["Vergunningvrij", "Vergunningvrij", True],
+                    ["Verleend", "Verleend", True],
+                    ["Verleend zonder borden", "Verleend", True],
+                ]
+                new_zaak['result'] = _get_translation(new_zaak['result'], translations)
 
             elif f['text45'] == 'E-RVV-TVM':
                 fields = [
@@ -271,6 +335,18 @@ class DecosJoinConnection:
                     {"name": "result", "from": "dfunction", "parser": to_string},
                 ]
                 new_zaak = _get_fields(fields, zaak)
+                translations = [
+                    ["Buiten behandeling", "Buiten behandeling", False],
+                    ["Ingetrokken", "Ingetrokken", True],
+                    ["Niet verleend", "Niet verleend", True],
+                    ["Nog niet bekend", "", False],
+                    ["Verleend met borden", "Verleend", True],
+                    ["Verleend met borden en Fietsenrekken verwijderen", "Verleend", True],
+                    ["Verleend met Fietsenrekken verwijderen", "Verleend", True],
+                    ["Verleend zonder bebording", "Verleend", True],
+                    ["Verleend zonder borden", "Verleend", True],
+                ]
+                new_zaak['result'] = _get_translation(new_zaak['result'], translations)
 
             else:
                 # zaak does not match one of the known ones
@@ -419,6 +495,17 @@ class DecosJoinConnection:
             'Content-Type': document_response.headers['Content-Type'],
             'file_data': document_response.content
         }
+
+
+def _get_translation(value: str, translations: list):
+    """ Accepts a 2d list with 3 items. [ ["from", "to" "show"], ... ] """
+    value = value.lower()
+    for i in translations:
+        if i[0].lower() == value:
+            if not i[2]:  # show in frontend
+                return None
+            return i[1]
+    return None
 
 
 def _get_fields(fields, zaak):
