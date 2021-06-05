@@ -178,9 +178,11 @@ class DecosJoinConnection:
                     {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
                     {"name": "location", "from": "text6", "parser": to_string},
                     # cancelled: true/false
+                    # cancelledDate: date(time)?
                 ]
                 new_zaak = _get_fields(fields, zaak)
                 new_zaak['cancelled'] = False
+                new_zaak['cancelledDate'] = None
 
             elif f['text45'] == 'Vakantieverhuur afmelding':
                 fields = [
@@ -228,6 +230,7 @@ class DecosJoinConnection:
                 for new_zaak in new_zaken:
                     if new_zaak['identifier'] == zaak['identifier']:
                         new_zaak['cancelled'] = True
+                        new_zaak['cancelledDate'] = zaak['dateRequest']
 
         return new_zaken
 
