@@ -29,7 +29,7 @@ select_fields = ','.join([
     'mark',
     'text45',
     'subject1',
-    'bol10'
+    'bol10',
     'company',
     'date5',
     'date6',
