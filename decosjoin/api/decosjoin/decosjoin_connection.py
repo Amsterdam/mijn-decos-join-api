@@ -204,7 +204,7 @@ class DecosJoinConnection:
                     {"name": "title", "from": "subject1", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "processed", "from": "processed", "parser": to_string},
-                    {"name": "dateProcessed", "from": "date5", "parser": to_datetime},  # Datum afhandeling
+                    {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
                     {"name": "status", "from": "title", "parser": to_string},
                     {"name": "requester", "from": "company", "parser": to_string},
