@@ -24,6 +24,32 @@ ALLOWED_ZAAKTYPES = [
 ]
 
 
+select_fields = ','.join([
+    'title',
+    'mark',
+    'text45',
+    'subject1',
+    'bol10'
+    'company',
+    'date5',
+    'date6',
+    'date7',
+    'dfunction',
+    'document_date',
+    'processed',
+    'text6',
+    'text7',
+    'text8',
+    'text9',
+    'text10',
+    'text11',
+    'text12',
+    'text13',
+    'text20',
+    'text25',
+])
+
+
 class DecosJoinConnection:
     def __init__(self, username, password, api_host, adres_boeken):
         self.username = username
@@ -277,7 +303,7 @@ class DecosJoinConnection:
         user_keys = self._get_user_keys(kind, identifier)
 
         for key in user_keys:
-            url = f"{self.api_url}items/{key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction,company"
+            url = f"{self.api_url}items/{key}/folders?select={select_fields}"
             zaken.extend(self.get_all_pages(url))
 
         zaken = self._transform(zaken, identifier)
