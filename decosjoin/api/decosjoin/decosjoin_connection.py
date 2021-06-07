@@ -206,7 +206,6 @@ class DecosJoinConnection:
                     {"name": "processed", "from": "processed", "parser": to_string},
                     {"name": "dateProcessed", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
-                    {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Datum tot
                     {"name": "status", "from": "title", "parser": to_string},
                     {"name": "requester", "from": "company", "parser": to_string},
                     {"name": "owner", "from": "text25", "parser": to_string},
