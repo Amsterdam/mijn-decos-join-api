@@ -104,17 +104,6 @@ class DecosJoinConnection:
 
         return keys
 
-    def _get_zaken_for_user(self, user_key, offset=None):
-        url = f"{self.api_url}items/{user_key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction&top={page_size}"
-        if offset:
-            url += f'&skip={offset}'
-        res_json = self._get(url)
-        if log_raw:
-            from pprint import pprint
-            print("request:", url)
-            pprint(res_json)
-        return res_json
-
     def _transform(self, zaken, user_identifier):
         new_zaken = []
         deferred_zaken = []
