@@ -178,7 +178,7 @@ class DecosJoinConnection:
                     {"name": "dateProcessed", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "location", "from": "text6", "parser": to_string},
                     {"name": "status", "from": "title", "parser": to_string},
-                    {"name": "result", "from": "dfunction", "parser": to_string},
+                    {"name": "decision", "from": "dfunction", "parser": to_string},
                 ]
                 new_zaak = _get_fields(fields, zaak)
 
@@ -216,7 +216,7 @@ class DecosJoinConnection:
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},  # Startdatum zaak
-                    {"name": "result", "from": "dfunction", "parser": to_string},
+                    {"name": "decision", "from": "dfunction", "parser": to_string},
                     {"name": "location", "from": "text6", "parser": to_string},
                     {"name": "title", "from": "subject1", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
