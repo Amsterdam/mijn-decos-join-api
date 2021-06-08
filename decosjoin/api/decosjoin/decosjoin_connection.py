@@ -224,7 +224,6 @@ class DecosJoinConnection:
                     {"name": "status", "from": "title", "parser": to_string},
                     {"name": "requester", "from": "company", "parser": to_string},
                     {"name": "owner", "from": "text25", "parser": to_string},
-                    {"name": "before2019", "from": "text20", "parser": to_string},  # Todo: is this a date?
                     # dateEnd is set programmatically  Datum tot
                 ]
                 new_zaak = _get_fields(fields, zaak)
