@@ -27,5 +27,5 @@ sentry-sdk==1.0.0
 signxml==2.8.1
 six==1.15.0
 tma-saml==0.4.2
-urllib3==1.26.4
+urllib3==1.26.5
 Werkzeug==1.0.1
