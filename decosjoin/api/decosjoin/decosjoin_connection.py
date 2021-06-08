@@ -24,6 +24,32 @@ ALLOWED_ZAAKTYPES = [
 ]
 
 
+select_fields = ','.join([
+    'title',
+    'mark',
+    'text45',
+    'subject1',
+    'bol10',
+    'company',
+    'date5',
+    'date6',
+    'date7',
+    'dfunction',
+    'document_date',
+    'processed',
+    'text6',
+    'text7',
+    'text8',
+    'text9',
+    'text10',
+    'text11',
+    'text12',
+    'text13',
+    'text20',
+    'text25',
+])
+
+
 class DecosJoinConnection:
     def __init__(self, username, password, api_host, adres_boeken):
         self.username = username
@@ -104,19 +130,9 @@ class DecosJoinConnection:
 
         return keys
 
-    def _get_zaken_for_user(self, user_key, offset=None):
-        url = f"{self.api_url}items/{user_key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction&top={page_size}"
-        if offset:
-            url += f'&skip={offset}'
-        res_json = self._get(url)
-        if log_raw:
-            from pprint import pprint
-            print("request:", url)
-            pprint(res_json)
-        return res_json
-
-    def _transform(self, zaken, user_identifier):
+    def _transform(self, zaken, user_identifier):  # noqa: C901
         new_zaken = []
+        deferred_zaken = []
 
         for zaak in zaken:
             f = zaak['fields']
@@ -150,31 +166,66 @@ class DecosJoinConnection:
                     continue
                 if not self._deny_list_filter(new_zaak['decision'], ['buiten behandeling']):
                     continue
+                if new_zaak['title'].lower().startswith("*verwijder"):
+                    continue
 
-            elif f['text45'] in ['Vakantieverhuur', 'Vakantieverhuur afmelding', 'Vakantieverhuur vergunningsaanvraag']:
+            elif f['text45'] == 'Vakantieverhuur vergunningsaanvraag':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
-                    {"name": "dateRequest", "from": "document_date", "parser": to_date},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
-                    {"name": "title", "from": 'subject1', "parser": to_string},
-                    {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
-                    {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Datum tot
-                    {"name": "location", "from": 'text6', "parser": to_string},
-                    {"name": "status", "from": 'title', "parser": to_string},
+                    {"name": "dateRequest", "from": "document_date", "parser": to_date},
+                    {"name": "processed", "from": "processed", "parser": to_string},
+                    {"name": "dateProcessed", "from": "date5", "parser": to_datetime},  # Datum afhandeling
+                    {"name": "location", "from": "text6", "parser": to_string},
+                    {"name": "status", "from": "title", "parser": to_string},
+                    {"name": "decision", "from": "dfunction", "parser": to_string},
+                ]
+                new_zaak = _get_fields(fields, zaak)
+
+            elif f['text45'] == 'Vakantieverhuur':
+                fields = [
+                    {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "identifier", "from": 'mark', "parser": to_string},
+                    {"name": "dateRequest", "from": "document_date", "parser": to_date},
+                    {"name": "processed", "from": "processed", "parser": to_string},
+                    {"name": "dateProcessed", "from": "date5", "parser": to_datetime},  # Datum afhandeling
+                    {"name": "dateStart", "from": 'date6', "parser": to_date},  # Start verhuur
+                    {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
+                    {"name": "location", "from": "text6", "parser": to_string},
+                    # cancelled: true/false
+                    # dateCancelled: date(time)?
+                ]
+                new_zaak = _get_fields(fields, zaak)
+                new_zaak['cancelled'] = False
+                new_zaak['dateCancelled'] = None
+
+            elif f['text45'] == 'Vakantieverhuur afmelding':
+                fields = [
+                    {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "identifier", "from": 'mark', "parser": to_string},
+                    {"name": "dateRequest", "from": "document_date", "parser": to_date},
+                    {"name": "dateStart", "from": 'date6', "parser": to_date},  # Start verhuur
+                    {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
                 ]
 
                 new_zaak = _get_fields(fields, zaak)
+                deferred_zaken.append(new_zaak)
+                continue  # do not follow normal new_zaak procedure
 
             elif f['text45'] == 'B&B - vergunning':
                 fields = [
-                    {"name": "caseType", "from": 'text45', "parser": to_string},
+                    {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},  # Startdatum zaak
-                    {"name": "location", "from": 'text6', "parser": to_string},
-                    {"name": "identifier", "from": 'mark', "parser": to_string},
-                    {"name": "title", "from": 'subject1', "parser": to_string},
-                    {"name": "status", "from": 'title', "parser": to_string},
-                    {"name": "requester", "from": 'company', "parser": to_string},
-                    {"name": "dateStart", "from": "document_date", "parser": to_date},  # Startdatum zaak
+                    {"name": "decision", "from": "dfunction", "parser": to_string},
+                    {"name": "location", "from": "text6", "parser": to_string},
+                    {"name": "title", "from": "subject1", "parser": to_string},
+                    {"name": "identifier", "from": "mark", "parser": to_string},
+                    {"name": "processed", "from": "processed", "parser": to_string},
+                    {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
+                    {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
+                    {"name": "status", "from": "title", "parser": to_string},
+                    {"name": "requester", "from": "company", "parser": to_string},
+                    {"name": "owner", "from": "text25", "parser": to_string},
                     # dateEnd is set programmatically  Datum tot
                 ]
                 new_zaak = _get_fields(fields, zaak)
@@ -187,6 +238,15 @@ class DecosJoinConnection:
                 continue
 
             new_zaken.append(new_zaak)
+
+        for defferred_zaak in deferred_zaken:
+            if defferred_zaak['caseType'] == 'Vakantieverhuur afmelding':
+                # update the existing registration
+                for new_zaak in new_zaken:
+                    if (new_zaak['dateStart'] == defferred_zaak['dateStart']) and (new_zaak['dateEnd'] == defferred_zaak['dateEnd']):
+                        new_zaak['cancelled'] = True
+                        new_zaak['dateCancelled'] = defferred_zaak['dateRequest']
+
         return new_zaken
 
     def next_april_first(self, case_date: date):
@@ -204,7 +264,6 @@ class DecosJoinConnection:
     def filter_zaken(self, zaken):
         """ Filter un-parsed cases. """
         zaken = [zaak for zaak in zaken if zaak['caseType'].lower() in ALLOWED_ZAAKTYPES]
-        zaken = [zaak for zaak in zaken if not zaak['title'].lower().startswith("*verwijder")]
 
         return zaken
 
@@ -245,7 +304,7 @@ class DecosJoinConnection:
         user_keys = self._get_user_keys(kind, identifier)
 
         for key in user_keys:
-            url = f"{self.api_url}items/{key}/folders?select=title,mark,text45,subject1,text9,text11,text12,text13,text6,date6,text7,text10,date7,text8,document_date,date5,processed,dfunction,company"
+            url = f"{self.api_url}items/{key}/folders?select={select_fields}"
             zaken.extend(self.get_all_pages(url))
 
         zaken = self._transform(zaken, identifier)
