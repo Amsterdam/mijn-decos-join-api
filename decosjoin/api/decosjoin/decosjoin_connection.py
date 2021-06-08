@@ -130,7 +130,7 @@ class DecosJoinConnection:
 
         return keys
 
-    def _transform(self, zaken, user_identifier):
+    def _transform(self, zaken, user_identifier):  # noqa: C901
         new_zaken = []
         deferred_zaken = []
 
