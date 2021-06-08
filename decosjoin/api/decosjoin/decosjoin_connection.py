@@ -243,9 +243,10 @@ class DecosJoinConnection:
             if defferred_zaak['caseType'] == 'Vakantieverhuur afmelding':
                 # update the existing registration
                 for new_zaak in new_zaken:
-                    if (new_zaak['dateStart'] == defferred_zaak['dateStart']) and (new_zaak['dateEnd'] == defferred_zaak['dateEnd']):
-                        new_zaak['cancelled'] = True
-                        new_zaak['dateCancelled'] = defferred_zaak['dateRequest']
+                    if new_zaak['caseType'] == 'Vakantieverhuur':
+                        if (new_zaak['dateStart'] == defferred_zaak['dateStart']) and (new_zaak['dateEnd'] == defferred_zaak['dateEnd']):
+                            new_zaak['cancelled'] = True
+                            new_zaak['dateCancelled'] = defferred_zaak['dateRequest']
 
         return new_zaken
 
