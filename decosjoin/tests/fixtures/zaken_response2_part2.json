@@ -1,5 +1,5 @@
 {
-  "count": 15,
+  "count": 17,
   "content": [
     {
       "key": "HEXSTRING12",
@@ -128,6 +128,52 @@
       "links": [
         {
           "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/B1AE0165A8384B7295FB7D805F8E0712",
+          "rel": "self"
+        }
+      ]
+    },
+    {
+      "fields": {
+        "company": "Moes",
+        "date6": "2021-06-18T00:00:00",
+        "date7": "2021-06-21T00:00:00",
+        "document_date": "2021-06-04T00:00:00",
+        "mark": "Z/21/89012345",
+        "processed": false,
+        "subject1": "Melding Robijnstraat 1  - R  Moes",
+        "text11": "Nvt",
+        "text45": "Vakantieverhuur afmelding",
+        "text6": "Robijnstraat 1 1074VE",
+        "title": "Ontvangen"
+      },
+      "key": "15E17A8F709441A2A8EAE61EF87B0EB3",
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/15E17A8F709441A2A8EAE61EF87B0EB3",
+          "rel": "self"
+        }
+      ]
+    },
+    {
+      "fields": {
+        "company": "Moes",
+        "date6": "2021-06-18T00:00:00",
+        "date7": "2021-06-21T00:00:00",
+        "document_date": "2021-06-04T00:00:00",
+        "mark": "Z/21/90123456",
+        "processed": false,
+        "subject1": "Melding Robijnstraat 1  - R  Moes",
+        "text11": "Nvt",
+        "text12": "Geen kosten",
+        "text45": "Vakantieverhuur",
+        "text6": "Robijnstraat 1 1074VE Amsterdam",
+        "text7": "Z/21/2046287",
+        "title": "Ontvangen"
+      },
+      "key": "CA6575F94A6C4299A3E3DD01AF370C09",
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/CA6575F94A6C4299A3E3DD01AF370C09",
           "rel": "self"
         }
       ]

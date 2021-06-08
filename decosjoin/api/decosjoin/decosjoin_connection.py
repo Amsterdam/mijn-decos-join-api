@@ -240,7 +240,7 @@ class DecosJoinConnection:
             new_zaken.append(new_zaak)
 
         for defferred_zaak in deferred_zaken:
-            if defferred_zaak['text45'] == 'Vakantieverhuur afmelding':
+            if defferred_zaak['caseType'] == 'Vakantieverhuur afmelding':
                 # update the existing registration
                 for new_zaak in new_zaken:
                     if (new_zaak['dateStart'] == defferred_zaak['dateStart']) and (new_zaak['dateEnd'] == defferred_zaak['dateEnd']):
