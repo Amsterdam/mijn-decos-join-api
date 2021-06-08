@@ -204,6 +204,8 @@ class DecosJoinConnection:
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
+                    {"name": "dateStart", "from": 'date6', "parser": to_date},  # Start verhuur
+                    {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
                 ]
 
                 new_zaak = _get_fields(fields, zaak)
@@ -237,13 +239,13 @@ class DecosJoinConnection:
 
             new_zaken.append(new_zaak)
 
-        for zaak in deferred_zaken:
-            if zaak['text45'] == 'Vakantieverhuur afmelding':
+        for defferred_zaak in deferred_zaken:
+            if defferred_zaak['text45'] == 'Vakantieverhuur afmelding':
                 # update the existing registration
                 for new_zaak in new_zaken:
-                    if new_zaak['identifier'] == zaak['identifier']:
+                    if (new_zaak['dateStart'] == defferred_zaak['dateStart']) and (new_zaak['dateEnd'] == defferred_zaak['dateEnd']):
                         new_zaak['cancelled'] = True
-                        new_zaak['dateCancelled'] = zaak['dateRequest']
+                        new_zaak['dateCancelled'] = defferred_zaak['dateRequest']
 
         return new_zaken
 
