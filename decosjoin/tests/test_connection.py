@@ -2,7 +2,7 @@ from datetime import date
 from unittest import TestCase
 from unittest.mock import patch
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
+from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, _get_translation
 # from decosjoin.tests.fixtures.data import get_document
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
@@ -22,20 +22,20 @@ class ConnectionTests(TestCase):
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
-        self.assertEqual(len(zaken), 12)
+        self.assertEqual(len(zaken), 16)
 
-        self.assertEqual(zaken[1]["identifier"], "Z/21/78901234")
-        self.assertEqual(zaken[2]["identifier"], "Z/21/67890123")
+        self.assertEqual(zaken[5]["identifier"], "Z/21/78901234")
+        self.assertEqual(zaken[6]["identifier"], "Z/21/67890123")
 
-        self.assertEqual(zaken[11]["identifier"], "Z/20/1234567")
-        self.assertEqual(zaken[10]["identifier"], "Z/20/2345678")
+        self.assertEqual(zaken[15]["identifier"], "Z/20/1234567")
+        self.assertEqual(zaken[14]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
         # Z/21/89012345 "vakantieverhuur afmelding" is filtered out because it updates Z/21/90123456 "vakantieverhuur"
 
-        self.assertEqual(zaken[8]['decision'], 'Verleend')
-        self.assertEqual(zaken[8]['dateDecision'], date(2020, 6, 16))
+        self.assertEqual(zaken[12]['decision'], 'Verleend')
+        self.assertEqual(zaken[12]['dateDecision'], date(2020, 6, 16))
 
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_list_documents(self):
@@ -61,6 +61,20 @@ class ConnectionTests(TestCase):
         self.assertEqual(self.connection.next_april_first(date(2021, 3, 1)), date(2021, 4, 1))
         self.assertEqual(self.connection.next_april_first(date(2021, 4, 1)), date(2022, 4, 1))
         self.assertEqual(self.connection.next_april_first(date(2021, 6, 1)), date(2022, 4, 1))
+
+    def test_get_translations(self):
+        translations = [
+            ["a", "1Aa", True],
+            ["b", "2Aa", False],
+            ["C", "3Aa", True],
+            ["D", "4Aa", False],
+        ]
+        self.assertEqual(_get_translation("a", translations), "1Aa")
+        self.assertEqual(_get_translation("A", translations), "1Aa")
+        self.assertIsNone(_get_translation("b", translations))
+        self.assertEqual(_get_translation("c", translations), "3Aa")
+        self.assertIsNone(_get_translation("d", translations))
+        self.assertIsNone(_get_translation("Nope", translations))
 
     # def test_get_document(self):
     #     documents = self.connection.get_document('DOCUMENTKEY01')

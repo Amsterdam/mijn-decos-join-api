@@ -37,6 +37,7 @@ class ApiTests(FlaskServerTMATestCase):
             'timeEnd': '16:00',
             'timeStart': '10:00',
             'title': 'Test MA MIJN-3031',
+            'processed': False
             # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 
@@ -71,14 +72,19 @@ class ApiTests(FlaskServerTMATestCase):
         data = response.get_json()
 
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(data["content"][0]["caseType"], "Vakantieverhuur")
-        self.assertEqual(data["content"][1]["caseType"], "B&B - vergunning")
-        self.assertEqual(data["content"][1]["dateStart"], "2021-05-19")
-        self.assertEqual(data["content"][1]["dateEnd"], "2022-04-01")
+        self.assertEqual(data["content"][0]["caseType"], "Omzettingsvergunning")
+        self.assertEqual(data["content"][1]["caseType"], "GPK")
+        self.assertEqual(data["content"][2]["caseType"], "GPP")
+        self.assertEqual(data["content"][3]["caseType"], "E-RVV - TVM")
+        self.assertEqual(data["content"][4]["caseType"], "Vakantieverhuur")
 
-        self.assertEqual(data["content"][4]["caseType"], "TVM - RVV - Object")
-        self.assertTrue(data["content"][4]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
-        self.assertTrue(data["content"][4]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
+        self.assertEqual(data["content"][5]["caseType"], "B&B - vergunning")
+        self.assertEqual(data["content"][5]["dateStart"], "2021-05-19")
+        self.assertEqual(data["content"][5]["dateEnd"], "2022-04-01")
+
+        self.assertEqual(data["content"][8]["caseType"], "TVM - RVV - Object")
+        self.assertTrue(data["content"][8]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
+        self.assertTrue(data["content"][8]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
 
         # remove the encrypted url, it is time based
         del(data["content"][-1]["documentsUrl"])

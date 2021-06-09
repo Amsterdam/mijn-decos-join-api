@@ -1,8 +1,8 @@
 from decosjoin.tests.fixtures.data import get_zaken_response, \
     get_zaken_response_2, get_zaken_response_empty, get_search_addresses_bsn_111222333_response_empty, \
     get_search_addresses_bsn_111222333_response, get_search_addresses_bsn_111222333_response_2, \
-    get_zaken_resposne_2_part_2, get_documents_response, get_document, get_blobs_response, get_document_response, \
-    get_document2_response, get_blob_response, get_blob_response_no_pdf
+    get_zaken_response_2_part_2, get_documents_response, get_document, get_blobs_response, get_document_response, \
+    get_document2_response, get_blob_response, get_blob_response_no_pdf, get_zaken_response_2_part_3
 
 
 def get_response_mock(self, *args, **kwargs):
@@ -57,7 +57,11 @@ mocked_get_urls_tuple = (
     ),
     (
         f"http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxx2/folders{_folder_params}&skip=10",
-        get_zaken_resposne_2_part_2()
+        get_zaken_response_2_part_2()
+    ),
+    (
+        f"http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxx2/folders{_folder_params}&skip=20",
+        get_zaken_response_2_part_3()
     ),
     (
         f"http://localhost/decosweb/aspx/api/v1/items/32charsstringxxxxxxxxxxxxxxxxxx3/folders{_folder_params}",

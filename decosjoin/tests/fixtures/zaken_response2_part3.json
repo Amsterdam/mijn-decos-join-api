@@ -1,0 +1,54 @@
+{
+  "count": 21,
+  "content": [
+    {
+      "key": "HEXSTRING22",
+      "fields": {
+        "company": "Achternaam",
+        "document_date": "2021-06-08T00:00:00",
+        "mark": "Z/21/99012347",
+        "processed": false,
+        "subject1": "Europese gehandicaptenparkeerkaart voor een bestuurder",
+        "text11": "Nvt",
+        "text45": "GPK",
+        "title": "Ontvangen"
+      },
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING22",
+          "rel": "self"
+        }
+      ]
+    },
+    {
+      "key": "HEXSTRING23",
+      "fields": {
+        "company": "Achternaam",
+        "date6": "2021-06-02T00:00:00",
+        "document_date": "2021-05-19T00:00:00",
+        "mark": "Z/21/99012348",
+        "processed": false,
+        "subject1": "Omzettingsvergunning aanvragen",
+        "text11": "Geheel",
+        "text12": "Online voldaan",
+        "text45": "Omzettingsvergunning",
+        "text6": "Amstel 1 1012AK AMSTERDAM",
+        "text7": "Amstel",
+        "text8": "Oude Kerk e.o.",
+        "title": "Ontvangen"
+      },
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING23",
+          "rel": "self"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "rel": "itemprofile",
+      "href": "https://localhost/decosweb/aspx/api/v1/itemprofiles/32charsstringxxxxxxxxxxxxxxxxxxx/list"
+    }
+  ]
+}
