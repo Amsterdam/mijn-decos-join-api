@@ -24,8 +24,8 @@ ALLOWED_ZAAKTYPES = [
     'gpk',
     'omzettingsvergunning',
     'e-rvv - tvm',
-    'Evenement melding',
-    'Evenement vergunning',
+    # 'evenement melding',
+    # 'evenement vergunning',
 ]
 
 
@@ -294,60 +294,60 @@ class DecosJoinConnection:
                 ]
                 new_zaak['result'] = _get_translation(new_zaak['result'], translations)
 
-            elif f['text45'] == 'Evenement melding':
-                fields = [
-                    {"name": "caseType", "from": "text45", "parser": to_string},
-                    {"name": "identifier", "from": "mark", "parser": to_string},
-                    {"name": "dateHandled", "from": "date5", "parser": to_datetime},  # Datum afhandeling
-                    {"name": "processed", "from": "processed", "parser": to_string},
-                    {"name": "dateRequest", "from": "document_date", "parser": to_string},
-                    {"name": "dateStart", "from": "date6", "parser": to_date},  # Op   <datum> ?
-                    {"name": "location", "from": "text8", "parser": to_string},
-                    {"name": "timeStart", "from": "text7", "parser": to_time},  # Van   <tijd>
-                    {"name": "timeEnd", "from": "text8", "parser": to_time},  # Tot    <tijd>
-                    {"name": "result", "from": "dfunction", "parser": to_string},
-                ]
-                new_zaak = _get_fields(fields, zaak)
-                translations = [
-                    ["Ingetrokken", "Ingetrokken", True],
-                    ["Buiten behandeling", "Buiten behandeling", False],
-                    ["Niet verleend", "Geweigerd", True],
-                    ["Verleend", "Gemeld", True],
-                    ["Nog niet  bekend", "", False],
-                    ["Nog niet bekend", "", False],
-                    ["Verleend", "Verleend", True],
-                    ["Verleend (Bijzonder/Bewaren)", "Verleend", True],
-                    ["Verleend zonder borden", "Verleend", True],
-                ]
-                new_zaak['result'] = _get_translation(new_zaak['result'], translations)
-
-            elif f['text45'] == 'Evenement vergunning':
-                fields = [
-                    {"name": "caseType", "from": "text45", "parser": to_string},
-                    {"name": "identifier", "from": "mark", "parser": to_string},
-                    {"name": "dateHandled", "from": "date5", "parser": to_datetime},  # Datum afhandeling
-                    {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
-                    {"name": "title", "from": "subject1", "parser": to_string},
-                    {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
-                    {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
-                    {"name": "location", "from": "text8", "parser": to_string},
-                    {"name": "timeStart", "from": "text7", "parser": to_time},
-                    {"name": "timeEnd", "from": "text8", "parser": to_time},  # tijd tot
-                ]
-                new_zaak = _get_fields(fields, zaak)
-
-                translations = [
-                    ["Afgebroken (Ingetrokken)", "Afgebroken (Ingetrokken)", True],
-                    ["Buiten behandeling", "Buiten behandeling", False],
-                    ["Geweigerd", "Geweigerd", True],
-                    ["Nog niet  bekend", "", False],
-                    ["Nog niet  bekend", "", False],
-                    ["Nog niet bekend", "", False],
-                    ["Verleend", "Verleend", True],
-                    ["Verleend (Bijzonder/Bewaren)", "Verleend", True],
-                    ["Verleend zonder borden", "Verleend", True],
-                ]
-                new_zaak['result'] = _get_translation(new_zaak['result'], translations)
+            # elif f['text45'] == 'Evenement melding':
+            #     fields = [
+            #         {"name": "caseType", "from": "text45", "parser": to_string},
+            #         {"name": "identifier", "from": "mark", "parser": to_string},
+            #         {"name": "dateHandled", "from": "date5", "parser": to_datetime},  # Datum afhandeling
+            #         {"name": "processed", "from": "processed", "parser": to_string},
+            #         {"name": "dateRequest", "from": "document_date", "parser": to_string},
+            #         {"name": "dateStart", "from": "date6", "parser": to_date},  # Op   <datum> ?
+            #         {"name": "location", "from": "text8", "parser": to_string},
+            #         {"name": "timeStart", "from": "text7", "parser": to_time},  # Van   <tijd>
+            #         {"name": "timeEnd", "from": "text8", "parser": to_time},  # Tot    <tijd>
+            #         {"name": "result", "from": "dfunction", "parser": to_string},
+            #     ]
+            #     new_zaak = _get_fields(fields, zaak)
+            #     translations = [
+            #         ["Ingetrokken", "Ingetrokken", True],
+            #         ["Buiten behandeling", "Buiten behandeling", False],
+            #         ["Niet verleend", "Geweigerd", True],
+            #         ["Verleend", "Gemeld", True],
+            #         ["Nog niet  bekend", "", False],
+            #         ["Nog niet bekend", "", False],
+            #         ["Verleend", "Verleend", True],
+            #         ["Verleend (Bijzonder/Bewaren)", "Verleend", True],
+            #         ["Verleend zonder borden", "Verleend", True],
+            #     ]
+            #     new_zaak['result'] = _get_translation(new_zaak['result'], translations)
+            #
+            # elif f['text45'] == 'Evenement vergunning':
+            #     fields = [
+            #         {"name": "caseType", "from": "text45", "parser": to_string},
+            #         {"name": "identifier", "from": "mark", "parser": to_string},
+            #         {"name": "dateHandled", "from": "date5", "parser": to_datetime},  # Datum afhandeling
+            #         {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
+            #         {"name": "title", "from": "subject1", "parser": to_string},
+            #         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
+            #         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
+            #         {"name": "location", "from": "text8", "parser": to_string},
+            #         {"name": "timeStart", "from": "text7", "parser": to_time},
+            #         {"name": "timeEnd", "from": "text8", "parser": to_time},  # tijd tot
+            #     ]
+            #     new_zaak = _get_fields(fields, zaak)
+            #
+            #     translations = [
+            #         ["Afgebroken (Ingetrokken)", "Afgebroken (Ingetrokken)", True],
+            #         ["Buiten behandeling", "Buiten behandeling", False],
+            #         ["Geweigerd", "Geweigerd", True],
+            #         ["Nog niet  bekend", "", False],
+            #         ["Nog niet  bekend", "", False],
+            #         ["Nog niet bekend", "", False],
+            #         ["Verleend", "Verleend", True],
+            #         ["Verleend (Bijzonder/Bewaren)", "Verleend", True],
+            #         ["Verleend zonder borden", "Verleend", True],
+            #     ]
+            #     new_zaak['result'] = _get_translation(new_zaak['result'], translations)
 
             elif f['text45'] == 'Omzettingsvergunning':
                 fields = [
