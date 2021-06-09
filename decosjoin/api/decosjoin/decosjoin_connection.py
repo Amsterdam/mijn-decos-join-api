@@ -18,9 +18,12 @@ page_size = 30
 ALLOWED_ZAAKTYPES = [
     'tvm - rvv - object',
     'vakantieverhuur',
-    'vakantieverhuur afmelding',
     'vakantieverhuur vergunningsaanvraag',
     'b&b - vergunning',
+    'gpp',
+    'gpk',
+    'Omzettingsvergunning',
+    'e-rvv-tvm',
 ]
 
 
