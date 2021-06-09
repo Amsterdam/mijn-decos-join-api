@@ -22,8 +22,8 @@ ALLOWED_ZAAKTYPES = [
     'b&b - vergunning',
     'gpp',
     'gpk',
-    'Omzettingsvergunning',
-    'e-rvv-tvm',
+    'omzettingsvergunning',
+    'e-rvv - tvm',
     'Evenement melding',
     'Evenement vergunning',
 ]
@@ -374,7 +374,7 @@ class DecosJoinConnection:
                 ]
                 new_zaak['result'] = _get_translation(new_zaak['result'], translations)
 
-            elif f['text45'] == 'E-RVV-TVM':
+            elif f['text45'] == 'E-RVV - TVM':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
