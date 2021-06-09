@@ -24,6 +24,8 @@ ALLOWED_ZAAKTYPES = [
     'gpk',
     'Omzettingsvergunning',
     'e-rvv-tvm',
+    'Evenement melding',
+    'Evenement vergunning',
 ]
 
 
@@ -561,6 +563,8 @@ class DecosJoinConnection:
 
 def _get_translation(value: str, translations: list):
     """ Accepts a 2d list with 3 items. [ ["from", "to" "show"], ... ] """
+    if value is None:
+        return value
     value = value.lower()
     for i in translations:
         if i[0].lower() == value:
