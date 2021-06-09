@@ -37,7 +37,7 @@ class ApiTests(FlaskServerTMATestCase):
             'timeEnd': '16:00',
             'timeStart': '10:00',
             'title': 'Test MA MIJN-3031',
-            'processed': None
+            'processed': False
             # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 
