@@ -11,8 +11,7 @@
         "text11": "Nvt",
         "date6": "2020-06-16T00:00:00",
         "date7": "2020-06-16T00:00:00",
-        "document_date": "2020-06-08T00:00:00",
-        "processed": false
+        "document_date": "2020-06-08T00:00:00"
       },
       "links": [
         {
@@ -31,8 +30,7 @@
         "text11": "Nvt",
         "date6": "2020-06-16T00:00:00",
         "date7": "2020-06-16T00:00:00",
-        "document_date": "2020-06-08T00:00:00",
-        "processed": false
+        "document_date": "2020-06-08T00:00:00"
       },
       "links": [
         {
@@ -48,7 +46,6 @@
         "date7": "2020-07-02T00:00:00",
         "document_date": "2020-01-01T00:00:00",
         "mark": "Z/20/4567890",
-        "processed": false,
         "subject1": "Wacht op online betaling",
         "text11": "Nogniet",
         "text45": "TVM - RVV - Object",
@@ -69,7 +66,6 @@
         "date7": "2020-07-02T00:00:00",
         "document_date": "2020-01-01T00:00:00",
         "mark": "Z/20/56789012",
-        "processed": false,
         "subject1": "*verwijder*",
         "text11": "Nogniet",
         "text45": "TVM - RVV - Object",
@@ -90,7 +86,6 @@
         "date7": "2021-05-02T00:00:00",
         "document_date": "2021-04-28T00:00:00",
         "mark": "Z/21/67890123",
-        "processed": false,
         "subject1": "Melding Amstel 1  - V Achternaam",
         "text11": "Nvt",
         "text12": "Geen kosten",
@@ -114,7 +109,6 @@
         "date7": "2021-12-31T00:00:00",
         "document_date": "2021-05-19T00:00:00",
         "mark": "Z/21/78901234",
-        "processed": false,
         "subject1": "B&B vergunning aanvragen - Amstel 1",
         "text10": "Ja",
         "text11": "Geheel",
@@ -133,6 +127,42 @@
       ]
     },
     {
+      "key": "HEXSTRING17b",
+      "fields": {
+        "text45": "Vakantieverhuur vergunningsaanvraag",
+        "mark": "Z/21/7865356778",
+        "document_date": "2021-05-19T00:00:00",
+        "date5": "2021-05-19T00:00:00",
+        "text6": "Amstel 1 1012AA Amsterdam",
+        "title": "Ontvangen",
+        "dfunction": null
+      },
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING17b",
+          "rel": "self"
+        }
+      ]
+    },
+    {
+      "key": "HEXSTRING17c",
+      "fields": {
+        "text45": "Vakantieverhuur vergunningsaanvraag",
+        "mark": "Z/21/123123123",
+        "document_date": "2021-05-20T00:00:00",
+        "date5": "2021-05-20T00:00:00",
+        "text6": "Amstel 1 1012AA Amsterdam",
+        "title": "Afgehandeld",
+        "dfunction": "Ingetrokken"
+      },
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING17c",
+          "rel": "self"
+        }
+      ]
+    },
+    {
       "key": "HEXSTRING18",
       "fields": {
         "company": "Moes",
@@ -140,7 +170,6 @@
         "date7": "2021-06-21T00:00:00",
         "document_date": "2021-06-04T00:00:00",
         "mark": "Z/21/89012345",
-        "processed": false,
         "subject1": "Melding Amstel 1  - R  Moes",
         "text11": "Nvt",
         "text45": "Vakantieverhuur afmelding",
@@ -162,7 +191,6 @@
         "date7": "2021-06-21T00:00:00",
         "document_date": "2021-06-04T00:00:00",
         "mark": "Z/21/90123456",
-        "processed": false,
         "subject1": "Melding Amstel 1  - R  Moes",
         "text11": "Nvt",
         "text12": "Geen kosten",
@@ -186,7 +214,6 @@
         "date7": "2021-05-26T00:00:00",
         "document_date": "2021-05-18T00:00:00",
         "mark": "Z/21/99012345",
-        "processed": false,
         "subject1": "SB RVV ontheffing hele stad",
         "text11": "Nvt",
         "text12": "Geen kosten",
@@ -206,7 +233,6 @@
         "company": "Achternaam",
         "document_date": "2021-06-08T00:00:00",
         "mark": "Z/21/99012346",
-        "processed": false,
         "subject1": "Een parkeerplaats aanvragen",
         "text11": "Nvt",
         "text45": "GPP",

@@ -41,7 +41,6 @@ select_fields = ','.join([
     'date7',
     'dfunction',
     'document_date',
-    'processed',
     'text6',
     'text7',
     'text8',
@@ -147,7 +146,6 @@ class DecosJoinConnection:
                     {"name": "status", "from": "title", "parser": to_string},
                     {"name": "title", "from": "subject1", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
-                    {"name": "processed", "from": "processed", "parser": to_bool},
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "dateStart", "from": "date6", "parser": to_date},
                     {"name": "dateEnd", "from": "date7", "parser": to_date},
@@ -180,11 +178,10 @@ class DecosJoinConnection:
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
-                    {"name": "processed", "from": "processed", "parser": to_bool},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "location", "from": "text6", "parser": to_string},
-                    {"name": "status", "from": "title", "parser": to_string},
-                    {"name": "decision", "from": "dfunction", "parser": to_string},
+                    {"name": "status", "from": "title", "parser": to_vakantie_verhuur_vergunning_status},
+                    {"name": "decision", "from": "dfunction", "parser": to_vakantie_verhuur_vergunning_decision},
                 ]
                 new_zaak = _get_fields(fields, zaak)
 
@@ -193,7 +190,6 @@ class DecosJoinConnection:
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
-                    {"name": "processed", "from": "processed", "parser": to_bool},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Start verhuur
                     {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
@@ -226,7 +222,6 @@ class DecosJoinConnection:
                     {"name": "location", "from": "text6", "parser": to_string},
                     {"name": "title", "from": "subject1", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
-                    {"name": "processed", "from": "processed", "parser": to_bool},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
                     {"name": "status", "from": "title", "parser": to_string},
@@ -243,7 +238,6 @@ class DecosJoinConnection:
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
-                    {"name": "processed", "from": "processed", "parser": to_bool},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "dateRequest", "from": "document_date", "parser": to_string},
                     {"name": "decision", "from": "dfunction", "parser": to_string},
@@ -267,7 +261,6 @@ class DecosJoinConnection:
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "decision", "from": "dfunction", "parser": to_string},
-                    {"name": "processed", "from": "processed", "parser": to_bool},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "cardNumber", "from": "num3", "parser": to_string},  # kaartnummer
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
@@ -299,7 +292,6 @@ class DecosJoinConnection:
             #         {"name": "caseType", "from": "text45", "parser": to_string},
             #         {"name": "identifier", "from": "mark", "parser": to_string},
             #         {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
-            #         {"name": "processed", "from": "processed", "parser": to_bool},
             #         {"name": "dateRequest", "from": "document_date", "parser": to_string},
             #         {"name": "dateStart", "from": "date6", "parser": to_date},  # Op   <datum> ?
             #         {"name": "location", "from": "text8", "parser": to_string},
@@ -354,7 +346,6 @@ class DecosJoinConnection:
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
-                    {"name": "processed", "from": "processed", "parser": to_bool},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "location", "from": "text8", "parser": to_string},
                     {"name": "title", "from": "subject1", "parser": to_string},
@@ -379,7 +370,6 @@ class DecosJoinConnection:
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_string},
-                    {"name": "processed", "from": "processed", "parser": to_bool},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "title", "from": "subject1", "parser": to_string},
                     {"name": "location", "from": "text8", "parser": to_string},
@@ -679,3 +669,17 @@ def to_decision(value):
         return 'Verleend'
 
     return value
+
+
+def to_vakantie_verhuur_vergunning_status(value):
+    # Vakantieverhuur vergunningen worden direct verleend (en dus voor Mijn Amsterdam afgehaneld)
+    return "Afgehandeld"
+
+
+def to_vakantie_verhuur_vergunning_decision(value):
+    # Vakantieverhuur vergunningen worden na betaling direct verleend en per mail toegekend zonder dat de juiste status in Decos wordt gezet.
+    # Later, na controle, wordt mogelijk de vergunning weer ingetrokken
+    if value and "ingetrokken" in value.lower():
+        return "Ingetrokken"
+
+    return "Verleend"

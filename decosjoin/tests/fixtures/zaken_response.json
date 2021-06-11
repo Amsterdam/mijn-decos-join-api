@@ -16,8 +16,7 @@
         "text7": "TEST MA Decos",
         "text10": "10:00",
         "date7": "2021-04-28T00:00:00",
-        "document_date": "2021-04-16T00:00:00",
-        "processed": false
+        "document_date": "2021-04-16T00:00:00"
       },
       "links": [
         {
@@ -34,7 +33,6 @@
         "dfunction": "Buiten behandeling",
         "document_date": "2020-06-24T00:00:00",
         "mark": "Z/20/2",
-        "processed": true,
         "subject1": "test",
         "text11": "Nvt",
         "text13": "17:12",
