@@ -37,7 +37,6 @@ class ApiTests(FlaskServerTMATestCase):
             'timeEnd': '16:00',
             'timeStart': '10:00',
             'title': 'Test MA MIJN-3031',
-            'processed': False
             # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 
@@ -82,9 +81,9 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(data["content"][5]["dateStart"], "2021-05-19")
         self.assertEqual(data["content"][5]["dateEnd"], "2022-04-01")
 
-        self.assertEqual(data["content"][8]["caseType"], "TVM - RVV - Object")
-        self.assertTrue(data["content"][8]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
-        self.assertTrue(data["content"][8]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
+        self.assertEqual(data["content"][9]["caseType"], "TVM - RVV - Object")
+        self.assertTrue(data["content"][9]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
+        self.assertTrue(data["content"][9]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
 
         # remove the encrypted url, it is time based
         del(data["content"][-1]["documentsUrl"])

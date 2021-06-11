@@ -22,20 +22,32 @@ class ConnectionTests(TestCase):
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
-        self.assertEqual(len(zaken), 16)
+        self.assertEqual(len(zaken), 18)
 
         self.assertEqual(zaken[5]["identifier"], "Z/21/78901234")
-        self.assertEqual(zaken[6]["identifier"], "Z/21/67890123")
 
-        self.assertEqual(zaken[15]["identifier"], "Z/20/1234567")
-        self.assertEqual(zaken[14]["identifier"], "Z/20/2345678")
+        # Vakantie verhuur vergunningsaanvraag
+        self.assertEqual(zaken[6]["identifier"], "Z/21/7865356778")
+        self.assertEqual(zaken[6]["status"], "Afgehandeld")
+        self.assertEqual(zaken[6]["decision"], "Verleend")
+
+        self.assertEqual(zaken[8]["identifier"], "Z/21/123123123")
+        self.assertEqual(zaken[8]["status"], "Afgehandeld")
+        self.assertEqual(zaken[8]["decision"], "Ingetrokken")
+
+        self.assertEqual(zaken[7]["identifier"], "Z/21/67890123")
+
+        self.assertEqual(zaken[17]["identifier"], "Z/20/1234567")
+        self.assertEqual(zaken[16]["identifier"], "Z/20/2345678")
         # Z/20/4567890 is filtered out because of subject1 contents
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
         # Z/21/89012345 "vakantieverhuur afmelding" is filtered out because it updates Z/21/90123456 "vakantieverhuur"
 
-        self.assertEqual(zaken[12]['decision'], 'Verleend')
-        self.assertEqual(zaken[12]['dateDecision'], date(2020, 6, 16))
+        self.assertEqual(zaken[14]['decision'], 'Verleend')
+        self.assertEqual(zaken[14]['dateDecision'], date(2020, 6, 16))
+
+        # self.assertEqual(zaken[])
 
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_list_documents(self):

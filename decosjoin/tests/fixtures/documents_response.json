@@ -42,7 +42,6 @@
       "fields": {
         "sequence": 8.0,
         "mark": "D/3",
-        "processed": false,
         "itemtype_key": "DOCUMENT",
         "text39": "Definitief",
         "text40": "Openbaar",
@@ -158,7 +157,8 @@
           "href": "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY09"
         }
       ]
-    },{
+    },
+    {
       "key": "DOCUMENTKEY09",
       "fields": {
         "sequence": 10.0,
