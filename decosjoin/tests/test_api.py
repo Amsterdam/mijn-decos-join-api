@@ -79,7 +79,7 @@ class ApiTests(FlaskServerTMATestCase):
 
         self.assertEqual(data["content"][5]["caseType"], "B&B - vergunning")
         self.assertEqual(data["content"][5]["dateStart"], "2021-05-19")
-        self.assertEqual(data["content"][5]["dateEnd"], "2022-04-01")
+        self.assertEqual(data["content"][5]["dateEnd"], "2021-12-31")
 
         self.assertEqual(data["content"][9]["caseType"], "TVM - RVV - Object")
         self.assertTrue(data["content"][9]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))

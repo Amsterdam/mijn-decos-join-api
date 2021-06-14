@@ -182,8 +182,13 @@ class DecosJoinConnection:
                     {"name": "location", "from": "text6", "parser": to_string},
                     {"name": "status", "from": "title", "parser": to_vakantie_verhuur_vergunning_status},
                     {"name": "decision", "from": "dfunction", "parser": to_vakantie_verhuur_vergunning_decision},
+                    {"name": "dateStart", "from": "document_date", "parser": to_date},  # same as dateRequest
+                    # dateEnd is set programmatically  Datum tot
                 ]
                 new_zaak = _get_fields(fields, zaak)
+
+                # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
+                new_zaak['dateEnd'] = self.next_april_first(new_zaak['dateRequest'])
 
             elif f['text45'] == 'Vakantieverhuur':
                 fields = [
@@ -224,15 +229,12 @@ class DecosJoinConnection:
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
+                    {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Datum tot en met
                     {"name": "status", "from": "title", "parser": to_string},
                     {"name": "requester", "from": "company", "parser": to_string},
                     {"name": "owner", "from": "text25", "parser": to_string},
-                    # dateEnd is set programmatically  Datum tot
                 ]
                 new_zaak = _get_fields(fields, zaak)
-
-                # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
-                new_zaak['dateEnd'] = self.next_april_first(new_zaak['dateRequest'])
 
             elif f['text45'] == 'GPP':
                 fields = [
