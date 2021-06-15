@@ -246,7 +246,7 @@ class DecosJoinConnection:
                 status_translations = [
                     ["Ontvangen", "Ontvangen", True],
                     ["Behandelen aanvraag", "In behandeling", True],
-                    ["Afgehendeld", "Afgehandeld", True],
+                    ["Afgehandeld", "Afgehandeld", True],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], decision_translations)
                 new_zaak['status'] = _get_translation(new_zaak['status'], status_translations)
