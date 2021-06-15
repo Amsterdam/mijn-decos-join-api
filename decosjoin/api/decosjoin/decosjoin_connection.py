@@ -235,14 +235,21 @@ class DecosJoinConnection:
                     {"name": "owner", "from": "text25", "parser": to_string},
                 ]
                 new_zaak = _get_fields(fields, zaak)
-                translations = [
+                decision_translations = [
                     ["Verleend met overgangsrecht", "Verleend", True],
                     ["Verleend zonder overgangsrecht", "Verleend", True],
                     ["Geweigerd met overgangsrecht", "Geweigerd", True],
                     ["Geweigerd op basis van Quotum", "Geweigerd", True],
                     ["Ingetrokken", "Ingetrokken", True],
                 ]
-                new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+
+                status_translations = [
+                    ["Ontvangen", "Ontvangen", True],
+                    ["Behandelen aanvraag", "In behandeling", True],
+                    ["Afgehendeld", "Afgehandeld", True],
+                ]
+                new_zaak['decision'] = _get_translation(new_zaak['decision'], decision_translations)
+                new_zaak['status'] = _get_translation(new_zaak['status'], status_translations)
 
             elif f['text45'] == 'GPP':
                 fields = [
