@@ -261,6 +261,7 @@ class DecosJoinConnection:
                     {"name": "kenteken", "from": "text7", "parser": to_string},
                     {"name": "location", "from": "text8", "parser": to_string},
                     {"name": "status", "from": "title", "parser": to_string},
+                    {"name": "title", "from": "subject1", "parser": to_string}
                 ]
                 new_zaak = _get_fields(fields, zaak)
                 translations = [
@@ -273,6 +274,9 @@ class DecosJoinConnection:
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
+                if not bool(new_zaak['title']):
+                    new_zaak['title'] = 'Gehandicapten parkeerplek'
+
             elif f['text45'] == 'GPK':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
@@ -283,6 +287,7 @@ class DecosJoinConnection:
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
                     {"name": "cardtype", "from": "text7", "parser": to_string},
                     {"name": "dateEnd", "from": "date7", "parser": to_date},  # vervaldatum
+                    {"name": "title", "from": "subject1", "parser": to_string},
                 ]
                 new_zaak = _get_fields(fields, zaak)
 
@@ -303,6 +308,9 @@ class DecosJoinConnection:
                     ["Verleend vervangend GPK", "Verleend", True],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+
+                if not bool(new_zaak['title']):
+                    new_zaak['title'] = 'Gehandicapten parkeerkaart'
 
             # elif f['text45'] == 'Evenement melding':
             #     fields = [
