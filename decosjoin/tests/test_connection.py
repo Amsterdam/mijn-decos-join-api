@@ -2,7 +2,7 @@ from datetime import date
 from unittest import TestCase
 from unittest.mock import patch
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, _get_translation
+from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, _get_translation, to_transition_agreement
 # from decosjoin.tests.fixtures.data import get_document
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
@@ -87,6 +87,11 @@ class ConnectionTests(TestCase):
         self.assertEqual(_get_translation("c", translations), "3Aa")
         self.assertIsNone(_get_translation("d", translations))
         self.assertIsNone(_get_translation("Nope", translations))
+
+    def test_to_transition_agreement(self):
+        self.assertIs(to_transition_agreement('Verleend met overgangsrecht'), True)
+        self.assertIs(to_transition_agreement('Verleend zonder overgangsrecht'), False)
+        self.assertIs(to_transition_agreement('abc'), False)
 
     # def test_get_document(self):
     #     documents = self.connection.get_document('DOCUMENTKEY01')

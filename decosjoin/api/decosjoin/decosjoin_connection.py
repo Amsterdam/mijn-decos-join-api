@@ -233,6 +233,7 @@ class DecosJoinConnection:
                     {"name": "status", "from": "title", "parser": to_string},
                     {"name": "requester", "from": "company", "parser": to_string},
                     {"name": "owner", "from": "text25", "parser": to_string},
+                    {"name": "hasTransitionAgreement", "from": "dfunction", "parser": to_transition_agreement}  # need this for tip mijn-33
                 ]
                 new_zaak = _get_fields(fields, zaak)
                 decision_translations = [
@@ -245,7 +246,10 @@ class DecosJoinConnection:
 
                 status_translations = [
                     ["Ontvangen", "Ontvangen", True],
+                    ["Volledigheidstoets uitvoeren", "Ontvangen", True],
                     ["Behandelen aanvraag", "In behandeling", True],
+                    ["Huisbezoek", "In behandeling", True],
+                    ["Beoordelen en besluiten", "In behandeling", True],
                     ["Afgehandeld", "Afgehandeld", True],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], decision_translations)
@@ -686,6 +690,10 @@ def to_decision(value):
         return 'Verleend'
 
     return value
+
+
+def to_transition_agreement(value):
+    return value and value.lower() == "verleend met overgangsrecht"
 
 
 def to_vakantie_verhuur_vergunning_status(value):
