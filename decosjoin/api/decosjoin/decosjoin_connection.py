@@ -693,7 +693,10 @@ def to_decision(value):
 
 
 def to_transition_agreement(value):
-    return value and "verleend met overgangsrecht" in value.lower()
+    if not value:
+        return False
+    if value.lower() == "verleend met overgangsrecht":
+        return True
 
 
 def to_vakantie_verhuur_vergunning_status(value):
