@@ -243,12 +243,14 @@ class DecosJoinConnection:
                 decision_translations = [
                     ["Verleend met overgangsrecht", "Verleend", True],
                     ["Verleend zonder overgangsrecht", "Verleend", True],
+                    ["Geweigerd", "Geweigerd", True],
                     ["Geweigerd met overgangsrecht", "Geweigerd", True],
                     ["Geweigerd op basis van Quotum", "Geweigerd", True],
                     ["Ingetrokken", "Ingetrokken", True],
                 ]
 
                 status_translations = [
+                    ["Publicatie aanvraag", "Ontvangen", True],
                     ["Ontvangen", "Ontvangen", True],
                     ["Volledigheidstoets uitvoeren", "Ontvangen", True],
                     ["Behandelen aanvraag", "In behandeling", True],
