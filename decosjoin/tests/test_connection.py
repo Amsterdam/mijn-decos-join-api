@@ -1,10 +1,8 @@
 from datetime import date
-from pprint import pprint
 from unittest import TestCase
 from unittest.mock import patch
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, _get_translation, to_transition_agreement
-# from decosjoin.tests.fixtures.data import get_document
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
