@@ -205,6 +205,10 @@ class DecosJoinConnection:
                 new_zaak = _get_fields(fields, zaak)
                 new_zaak['cancelled'] = False
                 new_zaak['dateCancelled'] = None
+                new_zaak['duration'] = 0
+
+                if new_zaak['dateStart'] and new_zaak['dateEnd']:
+                    new_zaak['duration'] = (new_zaak['dateEnd'] - new_zaak['dateStart']).days
 
             elif f['text45'] == 'Vakantieverhuur afmelding':
                 fields = [
@@ -693,14 +697,13 @@ def to_decision(value):
 
 
 def to_transition_agreement(value):
-    if not value:
-        return False
-    if value.lower() == "verleend met overgangsrecht":
+    if value and value.lower() == "verleend met overgangsrecht":
         return True
+    return False
 
 
 def to_vakantie_verhuur_vergunning_status(value):
-    # Vakantieverhuur vergunningen worden direct verleend (en dus voor Mijn Amsterdam afgehaneld)
+    # Vakantieverhuur vergunningen worden direct verleend (en dus voor Mijn Amsterdam afgehandeld)
     return "Afgehandeld"
 
 

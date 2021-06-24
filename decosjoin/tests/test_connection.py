@@ -3,7 +3,6 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, _get_translation, to_transition_agreement
-# from decosjoin.tests.fixtures.data import get_document
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
@@ -18,6 +17,9 @@ class ConnectionTests(TestCase):
     def test_get_user_key(self):
         user_key = self.connection._get_user_keys("bsn", "111222333")
         self.assertEqual(user_key, ['32charsstringxxxxxxxxxxxxxxxxxxx', '32charsstringxxxxxxxxxxxxxxxxxx2', '32charsstringxxxxxxxxxxxxxxxxxx3'])
+
+    def assert_not_present(self, zaken, identifier):
+        self.assertEqual([zaak['identifier'] for zaak in zaken if zaak['identifier'] == identifier], [])
 
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_get_zaken(self):
@@ -35,21 +37,35 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[8]["status"], "Afgehandeld")
         self.assertEqual(zaken[8]["decision"], "Ingetrokken")
 
+        # Vakantieverhuur melding
         self.assertEqual(zaken[7]["identifier"], "Z/21/67890123")
+        self.assertEqual(zaken[7]["duration"], 1)
+        self.assertEqual(zaken[7]["cancelled"], False)
 
+        # Z/21/89012345 "vakantieverhuur afmelding" is filtered out because it updates Z/21/90123456 "vakantieverhuur"
+        self.assert_not_present(zaken, 'Z/21/89012345')
+
+        self.assertEqual(zaken[4]["identifier"], "Z/21/90123456")
+        self.assertEqual(zaken[4]["duration"], 3)
+        self.assertEqual(zaken[4]["cancelled"], True)
+
+        # TVM - RVV
         self.assertEqual(zaken[17]["identifier"], "Z/20/1234567")
         self.assertEqual(zaken[16]["identifier"], "Z/20/2345678")
+
         # Z/20/4567890 is filtered out because of subject1 contents
+        self.assert_not_present(zaken, 'Z/20/4567890')
+
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
+        self.assert_not_present(zaken, 'Z/20/56789012')
+
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
-        # Z/21/89012345 "vakantieverhuur afmelding" is filtered out because it updates Z/21/90123456 "vakantieverhuur"
+        self.assert_not_present(zaken, 'Z/20/2')
 
         self.assertEqual(zaken[14]['decision'], 'Verleend')
         self.assertEqual(zaken[14]['dateDecision'], date(2020, 6, 16))
 
-        # self.assertEqual(zaken[])
-
-    @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
+    @ patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
     def test_list_documents(self):
         documents = self.connection.list_documents('ZAAKKEY1', "111222333")
         self.assertEqual(len(documents), 2)
@@ -89,9 +105,9 @@ class ConnectionTests(TestCase):
         self.assertIsNone(_get_translation("Nope", translations))
 
     def test_to_transition_agreement(self):
-        self.assertTrue(to_transition_agreement('Verleend met overgangsrecht'))
-        self.assertFalse(to_transition_agreement('Verleend zonder overgangsrecht'))
-        self.assertFalse(to_transition_agreement('abc'))
+        self.assertEqual(to_transition_agreement('Verleend met overgangsrecht'), True)
+        self.assertEqual(to_transition_agreement('Verleend zonder overgangsrecht'), False)
+        self.assertEqual(to_transition_agreement('abc'), False)
 
     # def test_get_document(self):
     #     documents = self.connection.get_document('DOCUMENTKEY01')
