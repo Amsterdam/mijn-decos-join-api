@@ -105,9 +105,9 @@ class ConnectionTests(TestCase):
         self.assertIsNone(_get_translation("Nope", translations))
 
     def test_to_transition_agreement(self):
-        self.assertTrue(to_transition_agreement('Verleend met overgangsrecht'))
-        self.assertFalse(to_transition_agreement('Verleend zonder overgangsrecht'))
-        self.assertFalse(to_transition_agreement('abc'))
+        self.assertEqual(to_transition_agreement('Verleend met overgangsrecht'), True)
+        self.assertEqual(to_transition_agreement('Verleend zonder overgangsrecht'), False)
+        self.assertEqual(to_transition_agreement('abc'), False)
 
     # def test_get_document(self):
     #     documents = self.connection.get_document('DOCUMENTKEY01')
