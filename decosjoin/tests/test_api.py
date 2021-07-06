@@ -34,9 +34,10 @@ class ApiTests(FlaskServerTMATestCase):
             'decision': None,
             'dateDecision': None,
             'status': 'Ontvangen',
+            'description': 'Test MA MIJN-3031',
             'timeEnd': '16:00',
             'timeStart': '10:00',
-            'title': 'Test MA MIJN-3031',
+            'title': 'Tijdelijke verkeersmaatregel',
             # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 

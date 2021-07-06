@@ -82,8 +82,8 @@
     {
       "key": "HEXSTRING16",
       "fields": {
-        "date6": "2021-05-01T00:00:00",
-        "date7": "2021-05-02T00:00:00",
+        "date6": "2021-07-05T00:00:00",
+        "date7": "2021-07-06T00:00:00",
         "document_date": "2021-04-28T00:00:00",
         "mark": "Z/21/67890123",
         "subject1": "Melding Amstel 1  - V Achternaam",
@@ -149,8 +149,8 @@
       "fields": {
         "text45": "Vakantieverhuur vergunningsaanvraag",
         "mark": "Z/21/123123123",
-        "document_date": "2021-05-20T00:00:00",
-        "date5": "2021-05-20T00:00:00",
+        "document_date": "2020-05-20T00:00:00",
+        "date5": "2020-05-20T00:00:00",
         "text6": "Amstel 1 1012AA Amsterdam",
         "title": "Afgehandeld",
         "dfunction": "Ingetrokken"

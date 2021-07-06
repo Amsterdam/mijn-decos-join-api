@@ -144,7 +144,8 @@ class DecosJoinConnection:
             if f['text45'] == "TVM - RVV - Object":
                 fields = [
                     {"name": "status", "from": "title", "parser": to_string},
-                    {"name": "title", "from": "subject1", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
+                    {"name": "description", "from": "subject1", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "dateStart", "from": "date6", "parser": to_date},
@@ -166,16 +167,17 @@ class DecosJoinConnection:
                 if not new_zaak['dateEnd']:
                     new_zaak['dateEnd'] = new_zaak['dateStart']
 
-                if not self._deny_list_filter(new_zaak['title'], ['wacht op online betaling', 'wacht op ideal betaling']):
+                if not self._deny_list_filter(new_zaak['description'], ['wacht op online betaling', 'wacht op ideal betaling']):
                     continue
                 if not self._deny_list_filter(new_zaak['decision'], ['buiten behandeling']):
                     continue
-                if new_zaak['title'].lower().startswith("*verwijder"):
+                if new_zaak['description'].lower().startswith("*verwijder"):
                     continue
 
             elif f['text45'] == 'Vakantieverhuur vergunningsaanvraag':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
@@ -189,10 +191,11 @@ class DecosJoinConnection:
 
                 # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
                 new_zaak['dateEnd'] = self.next_april_first(new_zaak['dateRequest'])
-
+                new_zaak['isActual'] = new_zaak['dateEnd'] >= date.today()
             elif f['text45'] == 'Vakantieverhuur':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
@@ -207,12 +210,15 @@ class DecosJoinConnection:
                 new_zaak['dateCancelled'] = None
                 new_zaak['duration'] = 0
 
-                if new_zaak['dateStart'] and new_zaak['dateEnd']:
-                    new_zaak['duration'] = (new_zaak['dateEnd'] - new_zaak['dateStart']).days
+                if new_zaak['dateEnd'] and new_zaak['dateEnd'] >= date.today():
+                    new_zaak['title'] = 'Geplande vakantieverhuur'
+                else:
+                    new_zaak['title'] = 'Afgelopen vakantieverhuur'
 
             elif f['text45'] == 'Vakantieverhuur afmelding':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
                     {"name": "identifier", "from": 'mark', "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Start verhuur
@@ -229,7 +235,8 @@ class DecosJoinConnection:
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},  # Startdatum zaak
                     {"name": "decision", "from": "dfunction", "parser": to_string},
                     {"name": "location", "from": "text6", "parser": to_string},
-                    {"name": "title", "from": "subject1", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
+                    {"name": "description", "from": "subject1", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
@@ -264,6 +271,7 @@ class DecosJoinConnection:
             elif f['text45'] == 'GPP':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "dateRequest", "from": "document_date", "parser": to_string},
@@ -286,6 +294,7 @@ class DecosJoinConnection:
             elif f['text45'] == 'GPK':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "decision", "from": "dfunction", "parser": to_string},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
@@ -346,7 +355,7 @@ class DecosJoinConnection:
             #         {"name": "identifier", "from": "mark", "parser": to_string},
             #         {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
             #         {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
-            #         {"name": "title", "from": "subject1", "parser": to_string},
+            #         {"name": "title", "from": "text45", "parser": to_title},
             #         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
             #         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
             #         {"name": "location", "from": "text8", "parser": to_string},
@@ -371,11 +380,12 @@ class DecosJoinConnection:
             elif f['text45'] == 'Omzettingsvergunning':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "location", "from": "text8", "parser": to_string},
-                    {"name": "title", "from": "subject1", "parser": to_string},
+                    {"name": "description", "from": "subject1", "parser": to_string},
                     {"name": "decision", "from": "dfunction", "parser": to_string},
                 ]
                 new_zaak = _get_fields(fields, zaak)
@@ -398,7 +408,8 @@ class DecosJoinConnection:
                     {"name": "identifier", "from": "mark", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_string},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
-                    {"name": "title", "from": "subject1", "parser": to_string},
+                    {"name": "title", "from": "text45", "parser": to_title},
+                    {"name": "description", "from": "subject1", "parser": to_string},
                     {"name": "location", "from": "text8", "parser": to_string},
                     {"name": "status", "from": "title", "parser": to_string},
                     {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
@@ -435,6 +446,7 @@ class DecosJoinConnection:
                         if (new_zaak['dateStart'] == defferred_zaak['dateStart']) and (new_zaak['dateEnd'] == defferred_zaak['dateEnd']):
                             new_zaak['cancelled'] = True
                             new_zaak['dateCancelled'] = defferred_zaak['dateRequest']
+                            new_zaak['title'] = "Geannuleerde vakantieverhuur"
 
         return new_zaken
 
@@ -696,6 +708,23 @@ def to_decision(value):
         return 'Verleend'
 
     return value
+
+
+def to_title(value):
+    translations = [
+        ["TVM - RVV - Object", "Tijdelijke verkeersmaatregel", True],
+        ["GPP", "Vaste parkeerplaats voor gehandicapten (GPP)", True],
+        ["GPK", "Europse gehandicaptenparkeerkaart (GPK)", True],
+        ["Omzettingsvergunning", "Vergunning voor kamerverhuur", True],
+        ["E-RVV - TVM", "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)", True],
+        ["Vakantieverhuur afmelding", "Vakantieverhuur geannuleerd", True],
+        ["Vakantieverhuur", "Vakantieverhuur", True],
+        ["B&B - vergunning", "Vergunning bed & breakfast", True],
+        ["Vakantieverhuur vergunningsaanvraag", "Vergunning vakantieverhuur", True],
+    ]
+    if not value:
+        return None
+    return _get_translation(value, translations)
 
 
 def to_transition_agreement(value):
