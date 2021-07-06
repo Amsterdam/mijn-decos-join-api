@@ -2,7 +2,7 @@ from datetime import date, datetime, time
 from unittest.case import TestCase
 
 from decosjoin.api.decosjoin.Exception import ParseError
-from decosjoin.api.decosjoin.decosjoin_connection import to_date, to_time, to_datetime, to_decision
+from decosjoin.api.decosjoin.decosjoin_connection import to_date, to_time, to_datetime, to_decision, to_title
 
 
 class ConversionTests(TestCase):
@@ -19,6 +19,34 @@ class ConversionTests(TestCase):
 
         decision = 'Verleend zonder'
         self.assertEqual(to_decision(decision), 'Verleend zonder')
+
+    def test_to_title(self):
+        test_value = 'TVM - RVV - Object'
+        self.assertEqual(to_title(test_value), 'Tijdelijke verkeersmaatregel')
+
+        test_value = 'GPP'
+        self.assertEqual(to_title(test_value), 'Vaste parkeerplaats voor gehandicapten (GPP)')
+
+        test_value = 'GPK'
+        self.assertEqual(to_title(test_value), 'Europse gehandicaptenparkeerkaart (GPK)')
+
+        test_value = 'Omzettingsvergunning'
+        self.assertEqual(to_title(test_value), 'Vergunning voor kamerverhuur')
+
+        test_value = 'E-RVV - TVM'
+        self.assertEqual(to_title(test_value), 'e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)')
+
+        test_value = 'Vakantieverhuur afmelding'
+        self.assertEqual(to_title(test_value), 'Vakantieverhuur geannuleerd')
+
+        test_value = 'Vakantieverhuur'
+        self.assertEqual(to_title(test_value), 'Vakantieverhuur')
+
+        test_value = 'B&B - vergunning'
+        self.assertEqual(to_title(test_value), 'Vergunning bed & breakfast')
+
+        test_value = 'Vakantieverhuur vergunningsaanvraag'
+        self.assertEqual(to_title(test_value), 'Vergunning vakantieverhuur')
 
 
 class DateParserTests(TestCase):

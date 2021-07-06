@@ -1,6 +1,7 @@
 from datetime import date
 from unittest import TestCase
 from unittest.mock import patch
+from freezegun import freeze_time
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, _get_translation, to_transition_agreement
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
@@ -9,6 +10,7 @@ from decosjoin.tests.fixtures.response_mock import get_response_mock, post_respo
 @patch("decosjoin.crypto.get_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
 @patch('decosjoin.tests.test_connection.DecosJoinConnection._get_response', get_response_mock)
 @patch("decosjoin.server.DecosJoinConnection._post_response", post_response_mock)
+@freeze_time("2021-07-05")
 class ConnectionTests(TestCase):
 
     def setUp(self) -> None:
@@ -27,27 +29,30 @@ class ConnectionTests(TestCase):
         self.assertEqual(len(zaken), 18)
 
         self.assertEqual(zaken[5]["identifier"], "Z/21/78901234")
+        self.assertEqual(zaken[5]["title"], "Vergunning bed & breakfast")
 
         # Vakantie verhuur vergunningsaanvraag
         self.assertEqual(zaken[6]["identifier"], "Z/21/7865356778")
+        self.assertEqual(zaken[6]["title"], "Vergunning vakantieverhuur")
         self.assertEqual(zaken[6]["status"], "Afgehandeld")
         self.assertEqual(zaken[6]["decision"], "Verleend")
 
         self.assertEqual(zaken[8]["identifier"], "Z/21/123123123")
+        self.assertEqual(zaken[8]["title"], "Vergunning vakantieverhuur")
         self.assertEqual(zaken[8]["status"], "Afgehandeld")
         self.assertEqual(zaken[8]["decision"], "Ingetrokken")
 
         # Vakantieverhuur melding
         self.assertEqual(zaken[7]["identifier"], "Z/21/67890123")
-        self.assertEqual(zaken[7]["duration"], 1)
         self.assertEqual(zaken[7]["cancelled"], False)
+        self.assertEqual(zaken[7]["title"], 'Geplande vakantieverhuur')
 
         # Z/21/89012345 "vakantieverhuur afmelding" is filtered out because it updates Z/21/90123456 "vakantieverhuur"
         self.assert_not_present(zaken, 'Z/21/89012345')
 
         self.assertEqual(zaken[4]["identifier"], "Z/21/90123456")
-        self.assertEqual(zaken[4]["duration"], 3)
         self.assertEqual(zaken[4]["cancelled"], True)
+        self.assertEqual(zaken[4]["title"], 'Geannuleerde vakantieverhuur')
 
         # TVM - RVV
         self.assertEqual(zaken[17]["identifier"], "Z/20/1234567")
