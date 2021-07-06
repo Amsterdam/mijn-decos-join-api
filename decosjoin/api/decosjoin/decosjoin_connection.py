@@ -385,7 +385,6 @@ class DecosJoinConnection:
                     {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
                     {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
                     {"name": "location", "from": "text8", "parser": to_string},
-                    {"name": "title", "from": "text45", "parser": to_title},
                     {"name": "description", "from": "subject1", "parser": to_string},
                     {"name": "decision", "from": "dfunction", "parser": to_string},
                 ]
