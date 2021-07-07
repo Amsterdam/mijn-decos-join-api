@@ -717,7 +717,11 @@ def to_title(value):
         ["GPK", "Europse gehandicaptenparkeerkaart (GPK)", True],
         ["Omzettingsvergunning", "Vergunning voor kamerverhuur", True],
         ["E-RVV - TVM", "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)", True],
+        << << << < HEAD
         ["Vakantieverhuur afmelding", "Geannuleerde verhuur", True],
+        == == == =
+        ["Vakantieverhuur afmelding", "Vakantieverhuur geannuleerd", True],
+        >>>>>> > master
         ["Vakantieverhuur", "Vakantieverhuur", True],
         ["B&B - vergunning", "Vergunning bed & breakfast", True],
         ["Vakantieverhuur vergunningsaanvraag", "Vergunning vakantieverhuur", True],
