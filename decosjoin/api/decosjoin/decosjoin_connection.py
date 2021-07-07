@@ -211,9 +211,9 @@ class DecosJoinConnection:
                 new_zaak['duration'] = 0
 
                 if new_zaak['dateEnd'] and new_zaak['dateEnd'] >= date.today():
-                    new_zaak['title'] = 'Geplande vakantieverhuur'
+                    new_zaak['title'] = 'Geplande verhuur'
                 else:
-                    new_zaak['title'] = 'Afgelopen vakantieverhuur'
+                    new_zaak['title'] = 'Afgelopen verhuur'
 
             elif f['text45'] == 'Vakantieverhuur afmelding':
                 fields = [
@@ -446,7 +446,7 @@ class DecosJoinConnection:
                         if (new_zaak['dateStart'] == defferred_zaak['dateStart']) and (new_zaak['dateEnd'] == defferred_zaak['dateEnd']):
                             new_zaak['cancelled'] = True
                             new_zaak['dateCancelled'] = defferred_zaak['dateRequest']
-                            new_zaak['title'] = "Geannuleerde vakantieverhuur"
+                            new_zaak['title'] = "Geannuleerde verhuur"
 
         return new_zaken
 
@@ -717,7 +717,7 @@ def to_title(value):
         ["GPK", "Europse gehandicaptenparkeerkaart (GPK)", True],
         ["Omzettingsvergunning", "Vergunning voor kamerverhuur", True],
         ["E-RVV - TVM", "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)", True],
-        ["Vakantieverhuur afmelding", "Vakantieverhuur geannuleerd", True],
+        ["Vakantieverhuur afmelding", "Geannuleerde verhuur", True],
         ["Vakantieverhuur", "Vakantieverhuur", True],
         ["B&B - vergunning", "Vergunning bed & breakfast", True],
         ["Vakantieverhuur vergunningsaanvraag", "Vergunning vakantieverhuur", True],
