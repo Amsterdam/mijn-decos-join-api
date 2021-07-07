@@ -37,7 +37,7 @@ class ConversionTests(TestCase):
         self.assertEqual(to_title(test_value), 'e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)')
 
         test_value = 'Vakantieverhuur afmelding'
-        self.assertEqual(to_title(test_value), 'Vakantieverhuur geannuleerd')
+        self.assertEqual(to_title(test_value), 'Geannuleerde verhuur')
 
         test_value = 'Vakantieverhuur'
         self.assertEqual(to_title(test_value), 'Vakantieverhuur')

@@ -45,14 +45,14 @@ class ConnectionTests(TestCase):
         # Vakantieverhuur melding
         self.assertEqual(zaken[7]["identifier"], "Z/21/67890123")
         self.assertEqual(zaken[7]["cancelled"], False)
-        self.assertEqual(zaken[7]["title"], 'Geplande vakantieverhuur')
+        self.assertEqual(zaken[7]["title"], 'Geplande verhuur')
 
         # Z/21/89012345 "vakantieverhuur afmelding" is filtered out because it updates Z/21/90123456 "vakantieverhuur"
         self.assert_not_present(zaken, 'Z/21/89012345')
 
         self.assertEqual(zaken[4]["identifier"], "Z/21/90123456")
         self.assertEqual(zaken[4]["cancelled"], True)
-        self.assertEqual(zaken[4]["title"], 'Geannuleerde vakantieverhuur')
+        self.assertEqual(zaken[4]["title"], 'Geannuleerde verhuur')
 
         # TVM - RVV
         self.assertEqual(zaken[17]["identifier"], "Z/20/1234567")
