@@ -141,6 +141,10 @@ class DecosJoinConnection:
         for zaak in zaken:
             f = zaak['fields']
 
+            # Cannot reliably determine the zaaktype of this zaak
+            if 'text45' not in f:
+                continue
+
             zaak_type = f['text45']
 
             if zaak_type == "TVM - RVV - Object":
