@@ -234,22 +234,22 @@ class DecosJoinConnection:
                 ]
                 new_zaak = _get_fields(fields, zaak)
                 decision_translations = [
-                    ["Verleend met overgangsrecht", "Verleend", True],
-                    ["Verleend zonder overgangsrecht", "Verleend", True],
-                    ["Geweigerd", "Geweigerd", True],
-                    ["Geweigerd met overgangsrecht", "Geweigerd", True],
-                    ["Geweigerd op basis van Quotum", "Geweigerd", True],
-                    ["Ingetrokken", "Ingetrokken", True],
+                    ["Verleend met overgangsrecht", "Verleend"],
+                    ["Verleend zonder overgangsrecht", "Verleend"],
+                    ["Geweigerd", "Geweigerd"],
+                    ["Geweigerd met overgangsrecht", "Geweigerd"],
+                    ["Geweigerd op basis van Quotum", "Geweigerd"],
+                    ["Ingetrokken", "Ingetrokken"],
                 ]
 
                 status_translations = [
-                    ["Publicatie aanvraag", "Ontvangen", True],
-                    ["Ontvangen", "Ontvangen", True],
-                    ["Volledigheidstoets uitvoeren", "Ontvangen", True],
-                    ["Behandelen aanvraag", "In behandeling", True],
-                    ["Huisbezoek", "In behandeling", True],
-                    ["Beoordelen en besluiten", "In behandeling", True],
-                    ["Afgehandeld", "Afgehandeld", True],
+                    ["Publicatie aanvraag", "Ontvangen"],
+                    ["Ontvangen", "Ontvangen"],
+                    ["Volledigheidstoets uitvoeren", "Ontvangen"],
+                    ["Behandelen aanvraag", "In behandeling"],
+                    ["Huisbezoek", "In behandeling"],
+                    ["Beoordelen en besluiten", "In behandeling"],
+                    ["Afgehandeld", "Afgehandeld"],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], decision_translations)
                 new_zaak['status'] = _get_translation(new_zaak['status'], status_translations)
@@ -269,11 +269,11 @@ class DecosJoinConnection:
                 new_zaak = _get_fields(fields, zaak)
                 translations = [
                     ["Buiten behandeling", "Buiten behandeling", False],
-                    ["Ingetrokken", "Ingetrokken", True],
-                    ["Ingetrokken i.v.m. overlijden of verhuizing", "Ingetrokken", True],
-                    ["Niet verleend", "Niet verleend", True],
+                    ["Ingetrokken", "Ingetrokken"],
+                    ["Ingetrokken i.v.m. overlijden of verhuizing", "Ingetrokken"],
+                    ["Niet verleend", "Niet verleend"],
                     ["Nog niet bekend", "", False],
-                    ["Verleend", "Verleend", True],
+                    ["Verleend", "Verleend"],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
@@ -294,18 +294,18 @@ class DecosJoinConnection:
                 # Copied from RD
                 translations = [
                     ["Buiten behandeling", "Buiten behandeling", False],
-                    ["Ingetrokken", "Ingetrokken", True],
-                    ["Ingetrokken i.v.m. overlijden of verhuizing", "Ingetrokken", True],
-                    ["Ingetrokken verleende GPK wegens overlijden", "Ingetrokken", True],
-                    ["Niet verleend", "Niet verleend", True],
+                    ["Ingetrokken", "Ingetrokken"],
+                    ["Ingetrokken i.v.m. overlijden of verhuizing", "Ingetrokken"],
+                    ["Ingetrokken verleende GPK wegens overlijden", "Ingetrokken"],
+                    ["Niet verleend", "Niet verleend"],
                     ["Nog niet bekend", "", False],
-                    ["Verleend", "Verleend", True],
-                    ["Verleend Bestuurder met GPP (niet verleend passagier)", "Verleend Bestuurder, niet verleend Passagier", True],
-                    ["Verleend Bestuurder, niet verleend Passagier", "Verleend Bestuurder, niet verleend Passagier", True],
-                    ["Verleend met GPP", "Verleend", True],
-                    ["Verleend Passagier met GPP (niet verleend Bestuurder)", "Verleend Passagier, niet verleend Bestuurder", True],
-                    ["Verleend Passagier, niet verleend Bestuurder", "Verleend Passagier, niet verleend Bestuurder", True],
-                    ["Verleend vervangend GPK", "Verleend", True],
+                    ["Verleend", "Verleend"],
+                    ["Verleend Bestuurder met GPP (niet verleend passagier)", "Verleend Bestuurder, niet verleend Passagier"],
+                    ["Verleend Bestuurder, niet verleend Passagier", "Verleend Bestuurder, niet verleend Passagier"],
+                    ["Verleend met GPP", "Verleend"],
+                    ["Verleend Passagier met GPP (niet verleend Bestuurder)", "Verleend Passagier, niet verleend Bestuurder"],
+                    ["Verleend Passagier, niet verleend Bestuurder", "Verleend Passagier, niet verleend Bestuurder"],
+                    ["Verleend vervangend GPK", "Verleend"],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
@@ -323,15 +323,15 @@ class DecosJoinConnection:
             #     ]
             #     new_zaak = _get_fields(fields, zaak)
             #     translations = [
-            #         ["Ingetrokken", "Ingetrokken", True],
+            #         ["Ingetrokken", "Ingetrokken"],
             #         ["Buiten behandeling", "Buiten behandeling", False],
-            #         ["Niet verleend", "Geweigerd", True],
-            #         ["Verleend", "Gemeld", True],
+            #         ["Niet verleend", "Geweigerd"],
+            #         ["Verleend", "Gemeld"],
             #         ["Nog niet  bekend", "", False],
             #         ["Nog niet bekend", "", False],
-            #         ["Verleend", "Verleend", True],
-            #         ["Verleend (Bijzonder/Bewaren)", "Verleend", True],
-            #         ["Verleend zonder borden", "Verleend", True],
+            #         ["Verleend", "Verleend"],
+            #         ["Verleend (Bijzonder/Bewaren)", "Verleend"],
+            #         ["Verleend zonder borden", "Verleend"],
             #     ]
             #     new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
             #
@@ -351,15 +351,15 @@ class DecosJoinConnection:
             #     new_zaak = _get_fields(fields, zaak)
             #
             #     translations = [
-            #         ["Afgebroken (Ingetrokken)", "Afgebroken (Ingetrokken)", True],
+            #         ["Afgebroken (Ingetrokken)", "Afgebroken (Ingetrokken)"],
             #         ["Buiten behandeling", "Buiten behandeling", False],
-            #         ["Geweigerd", "Geweigerd", True],
+            #         ["Geweigerd", "Geweigerd"],
             #         ["Nog niet  bekend", "", False],
             #         ["Nog niet  bekend", "", False],
             #         ["Nog niet bekend", "", False],
-            #         ["Verleend", "Verleend", True],
-            #         ["Verleend (Bijzonder/Bewaren)", "Verleend", True],
-            #         ["Verleend zonder borden", "Verleend", True],
+            #         ["Verleend", "Verleend"],
+            #         ["Verleend (Bijzonder/Bewaren)", "Verleend"],
+            #         ["Verleend zonder borden", "Verleend"],
             #     ]
             #     new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
@@ -377,14 +377,14 @@ class DecosJoinConnection:
                 new_zaak = _get_fields(fields, zaak)
                 translations = [
                     ["Buiten behandeling", "Buiten behandeling", False],
-                    ["Geweigerd", "Geweigerd", True],
-                    ["Ingetrokken door gemeente", "Ingetrokken door gemeente", True],
-                    ["Ingetrokken op eigen verzoek", "Ingetrokken op eigen verzoek", True],
+                    ["Geweigerd", "Geweigerd"],
+                    ["Ingetrokken door gemeente", "Ingetrokken door gemeente"],
+                    ["Ingetrokken op eigen verzoek", "Ingetrokken op eigen verzoek"],
                     ["Nog niet bekend", "", False],
-                    ["Van rechtswege verleend", "Verleend", True],
-                    ["Vergunningvrij", "Vergunningvrij", True],
-                    ["Verleend", "Verleend", True],
-                    ["Verleend zonder borden", "Verleend", True],
+                    ["Van rechtswege verleend", "Verleend"],
+                    ["Vergunningvrij", "Vergunningvrij"],
+                    ["Verleend", "Verleend"],
+                    ["Verleend zonder borden", "Verleend"],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
@@ -407,14 +407,14 @@ class DecosJoinConnection:
                 new_zaak = _get_fields(fields, zaak)
                 translations = [
                     ["Buiten behandeling", "Buiten behandeling", False],
-                    ["Ingetrokken", "Ingetrokken", True],
-                    ["Niet verleend", "Niet verleend", True],
+                    ["Ingetrokken", "Ingetrokken"],
+                    ["Niet verleend", "Niet verleend"],
                     ["Nog niet bekend", "", False],
-                    ["Verleend met borden", "Verleend", True],
-                    ["Verleend met borden en Fietsenrekken verwijderen", "Verleend", True],
-                    ["Verleend met Fietsenrekken verwijderen", "Verleend", True],
-                    ["Verleend zonder bebording", "Verleend", True],
-                    ["Verleend zonder borden", "Verleend", True],
+                    ["Verleend met borden", "Verleend"],
+                    ["Verleend met borden en Fietsenrekken verwijderen", "Verleend"],
+                    ["Verleend met Fietsenrekken verwijderen", "Verleend"],
+                    ["Verleend zonder bebording", "Verleend"],
+                    ["Verleend zonder borden", "Verleend"],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
@@ -589,17 +589,22 @@ class DecosJoinConnection:
         }
 
 
-def _get_translation(value: str, translations: list):
+def _get_translation(value: str, translations: list, fallbackToOriginalValue: bool = False):
     """ Accepts a 2d list with 3 items. [ ["from", "to" "show"], ... ] """
     if value is None:
         return value
+
     value = value.lower()
+
+    # Find a translation
     for i in translations:
         if i[0].lower() == value:
-            if not i[2]:  # show in frontend
+            if len(i) == 3 and i[2] is False:  # Explicitly use None
                 return None
             return i[1]
-    return None
+
+    # Return the original value if not found
+    return value if fallbackToOriginalValue else None
 
 
 def _get_fields(fields, zaak):
@@ -710,15 +715,15 @@ def to_decision(value):
 
 def to_title(value):
     translations = [
-        ["TVM - RVV - Object", "Tijdelijke verkeersmaatregel", True],
-        ["GPP", "Vaste parkeerplaats voor gehandicapten (GPP)", True],
-        ["GPK", "Europse gehandicaptenparkeerkaart (GPK)", True],
-        ["Omzettingsvergunning", "Vergunning voor kamerverhuur", True],
-        ["E-RVV - TVM", "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)", True],
-        ["Vakantieverhuur afmelding", "Geannuleerde verhuur", True],
-        ["Vakantieverhuur", "Geplande verhuur", True],
-        ["B&B - vergunning", "Vergunning bed & breakfast", True],
-        ["Vakantieverhuur vergunningsaanvraag", "Vergunning vakantieverhuur", True],
+        ["TVM - RVV - Object", "Tijdelijke verkeersmaatregel"],
+        ["GPP", "Vaste parkeerplaats voor gehandicapten (GPP)"],
+        ["GPK", "Europse gehandicaptenparkeerkaart (GPK)"],
+        ["Omzettingsvergunning", "Vergunning voor kamerverhuur"],
+        ["E-RVV - TVM", "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)"],
+        ["Vakantieverhuur afmelding", "Geannuleerde verhuur"],
+        ["Vakantieverhuur", "Geplande verhuur"],
+        ["B&B - vergunning", "Vergunning bed & breakfast"],
+        ["Vakantieverhuur vergunningsaanvraag", "Vergunning vakantieverhuur"],
     ]
     if not value:
         return None
