@@ -40,7 +40,7 @@ class ConversionTests(TestCase):
         self.assertEqual(to_title(test_value), 'Geannuleerde verhuur')
 
         test_value = 'Vakantieverhuur'
-        self.assertEqual(to_title(test_value), 'Vakantieverhuur')
+        self.assertEqual(to_title(test_value), 'Geplande verhuur')
 
         test_value = 'B&B - vergunning'
         self.assertEqual(to_title(test_value), 'Vergunning bed & breakfast')

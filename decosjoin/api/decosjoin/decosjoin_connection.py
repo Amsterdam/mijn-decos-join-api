@@ -141,7 +141,9 @@ class DecosJoinConnection:
         for zaak in zaken:
             f = zaak['fields']
 
-            if f['text45'] == "TVM - RVV - Object":
+            zaak_type = f['text45']
+
+            if zaak_type == "TVM - RVV - Object":
                 fields = [
                     {"name": "status", "from": "title", "parser": to_string},
                     {"name": "title", "from": "text45", "parser": to_title},
@@ -165,14 +167,7 @@ class DecosJoinConnection:
                 if not new_zaak['dateEnd']:
                     new_zaak['dateEnd'] = new_zaak['dateStart']
 
-                if not self._deny_list_filter(new_zaak['description'], ['wacht op online betaling', 'wacht op ideal betaling']):
-                    continue
-                if not self._deny_list_filter(new_zaak['decision'], ['buiten behandeling']):
-                    continue
-                if new_zaak['description'].lower().startswith("*verwijder"):
-                    continue
-
-            elif f['text45'] == 'Vakantieverhuur vergunningsaanvraag':
+            elif zaak_type == 'Vakantieverhuur vergunningsaanvraag':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "title", "from": "text45", "parser": to_title},
@@ -189,8 +184,8 @@ class DecosJoinConnection:
 
                 # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
                 new_zaak['dateEnd'] = self.next_april_first(new_zaak['dateRequest'])
-                new_zaak['isActual'] = new_zaak['dateEnd'] >= date.today()
-            elif f['text45'] == 'Vakantieverhuur':
+
+            elif zaak_type == 'Vakantieverhuur':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "title", "from": "text45", "parser": to_title},
@@ -200,20 +195,13 @@ class DecosJoinConnection:
                     {"name": "dateStart", "from": 'date6', "parser": to_date},  # Start verhuur
                     {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
                     {"name": "location", "from": "text6", "parser": to_string},
-                    # cancelled: true/false
-                    # dateCancelled: date(time)?
                 ]
                 new_zaak = _get_fields(fields, zaak)
-                new_zaak['cancelled'] = False
-                new_zaak['dateCancelled'] = None
-                new_zaak['duration'] = 0
 
-                if new_zaak['dateEnd'] and new_zaak['dateEnd'] >= date.today():
-                    new_zaak['title'] = 'Geplande verhuur'
-                else:
+                if new_zaak['dateEnd'] and new_zaak['dateEnd'] <= date.today():
                     new_zaak['title'] = 'Afgelopen verhuur'
 
-            elif f['text45'] == 'Vakantieverhuur afmelding':
+            elif zaak_type == 'Vakantieverhuur afmelding':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "title", "from": "text45", "parser": to_title},
@@ -227,7 +215,7 @@ class DecosJoinConnection:
                 deferred_zaken.append(new_zaak)
                 continue  # do not follow normal new_zaak procedure
 
-            elif f['text45'] == 'B&B - vergunning':
+            elif zaak_type == 'B&B - vergunning':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "dateRequest", "from": "document_date", "parser": to_date},  # Startdatum zaak
@@ -266,7 +254,7 @@ class DecosJoinConnection:
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], decision_translations)
                 new_zaak['status'] = _get_translation(new_zaak['status'], status_translations)
 
-            elif f['text45'] == 'GPP':
+            elif zaak_type == 'GPP':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "title", "from": "text45", "parser": to_title},
@@ -289,7 +277,7 @@ class DecosJoinConnection:
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
-            elif f['text45'] == 'GPK':
+            elif zaak_type == 'GPK':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "title", "from": "text45", "parser": to_title},
@@ -321,7 +309,7 @@ class DecosJoinConnection:
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
-            # elif f['text45'] == 'Evenement melding':
+            # elif zaak_type == 'Evenement melding':
             #     fields = [
             #         {"name": "caseType", "from": "text45", "parser": to_string},
             #         {"name": "identifier", "from": "mark", "parser": to_string},
@@ -347,7 +335,7 @@ class DecosJoinConnection:
             #     ]
             #     new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
             #
-            # elif f['text45'] == 'Evenement vergunning':
+            # elif zaak_type == 'Evenement vergunning':
             #     fields = [
             #         {"name": "caseType", "from": "text45", "parser": to_string},
             #         {"name": "identifier", "from": "mark", "parser": to_string},
@@ -375,7 +363,7 @@ class DecosJoinConnection:
             #     ]
             #     new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
-            elif f['text45'] == 'Omzettingsvergunning':
+            elif zaak_type == 'Omzettingsvergunning':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "title", "from": "text45", "parser": to_title},
@@ -400,7 +388,7 @@ class DecosJoinConnection:
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
-            elif f['text45'] == 'E-RVV - TVM':
+            elif zaak_type == 'E-RVV - TVM':
                 fields = [
                     {"name": "caseType", "from": "text45", "parser": to_string},
                     {"name": "identifier", "from": "mark", "parser": to_string},
@@ -434,19 +422,28 @@ class DecosJoinConnection:
                 # zaak does not match one of the known ones
                 continue
 
+            # These matching conditions are used to prevent these items from being included in the returned list of zaken
+            if self.is_list_match(new_zaak, 'description', ['wacht op online betaling', 'wacht op ideal betaling']):
+                continue
+            if self.is_list_match(new_zaak, 'decision', ['buiten behandeling']):
+                continue
+            if 'description' in new_zaak and new_zaak['description'] and new_zaak['description'].lower().startswith("*verwijder"):
+                continue
+
+            # This url can be used to retrieve matching document attachments for this particular zaak
             new_zaak['documentsUrl'] = f"/api/decosjoin/listdocuments/{encrypt(zaak['key'], user_identifier)}"
 
             new_zaken.append(new_zaak)
 
+        # Matching start/end dates for Vakantieverhuur afmelding and transforming the geplande verhuur to afgemelde verhuur
         for defferred_zaak in deferred_zaken:
             if defferred_zaak['caseType'] == 'Vakantieverhuur afmelding':
                 # update the existing registration
                 for new_zaak in new_zaken:
-                    if new_zaak['caseType'] == 'Vakantieverhuur':
-                        if (new_zaak['dateStart'] == defferred_zaak['dateStart']) and (new_zaak['dateEnd'] == defferred_zaak['dateEnd']):
-                            new_zaak['cancelled'] = True
-                            new_zaak['dateCancelled'] = defferred_zaak['dateRequest']
-                            new_zaak['title'] = "Geannuleerde verhuur"
+                    if new_zaak['caseType'] == 'Vakantieverhuur' and new_zaak['dateStart'] == defferred_zaak['dateStart'] and new_zaak['dateEnd'] == defferred_zaak['dateEnd']:
+                        new_zaak['dateDescision'] = defferred_zaak['dateRequest']
+                        new_zaak['title'] = defferred_zaak['title']
+                        new_zaak['identifier'] = defferred_zaak['identifier']
 
         return new_zaken
 
@@ -456,11 +453,12 @@ class DecosJoinConnection:
         else:
             return date(case_date.year + 1, 4, 1)
 
-    def _deny_list_filter(self, value, deny_list):
+    def is_list_match(self, zaak, key, test_list):
+        value = zaak[key] if key in zaak else None
         if value is None:
-            return True
+            return False
         value = value.lower()
-        return value not in deny_list
+        return value in test_list
 
     def filter_zaken(self, zaken):
         """ Filter un-parsed cases. """
@@ -718,7 +716,7 @@ def to_title(value):
         ["Omzettingsvergunning", "Vergunning voor kamerverhuur", True],
         ["E-RVV - TVM", "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)", True],
         ["Vakantieverhuur afmelding", "Geannuleerde verhuur", True],
-        ["Vakantieverhuur", "Vakantieverhuur", True],
+        ["Vakantieverhuur", "Geplande verhuur", True],
         ["B&B - vergunning", "Vergunning bed & breakfast", True],
         ["Vakantieverhuur vergunningsaanvraag", "Vergunning vakantieverhuur", True],
     ]
@@ -740,7 +738,8 @@ def to_vakantie_verhuur_vergunning_status(value):
 
 def to_vakantie_verhuur_vergunning_decision(value):
     # Vakantieverhuur vergunningen worden na betaling direct verleend en per mail toegekend zonder dat de juiste status in Decos wordt gezet.
-    # Later, na controle, wordt mogelijk de vergunning weer ingetrokken
+    # Later, na controle, wordt mogelijk de vergunning weer ingetrokken. Geplande/Afgemelde Verhuur is een uizondering in relatie tot de reguliere statusbeschrijvingen
+    # daar "Verleend" een resultaat is en geen status.
     if value and "ingetrokken" in value.lower():
         return "Ingetrokken"
 
