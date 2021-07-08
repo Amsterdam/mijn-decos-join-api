@@ -20,7 +20,7 @@ class ConnectionTests(TestCase):
         user_key = self.connection._get_user_keys("bsn", "111222333")
         self.assertEqual(user_key, ['32charsstringxxxxxxxxxxxxxxxxxxx', '32charsstringxxxxxxxxxxxxxxxxxx2', '32charsstringxxxxxxxxxxxxxxxxxx3'])
 
-    def assert_not_present(self, zaken, identifier):
+    def assert_unknown_identifier(self, zaken, identifier):
         self.assertEqual([zaak['identifier'] for zaak in zaken if zaak['identifier'] == identifier], [])
 
     @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
@@ -44,14 +44,12 @@ class ConnectionTests(TestCase):
 
         # Vakantieverhuur melding
         self.assertEqual(zaken[7]["identifier"], "Z/21/67890123")
-        self.assertEqual(zaken[7]["cancelled"], False)
         self.assertEqual(zaken[7]["title"], 'Geplande verhuur')
 
-        # Z/21/89012345 "vakantieverhuur afmelding" is filtered out because it updates Z/21/90123456 "vakantieverhuur"
-        self.assert_not_present(zaken, 'Z/21/89012345')
+        # Z/21/90123456 "vakantieverhuur" is filtered out because it is replaced by Z/21/89012345 "vakantieverhuur afmelding"
+        self.assert_unknown_identifier(zaken, 'Z/21/90123456')
 
-        self.assertEqual(zaken[4]["identifier"], "Z/21/90123456")
-        self.assertEqual(zaken[4]["cancelled"], True)
+        self.assertEqual(zaken[4]["identifier"], "Z/21/89012345")
         self.assertEqual(zaken[4]["title"], 'Geannuleerde verhuur')
 
         # TVM - RVV
@@ -59,13 +57,13 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[16]["identifier"], "Z/20/2345678")
 
         # Z/20/4567890 is filtered out because of subject1 contents
-        self.assert_not_present(zaken, 'Z/20/4567890')
+        self.assert_unknown_identifier(zaken, 'Z/20/4567890')
 
         # Z/20/56789012 is filtered out because of subject1 starts with "*verwijder"
-        self.assert_not_present(zaken, 'Z/20/56789012')
+        self.assert_unknown_identifier(zaken, 'Z/20/56789012')
 
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
-        self.assert_not_present(zaken, 'Z/20/2')
+        self.assert_unknown_identifier(zaken, 'Z/20/2')
 
         self.assertEqual(zaken[14]['decision'], 'Verleend')
         self.assertEqual(zaken[14]['dateDecision'], date(2020, 6, 16))
