@@ -721,7 +721,7 @@ def to_title(value):
     translations = [
         ["TVM - RVV - Object", "Tijdelijke verkeersmaatregel"],
         ["GPP", "Vaste parkeerplaats voor gehandicapten (GPP)"],
-        ["GPK", "Europse gehandicaptenparkeerkaart (GPK)"],
+        ["GPK", "Europese gehandicaptenparkeerkaart (GPK)"],
         ["Omzettingsvergunning", "Vergunning voor kamerverhuur"],
         ["E-RVV - TVM", "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)"],
         ["Vakantieverhuur afmelding", "Geannuleerde verhuur"],
