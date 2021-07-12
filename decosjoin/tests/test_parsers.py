@@ -28,7 +28,7 @@ class ConversionTests(TestCase):
         self.assertEqual(to_title(test_value), 'Vaste parkeerplaats voor gehandicapten (GPP)')
 
         test_value = 'GPK'
-        self.assertEqual(to_title(test_value), 'Europse gehandicaptenparkeerkaart (GPK)')
+        self.assertEqual(to_title(test_value), 'Europese gehandicaptenparkeerkaart (GPK)')
 
         test_value = 'Omzettingsvergunning'
         self.assertEqual(to_title(test_value), 'Vergunning voor kamerverhuur')
