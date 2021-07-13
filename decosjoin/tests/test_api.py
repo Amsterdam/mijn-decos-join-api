@@ -75,13 +75,19 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(data["content"][0]["caseType"], "Parkeerontheffingen Blauwe zone particulieren")
         self.assertEqual(data["content"][0]["kenteken"], "KN-UW-TS")
         self.assertEqual(data["content"][0]["dateStart"], "2021-06-26")
+
         self.assertEqual(data["content"][1]["caseType"], "Parkeerontheffingen Blauwe zone bedrijven")
         self.assertEqual(data["content"][1]["companyName"], "Uw bedrijfje")
         self.assertEqual(data["content"][1]["dateStart"], "2021-05-26")
+
         self.assertEqual(data["content"][2]["caseType"], "Omzettingsvergunning")
+
         self.assertEqual(data["content"][3]["caseType"], "GPK")
+
         self.assertEqual(data["content"][4]["caseType"], "GPP")
+
         self.assertEqual(data["content"][5]["caseType"], "E-RVV - TVM")
+
         self.assertEqual(data["content"][6]["caseType"], "Vakantieverhuur")
 
         self.assertEqual(data["content"][7]["caseType"], "B&B - vergunning")
