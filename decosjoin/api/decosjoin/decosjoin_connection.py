@@ -24,6 +24,8 @@ ALLOWED_ZAAKTYPES = [
     'gpk',
     'omzettingsvergunning',
     'e-rvv - tvm',
+    'parkeerontheffingen blauwe zone particulieren',
+    'parkeerontheffingen blauwe zone bedrijven'
     # 'evenement melding',
     # 'evenement vergunning',
 ]
@@ -421,7 +423,49 @@ class DecosJoinConnection:
                     ["Verleend zonder borden", "Verleend"],
                 ]
                 new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+            elif zaak_type == 'Parkeerontheffingen Blauwe zone particulieren':
+                fields = [
+                    {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "identifier", "from": "mark", "parser": to_string},
+                    {"name": "dateRequest", "from": "document_date", "parser": to_string},
+                    {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
+                    {"name": "title", "from": "text45", "parser": to_title},
+                    {"name": "status", "from": "title", "parser": to_string},
+                    {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
+                    {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
+                    {"name": "decision", "from": "dfunction", "parser": to_string},
+                    {"name": "kenteken", "from": "text8", "parser": to_string},
+                ]
+                new_zaak = _get_fields(fields, zaak)
+                translations = [
+                    ["Buiten behandeling", "Buiten behandeling", False],
+                    ["Ingetrokken", "Ingetrokken"],
+                    ["Niet verleend", "Niet verleend"],
+                    ["Verleend", "Verleend"],
+                ]
+                new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
 
+            elif zaak_type == 'Parkeerontheffingen Blauwe zone bedrijven':
+                fields = [
+                    {"name": "caseType", "from": "text45", "parser": to_string},
+                    {"name": "identifier", "from": "mark", "parser": to_string},
+                    {"name": "dateRequest", "from": "document_date", "parser": to_string},
+                    {"name": "dateDecision", "from": "date5", "parser": to_datetime},  # Datum afhandeling
+                    {"name": "title", "from": "text45", "parser": to_title},
+                    {"name": "status", "from": "title", "parser": to_string},
+                    {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
+                    {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
+                    {"name": "decision", "from": "dfunction", "parser": to_string},
+                    {"name": "companyName", "from": "text8", "parser": to_string},
+                ]
+                new_zaak = _get_fields(fields, zaak)
+                translations = [
+                    ["Buiten behandeling", "Buiten behandeling", False],
+                    ["Ingetrokken", "Ingetrokken"],
+                    ["Niet verleend", "Niet verleend"],
+                    ["Verleend", "Verleend"],
+                ]
+                new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
             else:
                 # zaak does not match one of the known ones
                 continue
@@ -728,6 +772,8 @@ def to_title(value):
         ["Vakantieverhuur", "Geplande verhuur"],
         ["B&B - vergunning", "Vergunning bed & breakfast"],
         ["Vakantieverhuur vergunningsaanvraag", "Vergunning vakantieverhuur"],
+        ["Parkeerontheffingen Blauwe zone bedrijven", "Parkeerontheffingen Blauwe zone bedrijven"],
+        ["Parkeerontheffingen Blauwe zone particulieren", "Parkeerontheffingen Blauwe zone particulieren"],
     ]
     if not value:
         return None
