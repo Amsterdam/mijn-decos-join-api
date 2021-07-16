@@ -151,8 +151,6 @@ class DecosJoinConnection:
             Zaak = zaken_index[zaak_type][0]
             new_zaak = Zaak(source_fields).result()
 
-            pprint(new_zaak)
-
             # These matching conditions are used to prevent these items from being included in the returned list of zaken
             if self.is_list_match(new_zaak, 'description', ['wacht op online betaling', 'wacht op ideal betaling']):
                 continue
@@ -212,15 +210,16 @@ class DecosJoinConnection:
 
         return items
 
-    def get_zaken(self, kind, identifier):
+    def get_zaken(self, kind, user_identifier):
         """ Get all zaken for a kind ['bsn' or 'kvk']. """
-        zaken = []
-        user_keys = self.get_user_keys(kind, identifier)
+        zaken_source = []
+        user_keys = self.get_user_keys(kind, user_identifier)
 
         for key in user_keys:
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
-            zaken.extend(self.get_all_pages(url))
+            zaken_source.extend(self.get_all_pages(url))
 
+        zaken = self.transform(zaken_source, user_identifier)
         return sorted(zaken, key=lambda x: x['identifier'], reverse=True)
 
     def get_document_data(self, document_id: str):
