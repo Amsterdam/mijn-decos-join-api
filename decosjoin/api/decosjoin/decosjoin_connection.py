@@ -12,8 +12,8 @@ from requests.auth import HTTPBasicAuth
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError, ParseError
 from decosjoin.crypto import encrypt
 
-log_raw = False
-page_size = 30
+LOG_RAW = False
+PAGE_SIZE = 30
 
 ALLOWED_ZAAKTYPES = [
     'tvm - rvv - object',
@@ -87,7 +87,7 @@ class DecosJoinConnection:
         else:
             raise RuntimeError("Method needs to be GET or POST")
 
-        if log_raw:
+        if LOG_RAW:
             print("\nstatus", response.status_code, url)
             print("\npost", json)
             print(">>", response.content)
@@ -99,7 +99,7 @@ class DecosJoinConnection:
         else:
             raise DecosJoinConnectionError(response.status_code)
 
-    def search_query(self, bsn: str, book_key: str):
+    def get_search_query_json(self, bsn: str, book_key: str):
         return {
             "bookKey": book_key,
             "orderBy": "sequence",
@@ -126,7 +126,7 @@ class DecosJoinConnection:
 
         for boek in adres_boeken:
             url = f"{self.api_url}search/books?properties=false"
-            res_json = self.request(url, json=self.search_query(identifier, boek), method='post')
+            res_json = self.request(url, json=self.get_search_query_json(identifier, boek), method='post')
             if res_json['itemDataResultSet']['count'] > 0:
                 for item in res_json['itemDataResultSet']['content']:
                     user_key = item['key']
@@ -451,13 +451,13 @@ class DecosJoinConnection:
 
         return new_zaken
 
-    def next_april_first(self, case_date: date):
+    def next_april_first(self, case_date: date) -> date:
         if case_date < date(case_date.year, 4, 1):
             return date(case_date.year, 4, 1)
         else:
             return date(case_date.year + 1, 4, 1)
 
-    def is_list_match(self, zaak, key, test_list):
+    def is_list_match(self, zaak, key, test_list) -> bool:
         value = zaak[key] if key in zaak else None
         if value is None:
             return False
@@ -475,7 +475,7 @@ class DecosJoinConnection:
         if offset:
             url += f'&skip={offset}'
         res_json = self.request(url)
-        if log_raw:
+        if LOG_RAW:
             from pprint import pprint
             print("request:", url)
             pprint(res_json)
@@ -485,17 +485,17 @@ class DecosJoinConnection:
         """ Get 'content' from all pages for the provided url """
 
         req = PreparedRequest()
-        req.prepare_url(url, {"top": page_size})  # append top get param
+        req.prepare_url(url, {"top": PAGE_SIZE})  # append top get param
         url = req.url
 
         items = []
         # fetch one page to get the first part of the data and item count
         res = self.get_page(url)
 
-        end = math.ceil(res['count'] / page_size) * page_size
+        end = math.ceil(res['count'] / PAGE_SIZE) * PAGE_SIZE
         items.extend(res['content'])
 
-        for offset in range(page_size, end, page_size):
+        for offset in range(PAGE_SIZE, end, PAGE_SIZE):
             res = self.get_page(url, offset)
             items.extend(res['content'])
 
@@ -534,7 +534,7 @@ class DecosJoinConnection:
 
         res = self.get_all_pages(url)
 
-        if log_raw:
+        if LOG_RAW:
             from pprint import pprint
             print("Documents list")
             pprint(res)
@@ -582,7 +582,7 @@ class DecosJoinConnection:
             headers={"Accept": "application/octet-stream"}
         )
 
-        if log_raw:
+        if LOG_RAW:
             from pprint import pprint
             pprint(document_response.content)
             pprint(document_response.headers)
