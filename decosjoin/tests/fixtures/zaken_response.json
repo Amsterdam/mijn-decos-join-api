@@ -40,10 +40,10 @@
         "text6": "Amstel 1 1012AA",
         "title": "Afgehandeld"
       },
-      "key": "HEXSTRING10",
+      "key": "HEXSTRING10.1",
       "links": [
         {
-          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING10",
+          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING10.1",
           "rel": "self"
         }
       ]

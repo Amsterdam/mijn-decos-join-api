@@ -159,7 +159,7 @@
       ]
     },
     {
-      "key": "HEXSTRING10",
+      "key": "HEXSTRING10.2",
       "fields": {
         "title": "Ontvangen",
         "mark": "Z/20/2345678.5",
@@ -175,7 +175,7 @@
       "links": [
         {
           "rel": "self",
-          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING10"
+          "href": "https://localhost/decosweb/aspx/api/v1/items/HEXSTRING10.2"
         }
       ]
     },
