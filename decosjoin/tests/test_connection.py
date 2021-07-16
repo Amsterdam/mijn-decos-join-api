@@ -69,7 +69,7 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[16]['decision'], 'Verleend')
         self.assertEqual(zaken[16]['dateDecision'], date(2020, 6, 16))
 
-    @ patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
+    @patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
     def test_get_documents(self):
         documents = self.connection.get_documents('ZAAKKEY1', "111222333")
         self.assertEqual(len(documents), 2)

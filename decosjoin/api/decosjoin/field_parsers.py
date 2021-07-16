@@ -27,10 +27,10 @@ def get_translation(value: str, translations: list, fallbackToOriginalValue: boo
 def get_fields(parse_fields, zaak_source):
     result = {}
 
-    for parse_field_config in parse_fields:
-        key = parse_field_config['name']
-        val = zaak_source.get(parse_field_config['from'])
-        result[key] = parse_field_config['parser'](val)
+    for field_config in parse_fields:
+        key = field_config['name']
+        val = zaak_source.get(field_config['from'])
+        result[key] = field_config['parser'](val)
 
     return result
 

@@ -120,6 +120,7 @@ class DecosJoinConnection:
 
         return keys
 
+    @staticmethod
     def is_list_match(zaak, key, test_list) -> bool:
         value = zaak[key] if key in zaak else None
         if value is None:
@@ -144,11 +145,7 @@ class DecosJoinConnection:
             if zaak_type not in zaken_index:
                 continue
 
-            # Zaak is not enabled
-            if not zaken_index[zaak_type][1]:
-                continue
-
-            Zaak = zaken_index[zaak_type][0]
+            Zaak = zaken_index[zaak_type]
             new_zaak = Zaak(source_fields).result()
 
             # These matching conditions are used to prevent these items from being included in the returned list of zaken
