@@ -8,7 +8,12 @@ from decosjoin.api.decosjoin.field_parsers import (get_fields, get_translation,
                                                    to_time)
 
 
+def static(method):
+    return method.__func__
+
+
 class Zaak:
+    enabled = True
     zaak_source = None
 
     zaak_type = None
@@ -40,9 +45,6 @@ class Zaak:
         # Arbitrary data for particualar Zaken
         self.zaak.update(get_fields(self.parse_fields, self.zaak_source))
 
-    # def before_transform(self, zaak_source):
-    #     """ Pre transformation """
-
     def after_transform(self):
         """ Post transformation """
 
@@ -54,7 +56,7 @@ class Zaak:
         return to_string_if_exists(self.zaak_source, 'mark')
 
     def to_date_request(self):
-        return to_datetime(to_string_if_exists(self.zaak_source, 'document_date'))
+        return to_date(to_string_if_exists(self.zaak_source, 'document_date'))
 
     def to_status(self) -> str:
         status_source = to_string_if_exists(self.zaak_source, 'title')
@@ -77,21 +79,11 @@ class Zaak:
         return self.zaak_type
 
 
+#######################
+# Zaak configurations #
+#######################
+
 class TVM_RVV_Object(Zaak):
-
-    def to_decision(self):
-        value = super().to_decision()
-
-        translate_values = [
-            "verleend met borden",
-            "verleend zonder bebording",
-            "verleend zonder borden"
-        ]
-
-        if value and value.lower() in translate_values:
-            return 'Verleend'
-
-        return value
 
     zaak_type = "TVM - RVV - Object"
     title = "Tijdelijke verkeersmaatregel"
@@ -109,6 +101,20 @@ class TVM_RVV_Object(Zaak):
         # if end date is not defined, its the same as date start
         if not self.zaak['dateEnd']:
             self.zaak['dateEnd'] = self.zaak['dateStart']
+
+    def to_decision(self):
+        value = super().to_decision()
+
+        translate_values = [
+            "verleend met borden",
+            "verleend zonder bebording",
+            "verleend zonder borden"
+        ]
+
+        if value and value.lower() in translate_values:
+            return 'Verleend'
+
+        return value
 
 
 class VakantieVerhuurVergunning(Zaak):
@@ -142,13 +148,13 @@ class VakantieVerhuurVergunning(Zaak):
         {"name": "dateStart", "from": "document_date", "parser": to_date},  # same as dateRequest
 
         # Custom decision + status transformations based on business logic
-        {"name": "status", "from": "title", "parser": to_vakantie_verhuur_vergunning_status},
-        {"name": "decision", "from": "dfunction", "parser": to_vakantie_verhuur_vergunning_decision},
+        {"name": "status", "from": "title", "parser": static(to_vakantie_verhuur_vergunning_status)},
+        {"name": "decision", "from": "dfunction", "parser": static(to_vakantie_verhuur_vergunning_decision)},
     ]
 
-    def after_transform(self, zaak):
+    def after_transform(self):
         # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
-        zaak['dateEnd'] = self.next_april_first(zaak['dateRequest'])
+        self.zaak['dateEnd'] = self.next_april_first(self.zaak['dateRequest'])
 
 
 class VakantieVerhuur(Zaak):
@@ -212,7 +218,7 @@ class BBVergunning(Zaak):
         {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Datum tot en met
         {"name": "requester", "from": "company", "parser": to_string},
         {"name": "owner", "from": "text25", "parser": to_string},
-        {"name": "hasTransitionAgreement", "from": "dfunction", "parser": to_transition_agreement}  # need this for tip mijn-33
+        {"name": "hasTransitionAgreement", "from": "dfunction", "parser": static(to_transition_agreement)}  # need this for tip mijn-33
     ]
 
 
@@ -356,15 +362,7 @@ class ERVV_TVM(Zaak):
     ]
 
 
+# A dict with all enabled Zaken
 zaken_index = {
-    'tvm - rvv - object': [TVM_RVV_Object, True],
-    'vakantieverhuur': [VakantieVerhuur, True],
-    'vakantieverhuur vergunningsaanvraag': [VakantieVerhuurVergunning, True],
-    'b&b - vergunning': [BBVergunning, True],
-    'gpp': [GPP, True],
-    'gpk': [GPK, True],
-    'omzettingsvergunning': [Omzettingsvergunning, True],
-    'e-rvv - tvm': [ERVV_TVM, True],
-    'evenement melding': [EvenementMelding, False],
-    'evenement vergunning': [EvenementVergunning, False],
+    getattr(cls, 'zaak_type'): cls for cls in Zaak.__subclasses__() if cls.enabled
 }
