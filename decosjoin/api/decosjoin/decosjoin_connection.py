@@ -71,7 +71,7 @@ class DecosJoinConnection:
         """ Easy to mock intermediate function. """
         return requests.post(*args, **kwargs)
 
-    def get(self, url, method='get', json=None):
+    def request(self, url, method='get', json=None):
         """ Makes a request to the decos join api with HTTP basic auth credentials added. """
         if method == 'get':
             response = self.get_response(url,
@@ -126,7 +126,7 @@ class DecosJoinConnection:
 
         for boek in adres_boeken:
             url = f"{self.api_url}search/books?properties=false"
-            res_json = self.get(url, json=self.search_query(identifier, boek), method='post')
+            res_json = self.request(url, json=self.search_query(identifier, boek), method='post')
             if res_json['itemDataResultSet']['count'] > 0:
                 for item in res_json['itemDataResultSet']['content']:
                     user_key = item['key']
@@ -474,7 +474,7 @@ class DecosJoinConnection:
         """ Get a single page for url. When offset is provided add that to the url. """
         if offset:
             url += f'&skip={offset}'
-        res_json = self.get(url)
+        res_json = self.request(url)
         if log_raw:
             from pprint import pprint
             print("request:", url)
@@ -514,7 +514,7 @@ class DecosJoinConnection:
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def get_document_data(self, doc_id: str):
-        res_json = self.get(f"{self.api_url}items/{doc_id}/blob?select=bol10")
+        res_json = self.request(f"{self.api_url}items/{doc_id}/blob?select=bol10")
 
         content = res_json['content']
         if content:
