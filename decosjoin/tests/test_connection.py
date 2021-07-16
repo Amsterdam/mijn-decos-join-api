@@ -3,13 +3,13 @@ from unittest import TestCase
 from unittest.mock import patch
 from freezegun import freeze_time
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, _get_translation, to_transition_agreement
+from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, get_translation, to_transition_agreement
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
 @patch("decosjoin.crypto.get_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
-@patch('decosjoin.tests.test_connection.DecosJoinConnection._get_response', get_response_mock)
-@patch("decosjoin.server.DecosJoinConnection._post_response", post_response_mock)
+@patch('decosjoin.tests.test_connection.DecosJoinConnection.get_response', get_response_mock)
+@patch("decosjoin.server.DecosJoinConnection.post_response", post_response_mock)
 @freeze_time("2021-07-05")
 class ConnectionTests(TestCase):
 
@@ -17,7 +17,7 @@ class ConnectionTests(TestCase):
         self.connection = DecosJoinConnection('username', 'password', 'http://localhost', {'bsn': ['hexkey32chars000000000000000BSN1', 'hexkey32chars000000000000000BSN2']})
 
     def test_get_user_key(self):
-        user_key = self.connection._get_user_keys("bsn", "111222333")
+        user_key = self.connection.get_user_keys("bsn", "111222333")
         self.assertEqual(user_key, ['32charsstringxxxxxxxxxxxxxxxxxxx', '32charsstringxxxxxxxxxxxxxxxxxx2', '32charsstringxxxxxxxxxxxxxxxxxx3'])
 
     def assert_unknown_identifier(self, zaken, identifier):
@@ -100,12 +100,12 @@ class ConnectionTests(TestCase):
             ["C", "3Aa", True],
             ["D", "4Aa", False],
         ]
-        self.assertEqual(_get_translation("a", translations), "1Aa")
-        self.assertEqual(_get_translation("A", translations), "1Aa")
-        self.assertIsNone(_get_translation("b", translations))
-        self.assertEqual(_get_translation("c", translations), "3Aa")
-        self.assertIsNone(_get_translation("d", translations))
-        self.assertIsNone(_get_translation("Nope", translations))
+        self.assertEqual(get_translation("a", translations), "1Aa")
+        self.assertEqual(get_translation("A", translations), "1Aa")
+        self.assertIsNone(get_translation("b", translations))
+        self.assertEqual(get_translation("c", translations), "3Aa")
+        self.assertIsNone(get_translation("d", translations))
+        self.assertIsNone(get_translation("Nope", translations))
 
     def test_to_transition_agreement(self):
         self.assertEqual(to_transition_agreement('Verleend met overgangsrecht'), True)

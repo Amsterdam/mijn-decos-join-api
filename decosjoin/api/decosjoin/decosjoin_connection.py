@@ -29,7 +29,7 @@ ALLOWED_ZAAKTYPES = [
 ]
 
 
-select_fields = ','.join([
+SELECT_FIELDS = ','.join([
     'title',
     'mark',
     'text45',
@@ -59,31 +59,31 @@ class DecosJoinConnection:
         self.username = username
         self.password = password
         self.adres_boeken = adres_boeken
-        self._api_host = api_host
-        self._api_location = "/decosweb/aspx/api/v1/"
-        self.api_url = f"{self._api_host}{self._api_location}"
+        self.api_host = api_host
+        self.api_location = "/decosweb/aspx/api/v1/"
+        self.api_url = f"{self.api_host}{self.api_location}"
 
-    def _get_response(self, *args, **kwargs):
+    def get_response(self, *args, **kwargs):
         """ Easy to mock intermediate function. """
         return requests.get(*args, **kwargs)
 
-    def _post_response(self, *args, **kwargs):
+    def post_response(self, *args, **kwargs):
         """ Easy to mock intermediate function. """
         return requests.post(*args, **kwargs)
 
-    def _get(self, url, method='get', json=None):
+    def get(self, url, method='get', json=None):
         """ Makes a request to the decos join api with HTTP basic auth credentials added. """
         if method == 'get':
-            response = self._get_response(url,
+            response = self.get_response(url,
+                                         auth=HTTPBasicAuth(self.username, self.password),
+                                         headers={"Accept": "application/itemdata"},
+                                         timeout=9)
+        elif method == 'post':
+            response = self.post_response(url,
                                           auth=HTTPBasicAuth(self.username, self.password),
                                           headers={"Accept": "application/itemdata"},
+                                          json=json,
                                           timeout=9)
-        elif method == 'post':
-            response = self._post_response(url,
-                                           auth=HTTPBasicAuth(self.username, self.password),
-                                           headers={"Accept": "application/itemdata"},
-                                           json=json,
-                                           timeout=9)
         else:
             raise RuntimeError("Method needs to be GET or POST")
 
@@ -118,7 +118,7 @@ class DecosJoinConnection:
             }
         }
 
-    def _get_user_keys(self, kind, identifier):
+    def get_user_keys(self, kind, identifier):
         """ Retrieve the internal ids used for a user. """
         keys = []
 
@@ -126,7 +126,7 @@ class DecosJoinConnection:
 
         for boek in adres_boeken:
             url = f"{self.api_url}search/books?properties=false"
-            res_json = self._get(url, json=self.search_query(identifier, boek), method='post')
+            res_json = self.get(url, json=self.search_query(identifier, boek), method='post')
             if res_json['itemDataResultSet']['count'] > 0:
                 for item in res_json['itemDataResultSet']['content']:
                     user_key = item['key']
@@ -134,7 +134,7 @@ class DecosJoinConnection:
 
         return keys
 
-    def _transform(self, zaken, user_identifier):  # noqa: C901
+    def transform(self, zaken, user_identifier):  # noqa: C901
         new_zaken = []
         deferred_zaken = []
 
@@ -165,7 +165,7 @@ class DecosJoinConnection:
                     {"name": "dateDecision", "from": "date5", "parser": to_date},  # datum afhandeling?
                 ]
 
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
 
                 # if end date is not defined, its the same as date start
                 if not new_zaak['dateEnd']:
@@ -184,7 +184,7 @@ class DecosJoinConnection:
                     {"name": "dateStart", "from": "document_date", "parser": to_date},  # same as dateRequest
                     # dateEnd is set programmatically  Datum tot
                 ]
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
 
                 # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
                 new_zaak['dateEnd'] = self.next_april_first(new_zaak['dateRequest'])
@@ -200,7 +200,7 @@ class DecosJoinConnection:
                     {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
                     {"name": "location", "from": "text6", "parser": to_string},
                 ]
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
 
                 if new_zaak['dateEnd'] and new_zaak['dateEnd'] <= date.today():
                     new_zaak['title'] = 'Afgelopen verhuur'
@@ -215,7 +215,7 @@ class DecosJoinConnection:
                     {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
                 ]
 
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
                 deferred_zaken.append(new_zaak)
                 continue  # do not follow normal new_zaak procedure
 
@@ -236,7 +236,7 @@ class DecosJoinConnection:
                     {"name": "owner", "from": "text25", "parser": to_string},
                     {"name": "hasTransitionAgreement", "from": "dfunction", "parser": to_transition_agreement}  # need this for tip mijn-33
                 ]
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
                 decision_translations = [
                     ["Verleend met overgangsrecht", "Verleend"],
                     ["Verleend zonder overgangsrecht", "Verleend"],
@@ -255,8 +255,8 @@ class DecosJoinConnection:
                     ["Beoordelen en besluiten", "In behandeling"],
                     ["Afgehandeld", "Afgehandeld"],
                 ]
-                new_zaak['decision'] = _get_translation(new_zaak['decision'], decision_translations)
-                new_zaak['status'] = _get_translation(new_zaak['status'], status_translations)
+                new_zaak['decision'] = get_translation(new_zaak['decision'], decision_translations)
+                new_zaak['status'] = get_translation(new_zaak['status'], status_translations)
 
             elif zaak_type == 'GPP':
                 fields = [
@@ -270,7 +270,7 @@ class DecosJoinConnection:
                     {"name": "location", "from": "text8", "parser": to_string},
                     {"name": "status", "from": "title", "parser": to_string},
                 ]
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
                 translations = [
                     ["Buiten behandeling", "Buiten behandeling", False],
                     ["Ingetrokken", "Ingetrokken"],
@@ -279,7 +279,7 @@ class DecosJoinConnection:
                     ["Nog niet bekend", "", False],
                     ["Verleend", "Verleend"],
                 ]
-                new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+                new_zaak['decision'] = get_translation(new_zaak['decision'], translations)
 
             elif zaak_type == 'GPK':
                 fields = [
@@ -293,7 +293,7 @@ class DecosJoinConnection:
                     {"name": "cardtype", "from": "text7", "parser": to_string},
                     {"name": "dateEnd", "from": "date7", "parser": to_date},  # vervaldatum
                 ]
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
 
                 # Copied from RD
                 translations = [
@@ -311,7 +311,7 @@ class DecosJoinConnection:
                     ["Verleend Passagier, niet verleend Bestuurder", "Verleend Passagier, niet verleend Bestuurder"],
                     ["Verleend vervangend GPK", "Verleend"],
                 ]
-                new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+                new_zaak['decision'] = get_translation(new_zaak['decision'], translations)
 
             # elif zaak_type == 'Evenement melding':
             #     fields = [
@@ -325,7 +325,7 @@ class DecosJoinConnection:
             #         {"name": "timeEnd", "from": "text8", "parser": to_time},  # Tot    <tijd>
             #         {"name": "decision", "from": "dfunction", "parser": to_string},
             #     ]
-            #     new_zaak = _get_fields(fields, zaak)
+            #     new_zaak = get_fields(fields, zaak)
             #     translations = [
             #         ["Ingetrokken", "Ingetrokken"],
             #         ["Buiten behandeling", "Buiten behandeling", False],
@@ -337,7 +337,7 @@ class DecosJoinConnection:
             #         ["Verleend (Bijzonder/Bewaren)", "Verleend"],
             #         ["Verleend zonder borden", "Verleend"],
             #     ]
-            #     new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+            #     new_zaak['decision'] = get_translation(new_zaak['decision'], translations)
             #
             # elif zaak_type == 'Evenement vergunning':
             #     fields = [
@@ -352,7 +352,7 @@ class DecosJoinConnection:
             #         {"name": "timeStart", "from": "text7", "parser": to_time},
             #         {"name": "timeEnd", "from": "text8", "parser": to_time},  # tijd tot
             #     ]
-            #     new_zaak = _get_fields(fields, zaak)
+            #     new_zaak = get_fields(fields, zaak)
             #
             #     translations = [
             #         ["Afgebroken (Ingetrokken)", "Afgebroken (Ingetrokken)"],
@@ -365,7 +365,7 @@ class DecosJoinConnection:
             #         ["Verleend (Bijzonder/Bewaren)", "Verleend"],
             #         ["Verleend zonder borden", "Verleend"],
             #     ]
-            #     new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+            #     new_zaak['decision'] = get_translation(new_zaak['decision'], translations)
 
             elif zaak_type == 'Omzettingsvergunning':
                 fields = [
@@ -378,7 +378,7 @@ class DecosJoinConnection:
                     {"name": "description", "from": "subject1", "parser": to_string},
                     {"name": "decision", "from": "dfunction", "parser": to_string},
                 ]
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
                 translations = [
                     ["Buiten behandeling", "Buiten behandeling", False],
                     ["Geweigerd", "Geweigerd"],
@@ -390,7 +390,7 @@ class DecosJoinConnection:
                     ["Verleend", "Verleend"],
                     ["Verleend zonder borden", "Verleend"],
                 ]
-                new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+                new_zaak['decision'] = get_translation(new_zaak['decision'], translations)
 
             elif zaak_type == 'E-RVV - TVM':
                 fields = [
@@ -408,7 +408,7 @@ class DecosJoinConnection:
                     {"name": "timeEnd", "from": "text13", "parser": to_time},  # tijd tot
                     {"name": "decision", "from": "dfunction", "parser": to_string},
                 ]
-                new_zaak = _get_fields(fields, zaak)
+                new_zaak = get_fields(fields, zaak)
                 translations = [
                     ["Buiten behandeling", "Buiten behandeling", False],
                     ["Ingetrokken", "Ingetrokken"],
@@ -420,7 +420,7 @@ class DecosJoinConnection:
                     ["Verleend zonder bebording", "Verleend"],
                     ["Verleend zonder borden", "Verleend"],
                 ]
-                new_zaak['decision'] = _get_translation(new_zaak['decision'], translations)
+                new_zaak['decision'] = get_translation(new_zaak['decision'], translations)
 
             else:
                 # zaak does not match one of the known ones
@@ -470,11 +470,11 @@ class DecosJoinConnection:
 
         return zaken
 
-    def _get_page(self, url, offset=None):
+    def get_page(self, url, offset=None):
         """ Get a single page for url. When offset is provided add that to the url. """
         if offset:
             url += f'&skip={offset}'
-        res_json = self._get(url)
+        res_json = self.get(url)
         if log_raw:
             from pprint import pprint
             print("request:", url)
@@ -490,13 +490,13 @@ class DecosJoinConnection:
 
         items = []
         # fetch one page to get the first part of the data and item count
-        res = self._get_page(url)
+        res = self.get_page(url)
 
         end = math.ceil(res['count'] / page_size) * page_size
         items.extend(res['content'])
 
         for offset in range(page_size, end, page_size):
-            res = self._get_page(url, offset)
+            res = self.get_page(url, offset)
             items.extend(res['content'])
 
         return items
@@ -504,17 +504,17 @@ class DecosJoinConnection:
     def get_zaken(self, kind, identifier):
         """ Get all zaken for a kind ['bsn' or 'kvk']. """
         zaken = []
-        user_keys = self._get_user_keys(kind, identifier)
+        user_keys = self.get_user_keys(kind, identifier)
 
         for key in user_keys:
-            url = f"{self.api_url}items/{key}/folders?select={select_fields}"
+            url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
             zaken.extend(self.get_all_pages(url))
 
-        zaken = self._transform(zaken, identifier)
+        zaken = self.transform(zaken, identifier)
         return sorted(self.filter_zaken(zaken), key=lambda x: x['identifier'], reverse=True)
 
     def get_document_data(self, doc_id: str):
-        res_json = self._get(f"{self.api_url}items/{doc_id}/blob?select=bol10")
+        res_json = self.get(f"{self.api_url}items/{doc_id}/blob?select=bol10")
 
         content = res_json['content']
         if content:
@@ -553,7 +553,7 @@ class DecosJoinConnection:
         for item in res:
             f = item['fields']
             if f['itemtype_key'].lower() == 'document':
-                document_meta_data = _get_fields(fields, item)
+                document_meta_data = get_fields(fields, item)
 
                 if document_meta_data['text39'].lower() == "definitief" \
                         and document_meta_data['text40'].lower() in ["openbaar", "beperkt openbaar"] \
@@ -576,7 +576,7 @@ class DecosJoinConnection:
     def get_document(self, document_id):
         url_blob_content = f"{self.api_url}items/{document_id}/content"
 
-        document_response = self._get_response(
+        document_response = self.get_response(
             url_blob_content,
             auth=HTTPBasicAuth(self.username, self.password),
             headers={"Accept": "application/octet-stream"}
@@ -593,7 +593,7 @@ class DecosJoinConnection:
         }
 
 
-def _get_translation(value: str, translations: list, fallbackToOriginalValue: bool = False):
+def get_translation(value: str, translations: list, fallbackToOriginalValue: bool = False):
     """ Accepts a 2d list with 3 items. [ ["from", "to" "show"], ... ] """
     if value is None:
         return value
@@ -611,7 +611,7 @@ def _get_translation(value: str, translations: list, fallbackToOriginalValue: bo
     return value if fallbackToOriginalValue else None
 
 
-def _get_fields(fields, zaak):
+def get_fields(fields, zaak):
     result = {}
     for f in fields:
         key = f['name']
@@ -731,7 +731,7 @@ def to_title(value):
     ]
     if not value:
         return None
-    return _get_translation(value, translations)
+    return get_translation(value, translations)
 
 
 def to_transition_agreement(value):

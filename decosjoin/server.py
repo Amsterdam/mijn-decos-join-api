@@ -67,7 +67,7 @@ def get_kvk_number_from_request(request):
     return kvk
 
 
-def _get_kind_and_identifier_or_error(request):
+def get_kind_and_identifier_or_error(request):
     kind = None
     identifier = None
 
@@ -98,7 +98,7 @@ def _get_kind_and_identifier_or_error(request):
 @app.route('/decosjoin/getvergunningen', methods=['GET'])
 def get_vergunningen():
     try:
-        kind, identifier = _get_kind_and_identifier_or_error(request)
+        kind, identifier = get_kind_and_identifier_or_error(request)
     except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
         return e.message, e.status_code
 
@@ -116,7 +116,7 @@ def list_documents(encrypted_zaak_id):
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
 
     try:
-        kind, identifier = _get_kind_and_identifier_or_error(request)
+        kind, identifier = get_kind_and_identifier_or_error(request)
     except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
         return e.message, e.status_code
 
@@ -137,7 +137,7 @@ def get_document(encrypted_doc_id):
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
 
     try:
-        kind, identifier = _get_kind_and_identifier_or_error(request)
+        kind, identifier = get_kind_and_identifier_or_error(request)
     except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
         return e.message, e.status_code
 
