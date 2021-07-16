@@ -3,7 +3,7 @@ from unittest.case import TestCase
 
 from decosjoin.api.decosjoin.Exception import ParseError
 from decosjoin.api.decosjoin.field_parsers import (get_translation, to_date,
-                                                   to_datetime,
+                                                   to_datetime, to_int,
                                                    to_string,
                                                    to_string_if_exists,
                                                    to_string_or_empty_string,
@@ -33,6 +33,9 @@ class ValueParserTests(TestCase):
         self.assertEqual(to_string_if_exists(zaak, 'bliep'), 'blap')
         self.assertEqual(to_string_if_exists(zaak, 'hello'), None)
         self.assertEqual(to_string_if_exists(zaak, 'hello', 'default_value'), 'default_value')
+
+    def test_to_int(self):
+        self.assertEqual(to_int('1'), 1)
 
 
 class TranslationParserTests(TestCase):
