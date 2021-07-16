@@ -15,7 +15,7 @@ TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 
 
 @patch("decosjoin.server.get_tma_certificate", lambda: server_crt)
-@patch("decosjoin.crypto.get_key", lambda: TESTKEY)
+@patch("decosjoin.crypto.get_encrytion_key", lambda: TESTKEY)
 @patch("decosjoin.server.get_decosjoin_api_host", lambda: "http://localhost")
 @patch("decosjoin.server.get_decosjoin_adres_boeken", lambda: {'bsn': ["hexkey32chars000000000000000BSN1", "hexkey32chars000000000000000BSN2"], 'kvk': ['hexkey32chars0000000000000000KVK']})
 class ApiTests(FlaskServerTMATestCase):

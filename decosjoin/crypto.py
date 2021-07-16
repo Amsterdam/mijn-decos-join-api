@@ -2,16 +2,16 @@ from typing import Optional
 
 from cryptography.fernet import Fernet, InvalidToken
 
-from decosjoin.config import get_key
+from decosjoin.config import get_encrytion_key
 
 
 def encrypt(plain_text: str, bsn: Optional[str] = '') -> str:
-    f = Fernet(get_key())
+    f = Fernet(get_encrytion_key())
     return f.encrypt(f"{bsn}:{plain_text}".encode()).decode()
 
 
 def decrypt(encrypted: str, match_bsn: Optional[str] = None) -> str:
-    f = Fernet(get_key())
+    f = Fernet(get_encrytion_key())
     value_bsn = f.decrypt(encrypted.encode(), ttl=60 * 60).decode()
     bsn, value = value_bsn.split(':', maxsplit=1)
 
