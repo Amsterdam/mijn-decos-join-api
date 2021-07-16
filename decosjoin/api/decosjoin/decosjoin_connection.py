@@ -6,7 +6,7 @@ from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
 
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError
-from decosjoin.api.decosjoin.field_parsers import (get_fields, to_string,
+from decosjoin.api.decosjoin.field_parsers import (get_fields, to_int, to_string,
                                                    to_string_or_empty_string)
 from decosjoin.api.decosjoin.zaaktypes import zaken_index
 from decosjoin.crypto import encrypt
@@ -245,13 +245,13 @@ class DecosJoinConnection:
         res = self.get_all_pages(url)
 
         if LOG_RAW:
-
             print("Documents list")
             pprint(res)
 
         parse_fields = [
             {"name": 'title', "from": 'text41', "parser": to_string_or_empty_string},
             {"name": 'id', "from": 'mark', "parser": to_string},
+            {"name": 'sequence', "from": 'sequence', "parser": to_int},
             {"name": "text39", "from": "text39", "parser": to_string_or_empty_string},
             {"name": "text40", "from": "text40", "parser": to_string_or_empty_string},
             {"name": "text41", "from": "text41", "parser": to_string_or_empty_string},
@@ -263,8 +263,6 @@ class DecosJoinConnection:
             document_source = item['fields']
             if document_source['itemtype_key'].lower() == 'document':
                 document_meta_data = get_fields(parse_fields, document_source)
-
-                pprint(document_meta_data)
 
                 if document_meta_data['text39'].lower() == "definitief" \
                         and document_meta_data['text40'].lower() in ["openbaar", "beperkt openbaar"] \

@@ -108,3 +108,11 @@ def to_string_or_empty_string(value):
 
 def to_string_if_exists(zaak, key, default_value=None):
     return to_string(zaak[key]) if key in zaak else default_value
+
+
+def to_int(value):
+    if value == 0:
+        return 0
+    if not value:
+        return None
+    return int(value)
