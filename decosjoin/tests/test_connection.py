@@ -7,7 +7,7 @@ from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, ge
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
-@patch("decosjoin.crypto.get_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
+@patch("decosjoin.crypto.get_encrytion_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
 @patch('decosjoin.tests.test_connection.DecosJoinConnection.get_response', get_response_mock)
 @patch("decosjoin.server.DecosJoinConnection.post_response", post_response_mock)
 @freeze_time("2021-07-05")
