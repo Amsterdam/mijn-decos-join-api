@@ -1,7 +1,7 @@
 from datetime import date
-from decosjoin.api.decosjoin.field_parsers import to_date, to_datetime
 from unittest.case import TestCase
 
+from decosjoin.api.decosjoin.field_parsers import to_date
 from decosjoin.api.decosjoin.zaaktypes import (BBVergunning, TVM_RVV_Object,
                                                VakantieVerhuurVergunning)
 
@@ -39,9 +39,10 @@ class ZaaktypesTest(TestCase):
             "caseType": "TVM - RVV - Object",
             "title": "Tijdelijke verkeersmaatregel",
             "identifier": "Z/20/1234567",
-            "dateRequest": to_datetime(zaak_source['document_date']),
+            "dateRequest": to_date(zaak_source['document_date']),
             "status": "Ontvangen",
             "decision": None,
+            "dateDecision": None,
             "description": "Test beschrijving",
             "kenteken": None,
             "location": "Amstel 1 1000AB",
