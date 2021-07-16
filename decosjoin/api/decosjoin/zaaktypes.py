@@ -373,6 +373,40 @@ class ERVV_TVM(Zaak):
     ]
 
 
+class BZP(Zaak):
+    zaak_type = "Parkeerontheffingen Blauwe zone particulieren"
+    title = "Parkeerontheffingen Blauwe zone particulieren"
+
+    fields = [
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
+        {"name": "kenteken", "from": "text8", "parser": to_string},
+    ]
+
+    decision_translations = [
+        ["Ingetrokken", "Ingetrokken"],
+        ["Niet verleend", "Niet verleend"],
+        ["Verleend", "Verleend"],
+    ]
+
+
+class BZB(Zaak):
+    zaak_type = "Parkeerontheffingen Blauwe zone bedrijven"
+    title = "Parkeerontheffingen Blauwe zone bedrijven"
+
+    fields = [
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
+        {"name": "companyName", "from": "text8", "parser": to_string},
+    ]
+
+    translations = [
+        ["Ingetrokken", "Ingetrokken"],
+        ["Niet verleend", "Niet verleend"],
+        ["Verleend", "Verleend"],
+    ]
+
+
 # A dict with all enabled Zaken
 zaken_index = {
     getattr(cls, 'zaak_type'): cls for cls in Zaak.__subclasses__() if cls.enabled

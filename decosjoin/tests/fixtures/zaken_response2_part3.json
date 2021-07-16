@@ -41,6 +41,46 @@
           "rel": "self"
         }
       ]
+    },
+    {
+      "key": "HEXSTRING24",
+      "fields": {
+        "company": "Achternaam",
+        "date6": "2021-05-26T00:00:00",
+        "date7": "2022-05-26T00:00:00",
+        "document_date": "2021-05-18T00:00:00",
+        "mark": "Z/21/99012349",
+        "text8": "Uw bedrijfje",
+        "text45": "Parkeerontheffingen Blauwe zone bedrijven",
+        "title": "Ontvangen",
+        "dfunction": "Verleend"
+      },
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING24",
+          "rel": "self"
+        }
+      ]
+    },
+    {
+      "key": "HEXSTRING25",
+      "fields": {
+        "company": "Achternaam",
+        "date6": "2021-06-26T00:00:00",
+        "date7": "2022-06-26T00:00:00",
+        "document_date": "2021-05-18T00:00:00",
+        "mark": "Z/21/99012350",
+        "text8": "KN-UW-TS",
+        "text45": "Parkeerontheffingen Blauwe zone particulieren",
+        "title": "Ontvangen",
+        "dfunction": "Verleend"
+      },
+      "links": [
+        {
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING25",
+          "rel": "self"
+        }
+      ]
     }
   ],
   "links": [
