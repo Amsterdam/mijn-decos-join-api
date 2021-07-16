@@ -39,6 +39,7 @@ class Zaak:
             "dateRequest": self.to_date_request(),
             "status": self.to_status(),
             "decision": self.to_decision(),
+            "dateDecision": self.to_date_decision(),
             "description": self.to_description(),
         }
 
@@ -64,7 +65,7 @@ class Zaak:
 
     def to_decision(self) -> str:
         decision_source = to_string_if_exists(self.zaak_source, 'dfunction')
-        return get_translation(decision_source, self.decision_translations)
+        return get_translation(decision_source, self.decision_translations, True)
 
     def to_date_decision(self) -> str:
         return to_datetime(to_string_if_exists(self.zaak_source, 'date5'))
@@ -268,6 +269,11 @@ class GPK(Zaak):
 
 
 class EvenementMelding(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = False
+    # !!!!!!!!!!!!!
+
     zaak_type = "Evenement melding"
     title = "Evenement melding"
 
@@ -292,6 +298,11 @@ class EvenementMelding(Zaak):
 
 
 class EvenementVergunning(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = False
+    # !!!!!!!!!!!!!
+
     zaak_type = "Evenement vergunning"
     title = "Evenement vergunning"
 

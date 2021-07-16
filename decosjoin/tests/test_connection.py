@@ -1,4 +1,3 @@
-from datetime import date
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -27,7 +26,28 @@ class ConnectionTests(TestCase):
     @patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
+        for z in zaken:
+            print(z['identifier'], z['status'], z['decision'], z['caseType'])
+
         self.assertEqual(len(zaken), 18)
+
+        # Z / 21 / 99012347 Ontvangen None GPK
+        # Z / 21 / 99012346 Ontvangen None GPP
+        # Z / 21 / 99012345 Ontvangen None E - RVV - TVM
+        # Z / 21 / 89012345 Ontvangen None Vakantieverhuur
+        # Z / 21 / 78901234 Ontvangen None B & B - vergunning
+        # Z / 21 / 7865356778 Afgehandeld Verleend Vakantieverhuur vergunningsaanvraag
+        # Z / 21 / 67890123 Ontvangen None Vakantieverhuur
+        # Z / 21 / 123123123 Afgehandeld Ingetrokken Vakantieverhuur vergunningsaanvraag
+        # Z / 20 / 9 Ontvangen Verleend TVM - RVV - Object
+        # Z / 20 / 2345678 Ontvangen None TVM - RVV - Object
+        # Z / 20 / 2345678 Ontvangen None TVM - RVV - Object
+        # Z / 20 / 2345678 Ontvangen None TVM - RVV - Object
+        # Z / 20 / 2345678 Ontvangen None TVM - RVV - Object
+        # Z / 20 / 2345678 Ontvangen Verleend TVM - RVV - Object
+        # Z / 20 / 2345678 Ontvangen None TVM - RVV - Object
+        # Z / 20 / 2345678 Ontvangen None TVM - RVV - Object
+        # Z / 20 / 1234567 Ontvangen None TVM - RVV - Object
 
         self.assertEqual(zaken[5]["identifier"], "Z/21/78901234")
         self.assertEqual(zaken[5]["title"], "Vergunning bed & breakfast")
@@ -55,7 +75,7 @@ class ConnectionTests(TestCase):
 
         # TVM - RVV
         self.assertEqual(zaken[17]["identifier"], "Z/20/1234567")
-        self.assertEqual(zaken[16]["identifier"], "Z/20/2345678")
+        self.assertEqual(zaken[16]["identifier"], "Z/20/2345678.0")
 
         # Z/20/4567890 is filtered out because of subject1 contents
         self.assert_unknown_identifier(zaken, 'Z/20/4567890')
@@ -66,8 +86,9 @@ class ConnectionTests(TestCase):
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
         self.assert_unknown_identifier(zaken, 'Z/20/2')
 
-        self.assertEqual(zaken[14]['decision'], 'Verleend')
-        self.assertEqual(zaken[14]['dateDecision'], date(2020, 6, 16))
+        self.assertEqual(zaken[14]['identifier'], 'Z/20/2345678.2')
+        self.assertEqual(zaken[14]['decision'], None)
+        self.assertEqual(zaken[14]['dateDecision'], None)
 
     @patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
     def test_get_documents(self):
