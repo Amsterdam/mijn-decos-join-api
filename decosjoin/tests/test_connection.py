@@ -23,7 +23,7 @@ class ConnectionTests(TestCase):
     def assert_unknown_identifier(self, zaken, identifier):
         self.assertEqual([zaak['identifier'] for zaak in zaken if zaak['identifier'] == identifier], [])
 
-    @patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
+    @patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
         self.assertEqual(len(zaken), 20)
@@ -68,7 +68,7 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[16]['decision'], 'Verleend')
         self.assertEqual(zaken[16]['dateDecision'], date(2020, 6, 16))
 
-    @ patch('decosjoin.api.decosjoin.decosjoin_connection.page_size', 10)
+    @ patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
     def test_list_documents(self):
         documents = self.connection.list_documents('ZAAKKEY1', "111222333")
         self.assertEqual(len(documents), 2)
