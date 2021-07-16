@@ -377,7 +377,7 @@ class BZP(Zaak):
     zaak_type = "Parkeerontheffingen Blauwe zone particulieren"
     title = "Parkeerontheffingen Blauwe zone particulieren"
 
-    fields = [
+    parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
         {"name": "kenteken", "from": "text8", "parser": to_string},
@@ -394,7 +394,7 @@ class BZB(Zaak):
     zaak_type = "Parkeerontheffingen Blauwe zone bedrijven"
     title = "Parkeerontheffingen Blauwe zone bedrijven"
 
-    fields = [
+    parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
         {"name": "companyName", "from": "text8", "parser": to_string},

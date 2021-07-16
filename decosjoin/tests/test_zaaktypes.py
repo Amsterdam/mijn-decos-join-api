@@ -2,7 +2,7 @@ from datetime import date
 from unittest.case import TestCase
 
 from decosjoin.api.decosjoin.field_parsers import to_date
-from decosjoin.api.decosjoin.zaaktypes import (BBVergunning, TVM_RVV_Object,
+from decosjoin.api.decosjoin.zaaktypes import (BBVergunning, BZB, BZP, TVM_RVV_Object,
                                                VakantieVerhuurVergunning)
 
 
@@ -83,3 +83,37 @@ class ZaaktypesTest(TestCase):
 
     # def test_ERVV_TVM(self):
     #     self.assertEqual()
+
+    def test_BZP(self):
+        zaak_source = {
+            "company": "Achternaam",
+            "date6": "2021-06-26T00:00:00",
+            "date7": "2022-06-26T00:00:00",
+            "document_date": "2021-05-18T00:00:00",
+            "mark": "Z/21/99012350",
+            "text8": "KN-UW-TS",
+            "text45": "Parkeerontheffingen Blauwe zone particulieren",
+            "title": "Ontvangen",
+            "dfunction": "Verleend"
+        }
+        zaak_transformed = BZP(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "Parkeerontheffingen Blauwe zone particulieren")
+        self.assertEqual(zaak_transformed["kenteken"], "KN-UW-TS")
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2021-06-26"))
+
+    def test_BZB(self):
+        zaak_source = {
+            "company": "Achternaam",
+            "date6": "2021-05-26T00:00:00",
+            "date7": "2022-05-26T00:00:00",
+            "document_date": "2021-05-18T00:00:00",
+            "mark": "Z/21/99012349",
+            "text8": "Uw bedrijfje",
+            "text45": "Parkeerontheffingen Blauwe zone bedrijven",
+            "title": "Ontvangen",
+            "dfunction": "Verleend"
+        }
+        zaak_transformed = BZB(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "Parkeerontheffingen Blauwe zone bedrijven")
+        self.assertEqual(zaak_transformed["companyName"], "Uw bedrijfje")
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2021-05-26"))
