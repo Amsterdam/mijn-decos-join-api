@@ -17,5 +17,5 @@ decosjoin.api.decosjoin.decosjoin_connection.LOG_RAW = True
 connection = DecosJoinConnection(
     get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
 
-document = connection.get_document(document_id)
+document = connection.get_document_blob(document_id)
 # printing is done by LOG_RAW

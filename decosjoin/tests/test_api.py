@@ -2,14 +2,13 @@ import time
 from unittest.mock import patch
 
 from cryptography.fernet import Fernet
-from tma_saml import FlaskServerTMATestCase
-from tma_saml.for_tests.cert_and_key import server_crt
-
 from decosjoin.crypto import encrypt
 from decosjoin.server import app
 # from decosjoin.tests.fixtures.data import get_document
-from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
-
+from decosjoin.tests.fixtures.response_mock import (get_response_mock,
+                                                    post_response_mock)
+from tma_saml import FlaskServerTMATestCase
+from tma_saml.for_tests.cert_and_key import server_crt
 
 TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 
@@ -131,9 +130,9 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})
 
     # @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
-    # def test_get_document(self):
+    # def test_get_document_blob(self):
     #     response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}", headers=self.saml_headers())
-    #     self.assertEqual(response.data, get_document())
+    #     self.assertEqual(response.data, get_document_blob())
     #     self.assertEqual(response.headers['Content-Type'], 'application/pdf')
 
     @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
