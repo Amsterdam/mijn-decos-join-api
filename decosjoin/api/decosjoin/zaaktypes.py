@@ -1,4 +1,5 @@
 from datetime import date
+from decosjoin.config import IS_PRODUCTION
 from os import stat
 
 from decosjoin.api.decosjoin.field_parsers import (
@@ -228,6 +229,10 @@ class BBVergunning(Zaak):
             return True
         return False
 
+    # @staticmethod
+    # def defer_transform(zaak_deferred):
+    #     return None
+
     status_translations = [
         ["Publicatie aanvraag", "Ontvangen"],
         ["Ontvangen", "Ontvangen"],
@@ -263,6 +268,11 @@ class BBVergunning(Zaak):
 
 
 class GPP(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
     zaak_type = "GPP"
     title = "Vaste parkeerplaats voor gehandicapten (GPP)"
 
@@ -282,6 +292,11 @@ class GPP(Zaak):
 
 
 class GPK(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
     zaak_type = "GPK"
     title = "Europse gehandicaptenparkeerkaart (GPK)"
 
@@ -322,7 +337,7 @@ class GPK(Zaak):
 class EvenementMelding(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = False
+    enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
     zaak_type = "Evenement melding"
@@ -351,7 +366,7 @@ class EvenementMelding(Zaak):
 class EvenementVergunning(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = False
+    enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
     zaak_type = "Evenement vergunning"
@@ -379,6 +394,11 @@ class EvenementVergunning(Zaak):
 
 
 class Omzettingsvergunning(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
     zaak_type = "Omzettingsvergunning"
     title = "Vergunning voor kamerverhuur"
 
@@ -400,6 +420,11 @@ class Omzettingsvergunning(Zaak):
 
 
 class ERVV_TVM(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
     zaak_type = "E-RVV - TVM"
     title = "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)"
 
@@ -425,6 +450,11 @@ class ERVV_TVM(Zaak):
 
 
 class BZP(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
     zaak_type = "Parkeerontheffingen Blauwe zone particulieren"
     title = "Parkeerontheffingen Blauwe zone particulieren"
 
@@ -442,6 +472,11 @@ class BZP(Zaak):
 
 
 class BZB(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
     zaak_type = "Parkeerontheffingen Blauwe zone bedrijven"
     title = "Parkeerontheffingen Blauwe zone bedrijven"
 
