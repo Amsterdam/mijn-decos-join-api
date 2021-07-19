@@ -76,7 +76,7 @@ class ConnectionTests(TestCase):
             ["Z/21/99012347", "Ontvangen", None, "GPK"],
             ["Z/21/99012346", "Ontvangen", None, "GPP"],
             ["Z/21/99012345", "Ontvangen", None, "E-RVV - TVM"],
-            ["Z/21/89012345", "Ontvangen", None, "Vakantieverhuur afmelding"],
+            ["Z/21/89012345", "Ontvangen", None, "Vakantieverhuur"],
             ["Z/21/78901234", "Ontvangen", None, "B&B - vergunning"],
             [
                 "Z/21/7865356778",
@@ -185,7 +185,7 @@ class ConnectionTests(TestCase):
         )
 
         self.assertEqual(len(zaken_result), 1)
-        self.assertEqual(zaken_result[0]["caseType"], "Vakantieverhuur afmelding")
+        self.assertEqual(zaken_result[0]["caseType"], "Vakantieverhuur")
         self.assertEqual(zaken_result[0]["identifier"], "Z/21/89012345")
         self.assert_unknown_identifier(zaken_result, "Z/21/67890123")
         self.assertTrue("documentsUrl" in zaken_result[0])

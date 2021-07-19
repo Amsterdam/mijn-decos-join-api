@@ -211,7 +211,6 @@ class VakantieVerhuurAfmelding(Zaak):
                 new_zaak["dateDescision"] = zaak_deferred["dateRequest"]
                 new_zaak["title"] = zaak_deferred["title"]
                 new_zaak["identifier"] = zaak_deferred["identifier"]
-                new_zaak["caseType"] = zaak_deferred["caseType"]
 
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Start verhuur
