@@ -182,7 +182,11 @@ class DecosJoinConnection:
 
         # Matching start/end dates for Vakantieverhuur afmelding and transforming the geplande verhuur to afgemelde verhuur
         for [deferred_zaak, Zaak_instance] in deferred_zaken:
-            Zaak_instance.defer_transform(deferred_zaak, new_zaken, self)
+            Zaak_instance.defer_transform(
+                deferred_zaak=deferred_zaak,
+                new_zaken=new_zaken,
+                decosjoin_connection=self,
+            )
 
         return new_zaken
 

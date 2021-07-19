@@ -200,7 +200,7 @@ class VakantieVerhuurAfmelding(Zaak):
     title = "Geannuleerde verhuur"
 
     @staticmethod
-    def defer_transform(zaak_deferred, zaken_all):
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
         # update the existing registration
         for new_zaak in zaken_all:
             if (
