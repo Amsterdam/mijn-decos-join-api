@@ -21,6 +21,5 @@ connection = DecosJoinConnection(
     get_decosjoin_adres_boeken(),
 )
 
-zaak_id = "E2429F49D84848B980739E0F685042E4"
 workflow = connection.get_workflow(zaak_id)
 pprint(workflow)

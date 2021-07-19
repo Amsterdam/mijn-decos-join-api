@@ -319,8 +319,11 @@ class DecosJoinConnection:
         all_workflows_response = self.request(
             f"{self.api_url}items/{zaak_id}/workflows"
         )
-        worflow_id = all_workflows_response[0]["id"]
-        single_workflow_url = f"{self.api_url}items/{worflow_id}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
-        single_workflow_response = self.request(single_workflow_url)
+        if all_workflows_response and all_workflows_response["count"] > 0:
+            worflow_id = all_workflows_response["content"][0]["key"]
+            single_workflow_url = f"{self.api_url}items/{worflow_id}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
+            single_workflow_response = self.request(single_workflow_url)
 
-        return single_workflow_response
+            return single_workflow_response
+
+        return None
