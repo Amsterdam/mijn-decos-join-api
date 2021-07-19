@@ -2,20 +2,23 @@ import logging
 from datetime import date, time
 
 import sentry_sdk
+import tma_saml
 from cryptography.fernet import InvalidToken
-from flask import Flask, request, make_response
+from flask import Flask, make_response, request
 from flask.json import JSONEncoder
 from sentry_sdk.integrations.flask import FlaskIntegration
-from tma_saml import get_digi_d_bsn, SamlVerificationException, get_e_herkenning_attribs, \
-    HR_KVK_NUMBER_KEY
+from tma_saml import (HR_KVK_NUMBER_KEY, SamlVerificationException,
+                      get_digi_d_bsn, get_e_herkenning_attribs)
 
-import tma_saml
-
-from decosjoin.api.decosjoin.Exception import MissingSamlTokenException, InvalidBSNException, SamlException, \
-    GeneralError
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
-from decosjoin.config import get_sentry_dsn, get_decosjoin_username, get_decosjoin_password, get_decosjoin_api_host, \
-    get_decosjoin_adres_boeken, get_tma_certificate
+from decosjoin.api.decosjoin.Exception import (GeneralError,
+                                               InvalidBSNException,
+                                               MissingSamlTokenException,
+                                               SamlException)
+from decosjoin.config import (get_decosjoin_adres_boeken,
+                              get_decosjoin_api_host, get_decosjoin_password,
+                              get_decosjoin_username, get_sentry_dsn,
+                              get_tma_certificate)
 from decosjoin.crypto import decrypt
 
 logger = logging.getLogger(__name__)
@@ -111,7 +114,7 @@ def get_vergunningen():
 
 
 @app.route('/decosjoin/listdocuments/<string:encrypted_zaak_id>', methods=['GET'])
-def list_documents(encrypted_zaak_id):
+def get_documents(encrypted_zaak_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
 
@@ -124,7 +127,7 @@ def list_documents(encrypted_zaak_id):
         zaak_id = decrypt(encrypted_zaak_id, identifier)
     except InvalidToken:
         return {'status': "ERROR", "message": "decryption zaak ID invalid"}, 400
-    documents = connection.list_documents(zaak_id, identifier)
+    documents = connection.get_documents(zaak_id, identifier)
     return {
         'status': 'OK',
         'content': documents
@@ -132,7 +135,7 @@ def list_documents(encrypted_zaak_id):
 
 
 @app.route('/decosjoin/document/<string:encrypted_doc_id>', methods=['GET'])
-def get_document(encrypted_doc_id):
+def get_document_blob(encrypted_doc_id):
     connection = DecosJoinConnection(
         get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
 
@@ -143,7 +146,7 @@ def get_document(encrypted_doc_id):
 
     try:
         doc_id = decrypt(encrypted_doc_id, identifier)
-        document = connection.get_document(doc_id)
+        document = connection.get_document_blob(doc_id)
     except InvalidToken:
         return {"status": "ERROR", "message": "decryption zaak ID invalid"}, 400
     except Exception as e:

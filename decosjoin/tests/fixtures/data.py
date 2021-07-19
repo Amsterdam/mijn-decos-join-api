@@ -68,6 +68,6 @@ def get_document2_response():
     return load_fixture('document2_response.json')
 
 
-def get_document():
+def get_document_blob():
     with open(os.path.join(FIXTURE_PATH, 'test.pdf'), 'rb') as fh:
         return fh.read()

@@ -1,10 +1,11 @@
 from datetime import date
 from unittest import TestCase
 from unittest.mock import patch
-from freezegun import freeze_time
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection, get_translation, to_transition_agreement
-from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
+from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
+from decosjoin.tests.fixtures.response_mock import (get_response_mock,
+                                                    post_response_mock)
+from freezegun import freeze_time
 
 
 @patch("decosjoin.crypto.get_encrytion_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
@@ -69,8 +70,8 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken[16]['dateDecision'], date(2020, 6, 16))
 
     @ patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
-    def test_list_documents(self):
-        documents = self.connection.list_documents('ZAAKKEY1', "111222333")
+    def test_get_documents(self):
+        documents = self.connection.get_documents('ZAAKKEY1', "111222333")
         self.assertEqual(len(documents), 2)
         self.assertEqual(documents[0]['sequence'], 2)
         self.assertEqual(documents[1]['sequence'], 5)
@@ -88,31 +89,7 @@ class ConnectionTests(TestCase):
         self.assertNotIn(8, sequence_numbers)
         self.assertNotIn(9, sequence_numbers)
 
-    def test_next_april_first(self):
-        self.assertEqual(self.connection.next_april_first(date(2021, 3, 1)), date(2021, 4, 1))
-        self.assertEqual(self.connection.next_april_first(date(2021, 4, 1)), date(2022, 4, 1))
-        self.assertEqual(self.connection.next_april_first(date(2021, 6, 1)), date(2022, 4, 1))
-
-    def test_get_translations(self):
-        translations = [
-            ["a", "1Aa", True],
-            ["b", "2Aa", False],
-            ["C", "3Aa", True],
-            ["D", "4Aa", False],
-        ]
-        self.assertEqual(get_translation("a", translations), "1Aa")
-        self.assertEqual(get_translation("A", translations), "1Aa")
-        self.assertIsNone(get_translation("b", translations))
-        self.assertEqual(get_translation("c", translations), "3Aa")
-        self.assertIsNone(get_translation("d", translations))
-        self.assertIsNone(get_translation("Nope", translations))
-
-    def test_to_transition_agreement(self):
-        self.assertEqual(to_transition_agreement('Verleend met overgangsrecht'), True)
-        self.assertEqual(to_transition_agreement('Verleend zonder overgangsrecht'), False)
-        self.assertEqual(to_transition_agreement('abc'), False)
-
-    # def test_get_document(self):
-    #     documents = self.connection.get_document('DOCUMENTKEY01')
+    # def test_get_document_blob(self):
+    #     documents = self.connection.get_document_blob('DOCUMENTKEY01')
     #     self.assertEqual(documents['Content-Type'], "application/pdf")
-    #     self.assertEqual(documents['file_data'], get_document())
+    #     self.assertEqual(documents['file_data'], get_document_blob())
