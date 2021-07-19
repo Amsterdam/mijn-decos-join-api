@@ -4,9 +4,9 @@ from unittest.mock import patch
 from cryptography.fernet import Fernet
 from decosjoin.crypto import encrypt
 from decosjoin.server import app
+
 # from decosjoin.tests.fixtures.data import get_document
-from decosjoin.tests.fixtures.response_mock import (get_response_mock,
-                                                    post_response_mock)
+from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 from tma_saml import FlaskServerTMATestCase
 from tma_saml.for_tests.cert_and_key import server_crt
 
@@ -16,27 +16,34 @@ TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 @patch("decosjoin.server.get_tma_certificate", lambda: server_crt)
 @patch("decosjoin.crypto.get_encrytion_key", lambda: TESTKEY)
 @patch("decosjoin.server.get_decosjoin_api_host", lambda: "http://localhost")
-@patch("decosjoin.server.get_decosjoin_adres_boeken", lambda: {'bsn': ["hexkey32chars000000000000000BSN1", "hexkey32chars000000000000000BSN2"], 'kvk': ['hexkey32chars0000000000000000KVK']})
+@patch(
+    "decosjoin.server.get_decosjoin_adres_boeken",
+    lambda: {
+        "bsn": ["hexkey32chars000000000000000BSN1", "hexkey32chars000000000000000BSN2"],
+        "kvk": ["hexkey32chars0000000000000000KVK"],
+    },
+)
 class ApiTests(FlaskServerTMATestCase):
     TEST_BSN = "111222333"
     TEST_KVK = "90001354"  # test kvk taken from kvk website
 
     def expected_zaak(self):
         return {
-            'caseType': 'TVM - RVV - Object',
-            'dateEnd': '2021-04-28',
-            'dateStart': '2021-04-27',
-            'dateRequest': '2021-04-16',
-            'identifier': 'Z/20/1234567',
-            'kenteken': None,
-            'location': 'Amstel 1 1000AB',
-            'decision': None,
-            'dateDecision': None,
-            'status': 'Ontvangen',
-            'description': 'Test MA MIJN-3031',
-            'timeEnd': '16:00',
-            'timeStart': '10:00',
-            'title': 'Tijdelijke verkeersmaatregel',
+            "id": "HEXSTRING01",
+            "caseType": "TVM - RVV - Object",
+            "dateEnd": "2021-04-28",
+            "dateStart": "2021-04-27",
+            "dateRequest": "2021-04-16",
+            "identifier": "Z/20/1234567",
+            "kenteken": None,
+            "location": "Amstel 1 1000AB",
+            "decision": None,
+            "dateDecision": None,
+            "status": "Ontvangen",
+            "description": "Test MA MIJN-3031",
+            "timeEnd": "16:00",
+            "timeStart": "10:00",
+            "title": "Tijdelijke verkeersmaatregel",
             # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 
@@ -53,7 +60,7 @@ class ApiTests(FlaskServerTMATestCase):
         return self.client.get(location, headers=self.saml_headers_kvk())
 
     def setUp(self):
-        """ Setup app for testing """
+        """Setup app for testing"""
         self.client = self.get_tma_test_app(app)
         self.maxDiff = None
 
@@ -64,7 +71,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
     @patch("decosjoin.server.DecosJoinConnection.post_response", post_response_mock)
-    @patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
+    @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_getvergunningen(self):
         response = self.client_get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 200, response.data)
@@ -74,7 +81,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(len(data["content"]), 20)
 
         # remove the encrypted url, it is time based
-        del(data["content"][-1]["documentsUrl"])
+        del data["content"][-1]["documentsUrl"]
 
         self.assertEqual(data["content"][-1], self.expected_zaak())
 
@@ -82,29 +89,37 @@ class ApiTests(FlaskServerTMATestCase):
     def test_getvergunningen_no_header(self):
         response = self.client.get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {'message': 'Missing SAML token', 'status': 'ERROR'})
+        self.assertEqual(
+            response.json, {"message": "Missing SAML token", "status": "ERROR"}
+        )
 
     @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
-    @patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
+    @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_listdocuments(self):
-        response = self.client_get(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}")
-        data = response.json['content']
+        response = self.client_get(
+            f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}"
+        )
+        data = response.json["content"]
         self.assertEqual(len(data), 2)
-        self.assertTrue(data[0]['url'].startswith("/api/decosjoin/document/"))
+        self.assertTrue(data[0]["url"].startswith("/api/decosjoin/document/"))
 
     @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
-    @patch('decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE', 10)
+    @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_listdocuments_kvk(self):
-        response = self.client_get_kvk(f"/decosjoin/listdocuments/{encrypt('ZAAKKEY2', self.TEST_KVK)}")
-        data = response.json['content']
+        response = self.client_get_kvk(
+            f"/decosjoin/listdocuments/{encrypt('ZAAKKEY2', self.TEST_KVK)}"
+        )
+        data = response.json["content"]
         self.assertEqual(len(data), 2)
-        self.assertTrue(data[0]['url'].startswith("/api/decosjoin/document/"))
+        self.assertTrue(data[0]["url"].startswith("/api/decosjoin/document/"))
 
     @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
     def test_listdocuments_unencrypted(self):
         response = self.client_get("/decosjoin/listdocuments/ZAAKKEY1")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})
+        self.assertEqual(
+            response.json, {"message": "decryption zaak ID invalid", "status": "ERROR"}
+        )
 
     @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
     def test_listdocuments_expired_token(self):
@@ -115,7 +130,9 @@ class ApiTests(FlaskServerTMATestCase):
 
         response = self.client_get(f"/decosjoin/listdocuments/{encrypted_token}")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})
+        self.assertEqual(
+            response.json, {"message": "decryption zaak ID invalid", "status": "ERROR"}
+        )
 
     # @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
     # def test_get_document_blob(self):
@@ -125,6 +142,10 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
     def test_get_document_unencrypted(self):
-        response = self.client.get("/decosjoin/document/DOCUMENTKEY01", headers=self.saml_headers())
+        response = self.client.get(
+            "/decosjoin/document/DOCUMENTKEY01", headers=self.saml_headers()
+        )
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json, {'message': 'decryption zaak ID invalid', 'status': 'ERROR'})
+        self.assertEqual(
+            response.json, {"message": "decryption zaak ID invalid", "status": "ERROR"}
+        )

@@ -55,9 +55,11 @@ class ZaaktypesTest(TestCase):
             "text10": "10:00",
             "date7": "2021-04-28T00:00:00",
             "document_date": "2021-04-16T00:00:00",
+            "id": "zaak-1",
         }
 
         zaak_transformed = {
+            "id": "zaak-1",
             "caseType": "TVM - RVV - Object",
             "title": "Tijdelijke verkeersmaatregel",
             "identifier": "Z/20/1234567",
@@ -85,6 +87,7 @@ class ZaaktypesTest(TestCase):
             "text6": "Amstel 1 1012AA Amsterdam",
             "title": "Ontvangen",
             "dfunction": None,
+            "id": "zaak-1",
         }
         zaak_transformed = VakantieVerhuurVergunning(zaak_source).result()
         self.assertEqual(zaak_transformed["status"], "Afgehandeld")
@@ -98,6 +101,7 @@ class ZaaktypesTest(TestCase):
             "text6": "Amstel 1 1012AA Amsterdam",
             "title": "Afgehandeld",
             "dfunction": "Ingetrokken",
+            "id": "zaak-1",
         }
         zaak_transformed = VakantieVerhuurVergunning(zaak_source).result()
         self.assertEqual(zaak_transformed["status"], "Afgehandeld")
@@ -117,6 +121,7 @@ class ZaaktypesTest(TestCase):
             "text6": "Amstel 1 1012AA Amsterdam",
             "text7": "Z/11/123456",
             "title": "Ontvangen",
+            "id": "zaak-1",
         }
         zaak_transformed = VakantieVerhuur(zaak_source).result()
 
@@ -148,13 +153,33 @@ class ZaaktypesTest(TestCase):
             "text45": "Vakantieverhuur afmelding",
             "text6": "Amstel 1 1012AK",
             "title": "Ontvangen",
+            "id": "zaak-1",
         }
         zaak_transformed = VakantieVerhuurAfmelding(zaak_source).result()
         self.assertEqual(zaak_transformed["title"], "Geannuleerde verhuur")
         self.assertEqual(zaak_transformed["caseType"], "Vakantieverhuur afmelding")
 
-    # def test_BBVergunning(self):
-    #     self.assertEqual()
+    def test_BBVergunning(self):
+        zaak_source = {
+            "company": "Haarlem",
+            "date6": "2021-05-19T00:00:00",
+            "date7": "2021-12-31T00:00:00",
+            "document_date": "2021-05-19T00:00:00",
+            "mark": "Z/21/78901234",
+            "subject1": "B&B vergunning aanvragen - Amstel 1",
+            "text10": "Ja",
+            "text11": "Geheel",
+            "text12": "Online voldaan",
+            "text45": "B&B - vergunning",
+            "text6": "Amstel 1 1012AA Amsterdam",
+            "text7": "Test veld Adres Locatie",
+            "text8": "<nietnodig>",
+            "title": "Ontvangen",
+            "id": "zaak-1",
+        }
+        zaak_transformed = BBVergunning(zaak_source).result()
+        self.assertEqual(zaak_transformed["title"], "Vergunning bed & breakfast")
+        self.assertEqual(zaak_transformed["caseType"], "B&B - vergunning")
 
     # def test_GPP(self):
     #     self.assertEqual()
@@ -185,6 +210,7 @@ class ZaaktypesTest(TestCase):
             "text45": "Parkeerontheffingen Blauwe zone particulieren",
             "title": "Ontvangen",
             "dfunction": "Verleend",
+            "id": "zaak-1",
         }
         zaak_transformed = BZP(zaak_source).result()
         self.assertEqual(
@@ -205,6 +231,7 @@ class ZaaktypesTest(TestCase):
             "text45": "Parkeerontheffingen Blauwe zone bedrijven",
             "title": "Ontvangen",
             "dfunction": "Verleend",
+            "id": "zaak-1",
         }
         zaak_transformed = BZB(zaak_source).result()
         self.assertEqual(

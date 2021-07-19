@@ -1,0 +1,21 @@
+{
+  "count": 1,
+  "content": [
+    {
+      "key": "HEXSTRING-SINGLE-WORKFLOW",
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-06-23T10:04:53",
+        "date2": "2021-06-23T10:04:58",
+        "text7": "B&B - vergunning - Huisbezoek",
+        "sequence": 1.0
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING-SINGLE-WORKFLOW"
+        }
+      ]
+    }
+  ]
+}

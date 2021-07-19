@@ -38,6 +38,7 @@ class Zaak:
     def transform(self):
         # Data that's present in every Zaak
         self.zaak = {
+            "id": self.zaak_source["id"],
             "caseType": self.zaak_type,
             "title": self.to_title(),
             "identifier": self.to_identifier(),
@@ -56,8 +57,8 @@ class Zaak:
 
     defer_transform = None  # Should be @staticmethod if defined
     # @staticmethod
-    # def defer_transform(self, zaak_deferred, zaken_all):
-    #     """Defer transformation"""
+    # def defer_transform(self, zaak_deferred, zaken_all, decosjoin_connection):
+    #     zaken_all.append(zaak_deferred)
 
     def to_title(self):
         """Returns the title we want to give to the particular case"""
@@ -200,7 +201,7 @@ class VakantieVerhuurAfmelding(Zaak):
     title = "Geannuleerde verhuur"
 
     @staticmethod
-    def defer_transform(zaak_deferred, zaken_all):
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
         # update the existing registration
         for new_zaak in zaken_all:
             if (
@@ -228,9 +229,11 @@ class BBVergunning(Zaak):
             return True
         return False
 
-    # @staticmethod
-    # def defer_transform(zaak_deferred):
-    #     return None
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
+        date_workflow_active = decosjoin_connection.get_workflow(zaak_deferred["id"])
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
 
     status_translations = [
         ["Publicatie aanvraag", "Ontvangen"],

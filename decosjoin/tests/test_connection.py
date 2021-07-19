@@ -1,3 +1,4 @@
+from decosjoin.api.decosjoin.field_parsers import to_date
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -136,7 +137,7 @@ class ConnectionTests(TestCase):
         self.assertNotIn(8, sequence_numbers)
         self.assertNotIn(9, sequence_numbers)
 
-    def test_transform(self):
+    def test_transform_vakantieverhuur(self):
         def wrap(zaak, key):
             return {
                 "key": key,
@@ -189,6 +190,49 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken_result[0]["identifier"], "Z/21/89012345")
         self.assert_unknown_identifier(zaken_result, "Z/21/67890123")
         self.assertTrue("documentsUrl" in zaken_result[0])
+
+    def test_transform_bb_vergunning(self):
+        def wrap(zaak, key):
+            return {
+                "key": key,
+                "fields": zaak,
+                "links": [
+                    {
+                        "href": """https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/{key}""",
+                        "rel": "self",
+                    }
+                ],
+            }
+
+        zaak_bb_vergunning = {
+            "company": "Haarlem",
+            "date6": "2021-05-19T00:00:00",
+            "date7": "2021-12-31T00:00:00",
+            "document_date": "2021-05-19T00:00:00",
+            "mark": "Z/21/78901234",
+            "subject1": "B&B vergunning aanvragen - Amstel 1",
+            "text10": "Ja",
+            "text11": "Geheel",
+            "text12": "Online voldaan",
+            "text45": "B&B - vergunning",
+            "text6": "Amstel 1 1012AA Amsterdam",
+            "text7": "Test veld Adres Locatie",
+            "text8": "<nietnodig>",
+            "title": "Ontvangen",
+            "id": "HEXSTRING17",
+        }
+
+        zaken_result = self.connection.transform(
+            [
+                wrap(zaak_bb_vergunning, "HEXSTRING17"),
+            ],
+            "test-user-id",
+        )
+
+        self.assertEqual(len(zaken_result), 1)
+        self.assertEqual(zaken_result[0]["caseType"], "B&B - vergunning")
+        self.assertEqual(zaken_result[0]["identifier"], "Z/21/78901234")
+        self.assertEqual(zaken_result[0]["dateWorkflowActive"], to_date("2021-06-23"))
 
     # def test_get_document_blob(self):
     #     documents = self.connection.get_document_blob('DOCUMENTKEY01')
