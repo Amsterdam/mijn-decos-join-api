@@ -8,6 +8,7 @@ from requests.auth import HTTPBasicAuth
 from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError
 from decosjoin.api.decosjoin.field_parsers import (
     get_fields,
+    to_date,
     to_int,
     to_string,
     to_string_or_empty_string,
@@ -146,6 +147,8 @@ class DecosJoinConnection:
             # Cannot reliably determine the zaaktype of this zaak
             if "text45" not in source_fields:
                 continue
+
+            source_fields.update({"id": zaak_source["key"]})
 
             zaak_type = source_fields["text45"]
 
@@ -319,11 +322,19 @@ class DecosJoinConnection:
         all_workflows_response = self.request(
             f"{self.api_url}items/{zaak_id}/workflows"
         )
+
         if all_workflows_response and all_workflows_response["count"] > 0:
-            worflow_id = all_workflows_response["content"][0]["key"]
-            single_workflow_url = f"{self.api_url}items/{worflow_id}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
+            worflow_key = all_workflows_response["content"][-1]["key"]
+            single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
             single_workflow_response = self.request(single_workflow_url)
 
-            return single_workflow_response
+            return (
+                to_date(single_workflow_response["content"][-1]["fields"]["date1"])
+                if single_workflow_response
+                and "content" in single_workflow_response
+                and len(single_workflow_response["content"]) > 0
+                and "fields" in single_workflow_response["content"][-1]
+                else None
+            )
 
         return None

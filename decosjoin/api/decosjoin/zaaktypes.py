@@ -38,6 +38,7 @@ class Zaak:
     def transform(self):
         # Data that's present in every Zaak
         self.zaak = {
+            "id": self.zaak_source["id"],
             "caseType": self.zaak_type,
             "title": self.to_title(),
             "identifier": self.to_identifier(),
@@ -230,7 +231,8 @@ class BBVergunning(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
-        # workflow = decosjoin_connection.get_workflow(zaak_deferred["id"])
+        date_workflow_active = decosjoin_connection.get_workflow(zaak_deferred["id"])
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
         zaken_all.append(zaak_deferred)
 
     status_translations = [
