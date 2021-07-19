@@ -1,11 +1,15 @@
-
 from datetime import date
+from os import stat
 
-from decosjoin.api.decosjoin.field_parsers import (get_fields, get_translation,
-                                                   to_date, to_datetime,
-                                                   to_string,
-                                                   to_string_if_exists,
-                                                   to_time)
+from decosjoin.api.decosjoin.field_parsers import (
+    get_fields,
+    get_translation,
+    to_date,
+    to_datetime,
+    to_string,
+    to_string_if_exists,
+    to_time,
+)
 
 
 def static(method):
@@ -47,31 +51,36 @@ class Zaak:
         self.zaak.update(get_fields(self.parse_fields, self.zaak_source))
 
     def after_transform(self):
-        """ Post transformation """
+        """Post transformation"""
+
+    defer_transform = None  # Should be @staticmethod if defined
+    # @staticmethod
+    # def defer_transform(self, zaak_deferred, zaken_all):
+    #     """Defer transformation"""
 
     def to_title(self):
-        """ Returns the title we want to give to the particular case """
+        """Returns the title we want to give to the particular case"""
         return self.title
 
     def to_identifier(self):
-        return to_string_if_exists(self.zaak_source, 'mark')
+        return to_string_if_exists(self.zaak_source, "mark")
 
     def to_date_request(self):
-        return to_date(to_string_if_exists(self.zaak_source, 'document_date'))
+        return to_date(to_string_if_exists(self.zaak_source, "document_date"))
 
     def to_status(self) -> str:
-        status_source = to_string_if_exists(self.zaak_source, 'title')
+        status_source = to_string_if_exists(self.zaak_source, "title")
         return get_translation(status_source, self.status_translations, True)
 
     def to_decision(self) -> str:
-        decision_source = to_string_if_exists(self.zaak_source, 'dfunction')
+        decision_source = to_string_if_exists(self.zaak_source, "dfunction")
         return get_translation(decision_source, self.decision_translations, True)
 
     def to_date_decision(self) -> str:
-        return to_datetime(to_string_if_exists(self.zaak_source, 'date5'))
+        return to_datetime(to_string_if_exists(self.zaak_source, "date5"))
 
     def to_description(self) -> str:
-        return to_string_if_exists(self.zaak_source, 'subject1')
+        return to_string_if_exists(self.zaak_source, "subject1")
 
     def result(self):
         return self.zaak
@@ -83,6 +92,7 @@ class Zaak:
 #######################
 # Zaak configurations #
 #######################
+
 
 class TVM_RVV_Object(Zaak):
 
@@ -100,8 +110,8 @@ class TVM_RVV_Object(Zaak):
 
     def after_transform(self):
         # if end date is not defined, its the same as date start
-        if not self.zaak['dateEnd']:
-            self.zaak['dateEnd'] = self.zaak['dateStart']
+        if not self.zaak["dateEnd"]:
+            self.zaak["dateEnd"] = self.zaak["dateStart"]
 
     def to_decision(self):
         value = super().to_decision()
@@ -109,11 +119,11 @@ class TVM_RVV_Object(Zaak):
         translate_values = [
             "verleend met borden",
             "verleend zonder bebording",
-            "verleend zonder borden"
+            "verleend zonder borden",
         ]
 
         if value and value.lower() in translate_values:
-            return 'Verleend'
+            return "Verleend"
 
         return value
 
@@ -146,16 +156,27 @@ class VakantieVerhuurVergunning(Zaak):
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},
-        {"name": "dateStart", "from": "document_date", "parser": to_date},  # same as dateRequest
-
+        {
+            "name": "dateStart",
+            "from": "document_date",
+            "parser": to_date,
+        },  # same as dateRequest
         # Custom decision + status transformations based on business logic
-        {"name": "status", "from": "title", "parser": static(to_vakantie_verhuur_vergunning_status)},
-        {"name": "decision", "from": "dfunction", "parser": static(to_vakantie_verhuur_vergunning_decision)},
+        {
+            "name": "status",
+            "from": "title",
+            "parser": static(to_vakantie_verhuur_vergunning_status),
+        },
+        {
+            "name": "decision",
+            "from": "dfunction",
+            "parser": static(to_vakantie_verhuur_vergunning_decision),
+        },
     ]
 
     def after_transform(self):
         # The validity of this case runs from april 1st until the next. set the end date to the next april the 1st
-        self.zaak['dateEnd'] = self.next_april_first(self.zaak['dateRequest'])
+        self.zaak["dateEnd"] = self.next_april_first(self.zaak["dateRequest"])
 
 
 class VakantieVerhuur(Zaak):
@@ -163,23 +184,37 @@ class VakantieVerhuur(Zaak):
     title = "Geplande verhuur"
 
     parse_fields = [
-        {"name": "dateStart", "from": 'date6', "parser": to_date},  # Start verhuur
-        {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Start verhuur
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einde verhuur
         {"name": "location", "from": "text6", "parser": to_string},
     ]
 
     def after_transform(self):
-        if self.zaak['dateEnd'] and self.zaak['dateEnd'] <= date.today():
-            self.zaak['title'] = 'Afgelopen verhuur'
+        if self.zaak["dateEnd"] and self.zaak["dateEnd"] <= date.today():
+            self.zaak["title"] = "Afgelopen verhuur"
 
 
 class VakantieVerhuurAfmelding(Zaak):
     zaak_type = "Vakantieverhuur afmelding"
     title = "Geannuleerde verhuur"
 
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all):
+        # update the existing registration
+        for new_zaak in zaken_all:
+            if (
+                new_zaak["caseType"] == VakantieVerhuur.zaak_type
+                and new_zaak["dateStart"] == zaak_deferred["dateStart"]
+                and new_zaak["dateEnd"] == zaak_deferred["dateEnd"]
+            ):
+                new_zaak["dateDescision"] = zaak_deferred["dateRequest"]
+                new_zaak["title"] = zaak_deferred["title"]
+                new_zaak["identifier"] = zaak_deferred["identifier"]
+                new_zaak["caseType"] = zaak_deferred["caseType"]
+
     parse_fields = [
-        {"name": "dateStart", "from": 'date6', "parser": to_date},  # Start verhuur
-        {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Einde verhuur
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Start verhuur
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einde verhuur
     ]
 
 
@@ -215,11 +250,15 @@ class BBVergunning(Zaak):
     parse_fields = [
         # Startdatum zaak
         {"name": "location", "from": "text6", "parser": to_string},
-        {"name": "dateStart", "from": 'date6', "parser": to_date},  # Datum van
-        {"name": "dateEnd", "from": 'date7', "parser": to_date},  # Datum tot en met
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
         {"name": "requester", "from": "company", "parser": to_string},
         {"name": "owner", "from": "text25", "parser": to_string},
-        {"name": "hasTransitionAgreement", "from": "dfunction", "parser": static(to_transition_agreement)}  # need this for tip mijn-33
+        {
+            "name": "hasTransitionAgreement",
+            "from": "dfunction",
+            "parser": static(to_transition_agreement),
+        },  # need this for tip mijn-33
     ]
 
 
@@ -253,11 +292,23 @@ class GPK(Zaak):
         ["Niet verleend", "Niet verleend"],
         ["Nog niet bekend", "", False],
         ["Verleend", "Verleend"],
-        ["Verleend Bestuurder met GPP (niet verleend passagier)", "Verleend Bestuurder, niet verleend Passagier"],
-        ["Verleend Bestuurder, niet verleend Passagier", "Verleend Bestuurder, niet verleend Passagier"],
+        [
+            "Verleend Bestuurder met GPP (niet verleend passagier)",
+            "Verleend Bestuurder, niet verleend Passagier",
+        ],
+        [
+            "Verleend Bestuurder, niet verleend Passagier",
+            "Verleend Bestuurder, niet verleend Passagier",
+        ],
         ["Verleend met GPP", "Verleend"],
-        ["Verleend Passagier met GPP (niet verleend Bestuurder)", "Verleend Passagier, niet verleend Bestuurder"],
-        ["Verleend Passagier, niet verleend Bestuurder", "Verleend Passagier, niet verleend Bestuurder"],
+        [
+            "Verleend Passagier met GPP (niet verleend Bestuurder)",
+            "Verleend Passagier, niet verleend Bestuurder",
+        ],
+        [
+            "Verleend Passagier, niet verleend Bestuurder",
+            "Verleend Passagier, niet verleend Bestuurder",
+        ],
         ["Verleend vervangend GPK", "Verleend"],
     ]
 
@@ -409,5 +460,5 @@ class BZB(Zaak):
 
 # A dict with all enabled Zaken
 zaken_index = {
-    getattr(cls, 'zaak_type'): cls for cls in Zaak.__subclasses__() if cls.enabled
+    getattr(cls, "zaak_type"): cls for cls in Zaak.__subclasses__() if cls.enabled
 }
