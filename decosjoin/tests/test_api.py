@@ -71,31 +71,7 @@ class ApiTests(FlaskServerTMATestCase):
         data = response.get_json()
 
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(data["content"][0]["caseType"], "Parkeerontheffingen Blauwe zone particulieren")
-        self.assertEqual(data["content"][0]["kenteken"], "KN-UW-TS")
-        self.assertEqual(data["content"][0]["dateStart"], "2021-06-26")
-
-        self.assertEqual(data["content"][1]["caseType"], "Parkeerontheffingen Blauwe zone bedrijven")
-        self.assertEqual(data["content"][1]["companyName"], "Uw bedrijfje")
-        self.assertEqual(data["content"][1]["dateStart"], "2021-05-26")
-
-        self.assertEqual(data["content"][2]["caseType"], "Omzettingsvergunning")
-
-        self.assertEqual(data["content"][3]["caseType"], "GPK")
-
-        self.assertEqual(data["content"][4]["caseType"], "GPP")
-
-        self.assertEqual(data["content"][5]["caseType"], "E-RVV - TVM")
-
-        self.assertEqual(data["content"][6]["caseType"], "Vakantieverhuur")
-
-        self.assertEqual(data["content"][7]["caseType"], "B&B - vergunning")
-        self.assertEqual(data["content"][7]["dateStart"], "2021-05-19")
-        self.assertEqual(data["content"][7]["dateEnd"], "2021-12-31")
-
-        self.assertEqual(data["content"][11]["caseType"], "TVM - RVV - Object")
-        self.assertTrue(data["content"][11]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
-        self.assertTrue(data["content"][11]["documentsUrl"].startswith("/api/decosjoin/listdocuments/"))
+        self.assertEqual(len(data["content"]), 20)
 
         # remove the encrypted url, it is time based
         del(data["content"][-1]["documentsUrl"])
