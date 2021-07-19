@@ -182,7 +182,7 @@ class DecosJoinConnection:
 
         # Matching start/end dates for Vakantieverhuur afmelding and transforming the geplande verhuur to afgemelde verhuur
         for [deferred_zaak, Zaak_instance] in deferred_zaken:
-            Zaak_instance.defer_transform(deferred_zaak, new_zaken)
+            Zaak_instance.defer_transform(deferred_zaak, new_zaken, self)
 
         return new_zaken
 
@@ -310,3 +310,13 @@ class DecosJoinConnection:
             "Content-Type": document_response.headers["Content-Type"],
             "file_data": document_response.content,
         }
+
+    def get_workflow(self, zaak_id: str):
+        all_workflows_response = self.request(
+            f"{self.api_url}items/{zaak_id}/workflows"
+        )
+        worflow_id = all_workflows_response[0]["id"]
+        single_workflow_url = f"{self.api_url}items/{worflow_id}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
+        single_workflow_response = self.request(single_workflow_url)
+
+        return single_workflow_response

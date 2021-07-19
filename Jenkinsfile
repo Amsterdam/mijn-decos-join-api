@@ -51,6 +51,36 @@ node {
 
 String BRANCH = "${env.BRANCH_NAME}"
 
+if (BRANCH == "test-acc") {
+
+    node {
+        stage('Push acceptance image') {
+            tryStep "image tagging", {
+                docker.withRegistry("${DOCKER_REGISTRY_HOST}",'docker_registry_auth') {
+                    docker.image("mijnams/mijn-decos-join:${env.BUILD_NUMBER}").pull()
+                    // The Image.push() function ignores the docker registry prefix of the image name,
+                    // which means that we cannot re-tag an image that was built in a different stage (on a different node).
+                    // Resort to manual tagging to allow build and tag steps to run on different Jenkins slaves.
+                    retagAndPush("mijnams/mijn-decos-join", "${env.BUILD_NUMBER}", "acceptance")
+                }
+            }
+        }
+    }
+
+    node {
+        stage("Deploy to ACC") {
+            tryStep "deployment", {
+                build job: 'Subtask_Openstack_Playbook',
+                    parameters: [
+                        [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
+                        [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy.yml'],
+                        [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_mijn-decos-join"]
+                    ]
+            }
+        }
+    }
+}
+
 if (BRANCH == "master") {
 
     node {

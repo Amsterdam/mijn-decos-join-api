@@ -56,7 +56,7 @@ class Zaak:
 
     defer_transform = None  # Should be @staticmethod if defined
     # @staticmethod
-    # def defer_transform(self, zaak_deferred, zaken_all):
+    # def defer_transform(self, zaak_deferred, zaken_all, decosjoin_connection):
     #     """Defer transformation"""
 
     def to_title(self):
@@ -228,9 +228,10 @@ class BBVergunning(Zaak):
             return True
         return False
 
-    # @staticmethod
-    # def defer_transform(zaak_deferred):
-    #     return None
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
+        # workflow = decosjoin_connection.get_workflow(zaak_deferred["id"])
+        return zaak_deferred
 
     status_translations = [
         ["Publicatie aanvraag", "Ontvangen"],
