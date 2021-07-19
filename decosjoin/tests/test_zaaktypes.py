@@ -2,21 +2,43 @@ from datetime import date
 from unittest.case import TestCase
 
 from decosjoin.api.decosjoin.field_parsers import to_date
-from decosjoin.api.decosjoin.zaaktypes import (BBVergunning, BZB, BZP, TVM_RVV_Object,
-                                               VakantieVerhuurVergunning)
+from decosjoin.api.decosjoin.zaaktypes import (
+    BZB,
+    BZP,
+    BBVergunning,
+    TVM_RVV_Object,
+    VakantieVerhuur,
+    VakantieVerhuurAfmelding,
+    VakantieVerhuurVergunning,
+)
+
+from freezegun import freeze_time
 
 
 class ZaaktypesTest(TestCase):
-
     def test_next_april_first(self):
-        self.assertEqual(VakantieVerhuurVergunning.next_april_first(date(2021, 3, 1)), date(2021, 4, 1))
-        self.assertEqual(VakantieVerhuurVergunning.next_april_first(date(2021, 4, 1)), date(2022, 4, 1))
-        self.assertEqual(VakantieVerhuurVergunning.next_april_first(date(2021, 6, 1)), date(2022, 4, 1))
+        self.assertEqual(
+            VakantieVerhuurVergunning.next_april_first(date(2021, 3, 1)),
+            date(2021, 4, 1),
+        )
+        self.assertEqual(
+            VakantieVerhuurVergunning.next_april_first(date(2021, 4, 1)),
+            date(2022, 4, 1),
+        )
+        self.assertEqual(
+            VakantieVerhuurVergunning.next_april_first(date(2021, 6, 1)),
+            date(2022, 4, 1),
+        )
 
     def test_to_transition_agreement(self):
-        self.assertEqual(BBVergunning.to_transition_agreement('Verleend met overgangsrecht'), True)
-        self.assertEqual(BBVergunning.to_transition_agreement('Verleend zonder overgangsrecht'), False)
-        self.assertEqual(BBVergunning.to_transition_agreement('abc'), False)
+        self.assertEqual(
+            BBVergunning.to_transition_agreement("Verleend met overgangsrecht"), True
+        )
+        self.assertEqual(
+            BBVergunning.to_transition_agreement("Verleend zonder overgangsrecht"),
+            False,
+        )
+        self.assertEqual(BBVergunning.to_transition_agreement("abc"), False)
 
     def test_TVM_RVV_Object(self):
         zaak_source = {
@@ -32,14 +54,14 @@ class ZaaktypesTest(TestCase):
             "text7": "TEST MA Decos",
             "text10": "10:00",
             "date7": "2021-04-28T00:00:00",
-            "document_date": "2021-04-16T00:00:00"
+            "document_date": "2021-04-16T00:00:00",
         }
 
         zaak_transformed = {
             "caseType": "TVM - RVV - Object",
             "title": "Tijdelijke verkeersmaatregel",
             "identifier": "Z/20/1234567",
-            "dateRequest": to_date(zaak_source['document_date']),
+            "dateRequest": to_date(zaak_source["document_date"]),
             "status": "Ontvangen",
             "decision": None,
             "dateDecision": None,
@@ -48,20 +70,88 @@ class ZaaktypesTest(TestCase):
             "location": "Amstel 1 1000AB",
             "timeEnd": "16:00",
             "timeStart": "10:00",
-            "dateStart": to_date(zaak_source['date6']),
-            "dateEnd": to_date(zaak_source['date7']),
+            "dateStart": to_date(zaak_source["date6"]),
+            "dateEnd": to_date(zaak_source["date7"]),
         }
 
         self.assertEqual(TVM_RVV_Object(zaak_source).zaak, zaak_transformed)
 
-    # def test_VakantieVerhuurVergunning(self):
-    #     self.assertEqual()
+    def test_VakantieVerhuurVergunning(self):
+        zaak_source = {
+            "text45": "Vakantieverhuur vergunningsaanvraag",
+            "mark": "Z/21/7865356778",
+            "document_date": "2021-05-19T00:00:00",
+            "date5": "2021-05-19T00:00:00",
+            "text6": "Amstel 1 1012AA Amsterdam",
+            "title": "Ontvangen",
+            "dfunction": None,
+        }
+        zaak_transformed = VakantieVerhuurVergunning(zaak_source).result()
+        self.assertEqual(zaak_transformed["status"], "Afgehandeld")
+        self.assertEqual(zaak_transformed["decision"], "Verleend")
 
-    # def test_VakantieVerhuur(self):
-    #     self.assertEqual()
+        zaak_source = {
+            "text45": "Vakantieverhuur vergunningsaanvraag",
+            "mark": "Z/21/123123123",
+            "document_date": "2020-05-20T00:00:00",
+            "date5": "2020-05-20T00:00:00",
+            "text6": "Amstel 1 1012AA Amsterdam",
+            "title": "Afgehandeld",
+            "dfunction": "Ingetrokken",
+        }
+        zaak_transformed = VakantieVerhuurVergunning(zaak_source).result()
+        self.assertEqual(zaak_transformed["status"], "Afgehandeld")
+        self.assertEqual(zaak_transformed["decision"], "Ingetrokken")
 
-    # def test_VakantieVerhuurAfmelding(self):
-    #     self.assertEqual()
+    @freeze_time("2021-07-15")
+    def test_VakantieVerhuur(self):
+        zaak_source = {
+            "date6": "2021-07-05T00:00:00",
+            "date7": "2021-07-06T00:00:00",
+            "document_date": "2021-04-28T00:00:00",
+            "mark": "Z/21/67890123",
+            "subject1": "Melding Amstel 1  - V Achternaam",
+            "text11": "Nvt",
+            "text12": "Geen kosten",
+            "text45": "Vakantieverhuur",
+            "text6": "Amstel 1 1012AA Amsterdam",
+            "text7": "Z/11/123456",
+            "title": "Ontvangen",
+        }
+        zaak_transformed = VakantieVerhuur(zaak_source).result()
+
+        self.assertEqual(zaak_transformed["caseType"], "Vakantieverhuur")
+        self.assertEqual(zaak_transformed["title"], "Afgelopen verhuur")
+        self.assertEqual(zaak_transformed["decision"], None)
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2021-07-05"))
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2021-07-06"))
+        self.assertEqual(zaak_transformed["dateRequest"], to_date("2021-04-28"))
+
+        zaak_source["date6"] = "2021-07-25T00:00:00"
+        zaak_source["date7"] = "2021-07-30T00:00:00"
+
+        zaak_transformed = VakantieVerhuur(zaak_source).result()
+
+        self.assertEqual(zaak_transformed["title"], "Geplande verhuur")
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2021-07-25"))
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2021-07-30"))
+
+    def test_VakantieVerhuurAfmelding(self):
+        zaak_source = {
+            "company": "Moes",
+            "date6": "2021-06-18T00:00:00",
+            "date7": "2021-06-21T00:00:00",
+            "document_date": "2021-06-04T00:00:00",
+            "mark": "Z/21/89012345",
+            "subject1": "Melding Amstel 1  - R  Moes",
+            "text11": "Nvt",
+            "text45": "Vakantieverhuur afmelding",
+            "text6": "Amstel 1 1012AK",
+            "title": "Ontvangen",
+        }
+        zaak_transformed = VakantieVerhuurAfmelding(zaak_source).result()
+        self.assertEqual(zaak_transformed["title"], "Geannuleerde verhuur")
+        self.assertEqual(zaak_transformed["caseType"], "Vakantieverhuur afmelding")
 
     # def test_BBVergunning(self):
     #     self.assertEqual()
@@ -94,10 +184,13 @@ class ZaaktypesTest(TestCase):
             "text8": "KN-UW-TS",
             "text45": "Parkeerontheffingen Blauwe zone particulieren",
             "title": "Ontvangen",
-            "dfunction": "Verleend"
+            "dfunction": "Verleend",
         }
         zaak_transformed = BZP(zaak_source).result()
-        self.assertEqual(zaak_transformed["caseType"], "Parkeerontheffingen Blauwe zone particulieren")
+        self.assertEqual(
+            zaak_transformed["caseType"],
+            "Parkeerontheffingen Blauwe zone particulieren",
+        )
         self.assertEqual(zaak_transformed["kenteken"], "KN-UW-TS")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2021-06-26"))
 
@@ -111,9 +204,11 @@ class ZaaktypesTest(TestCase):
             "text8": "Uw bedrijfje",
             "text45": "Parkeerontheffingen Blauwe zone bedrijven",
             "title": "Ontvangen",
-            "dfunction": "Verleend"
+            "dfunction": "Verleend",
         }
         zaak_transformed = BZB(zaak_source).result()
-        self.assertEqual(zaak_transformed["caseType"], "Parkeerontheffingen Blauwe zone bedrijven")
+        self.assertEqual(
+            zaak_transformed["caseType"], "Parkeerontheffingen Blauwe zone bedrijven"
+        )
         self.assertEqual(zaak_transformed["companyName"], "Uw bedrijfje")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2021-05-26"))
