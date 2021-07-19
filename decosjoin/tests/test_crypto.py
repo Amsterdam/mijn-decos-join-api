@@ -6,7 +6,7 @@ from cryptography.fernet import InvalidToken
 from decosjoin.crypto import encrypt, decrypt
 
 
-@patch("decosjoin.crypto.get_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
+@patch("decosjoin.crypto.get_encrytion_key", lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=")
 class CryptoTest(TestCase):
     def test_encrypt_decrypt(self):
         value = "abcdefg"

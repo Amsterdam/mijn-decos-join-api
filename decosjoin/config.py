@@ -36,7 +36,7 @@ def get_decosjoin_adres_boeken():
     }
 
 
-def get_key():
+def get_encrytion_key():
     return os.getenv("FERNET_KEY")
 
 
