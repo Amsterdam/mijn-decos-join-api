@@ -1,4 +1,5 @@
 from datetime import date, time
+import logging
 import os
 import os.path
 
@@ -17,6 +18,7 @@ BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 IS_PRODUCTION = os.getenv("SENTRY_ENVIRONMENT") == "production"
 IS_ACCEPTANCE = os.getenv("SENTRY_ENVIRONMENT") == "acceptance"
 IS_AP = IS_PRODUCTION or IS_ACCEPTANCE
+IS_DEV = os.getenv("FLASK_ENV") == "development" and not IS_AP
 
 
 def get_sentry_dsn():
@@ -45,8 +47,8 @@ def get_decosjoin_adres_boeken_kvk():
 
 def get_decosjoin_adres_boeken():
     return {
-        [UserType.BURGER]: get_decosjoin_adres_boeken_bsn(),
-        [UserType.BEDRIJF]: get_decosjoin_adres_boeken_kvk(),
+        UserType.BURGER: get_decosjoin_adres_boeken_bsn(),
+        UserType.BEDRIJF: get_decosjoin_adres_boeken_kvk(),
     }
 
 
@@ -65,3 +67,5 @@ class CustomJSONEncoder(JSONEncoder):
 
 
 TMAException = (SamlVerificationException, InvalidBSNException, SamlExpiredException)
+
+logger = logging.getLogger(__name__)

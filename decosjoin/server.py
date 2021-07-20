@@ -1,5 +1,3 @@
-import logging
-
 import sentry_sdk
 from flask import Flask, make_response
 from sentry_sdk.integrations.flask import FlaskIntegration
@@ -13,10 +11,16 @@ from decosjoin.api.helpers import (
     success_response_json,
     verify_tma_user,
 )
-from decosjoin.config import CustomJSONEncoder, TMAException, get_sentry_dsn
+from decosjoin.config import (
+    CustomJSONEncoder,
+    IS_DEV,
+    TMAException,
+    get_sentry_dsn,
+    logger,
+)
 from decosjoin.crypto import decrypt
 
-logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
 
@@ -66,12 +70,16 @@ def health_check():
 
 @app.errorhandler(Exception)
 def handle_error(error):
+
+    if IS_DEV:
+        logger.exception(error)
+
     if isinstance(error, HTTPException):
         return error_response_json(error.description, error.code)
     elif isinstance(error, TMAException):
         return error_response_json(str(error), 400)
 
-    return error_response_json("A server error occurred")
+    return error_response_json("A server error occurred" if not IS_DEV else str(error))
 
 
 if __name__ == "__main__":  # pragma: no cover

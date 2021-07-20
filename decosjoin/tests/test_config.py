@@ -1,3 +1,6 @@
+from flask import Flask, g
+from tma_saml.user_type import UserType
+from decosjoin.api.helpers import get_tma_certificate
 import os
 from unittest import TestCase
 
@@ -9,9 +12,11 @@ from decosjoin.config import (
     get_decosjoin_api_host,
     get_decosjoin_password,
     get_decosjoin_username,
-    get_tma_certificate,
     get_encrytion_key,
 )
+
+
+test_app = Flask(__name__)
 
 
 @patch.dict(
@@ -29,13 +34,23 @@ from decosjoin.config import (
 )
 class ConfigTests(TestCase):
     def test_config(self):
-        self.assertTrue(len(get_tma_certificate()) > 0)
+
+        with test_app.app_context():
+            self.assertTrue(len(get_tma_certificate()) > 0)
+
+            g.tma_certificate = "test123"
+
+            self.assertEqual(get_tma_certificate(), "test123")
+
         self.assertEqual(get_decosjoin_username(), "username")
         self.assertEqual(get_decosjoin_password(), "password")
         self.assertEqual(get_decosjoin_api_host(), "host")
         self.assertEqual(
             get_decosjoin_adres_boeken(),
-            {"bsn": ["address1", "address2"], "kvk": ["address3", "address4"]},
+            {
+                UserType.BURGER: ["address1", "address2"],
+                UserType.BEDRIJF: ["address3", "address4"],
+            },
         )
         self.assertEqual(get_sentry_dsn(), "sentry")
         self.assertEqual(

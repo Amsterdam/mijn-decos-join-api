@@ -15,7 +15,7 @@ from freezegun import freeze_time
     "decosjoin.tests.test_connection.DecosJoinConnection.get_response",
     get_response_mock,
 )
-@patch("decosjoin.server.DecosJoinConnection.post_response", post_response_mock)
+@patch("decosjoin.api.helpers.DecosJoinConnection.post_response", post_response_mock)
 @freeze_time("2021-07-05")
 class ConnectionTests(TestCase):
     def setUp(self) -> None:

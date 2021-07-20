@@ -2,6 +2,7 @@ import os
 from functools import wraps
 
 from flask import request, g
+import flask
 from tma_saml import HR_KVK_NUMBER_KEY
 from tma_saml import InvalidBSNException as TmaInvalidBSNException
 from tma_saml import SamlVerificationException, get_digi_d_bsn, get_e_herkenning_attribs
@@ -10,7 +11,7 @@ from tma_saml.user_type import UserType
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.config import (
-    IS_AP,
+    logger,
     get_decosjoin_adres_boeken,
     get_decosjoin_api_host,
     get_decosjoin_password,
@@ -19,16 +20,15 @@ from decosjoin.config import (
 
 
 def get_tma_certificate():
-    if not IS_AP:
-        return ""
 
     tma_certificate = g.get("tma_certificate", None)
 
     if not tma_certificate:
         tma_cert_location = os.getenv("TMA_CERTIFICATE_LOCATION")
 
-        with open(tma_cert_location) as f:
-            tma_certificate = g.tma_certificate = f.read()
+        if tma_cert_location:
+            with open(tma_cert_location) as f:
+                tma_certificate = g.tma_certificate = f.read()
 
     return tma_certificate
 
@@ -63,9 +63,9 @@ def get_tma_user():
     user_id = None
 
     if user_type is UserType.BEDRIJF:
-        user_id = get_kvk_number_from_request(request)
+        user_id = get_kvk_number_from_request()
     elif user_type is UserType.BURGER:
-        user_id = get_bsn_from_request(request)
+        user_id = get_bsn_from_request()
     else:
         raise SamlVerificationException("TMA user type not found")
 
@@ -77,9 +77,9 @@ def get_tma_user():
 
 def verify_tma_user(function):
     @wraps(function)
-    def verify():
+    def verify(*args, **kwargs):
         get_tma_user()
-        return function()
+        return function(*args, **kwargs)
 
     return verify
 
@@ -104,4 +104,4 @@ def success_response_json(response_content):
 
 
 def error_response_json(message: str, code: int = 500):
-    return {"status": "ERROR", "content": None, "message": message}, code
+    return {"status": "ERROR", "message": message}, code
