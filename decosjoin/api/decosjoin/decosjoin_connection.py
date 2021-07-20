@@ -324,16 +324,18 @@ class DecosJoinConnection:
         )
 
         if all_workflows_response and all_workflows_response["count"] > 0:
+            # Take last workflow key
             worflow_key = all_workflows_response["content"][-1]["key"]
             single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
             single_workflow_response = self.request(single_workflow_url)
 
+            # Return first date
             return (
-                to_date(single_workflow_response["content"][-1]["fields"]["date1"])
+                to_date(single_workflow_response["content"][0]["fields"]["date1"])
                 if single_workflow_response
                 and "content" in single_workflow_response
                 and len(single_workflow_response["content"]) > 0
-                and "fields" in single_workflow_response["content"][-1]
+                and "fields" in single_workflow_response["content"][0]
                 else None
             )
 
