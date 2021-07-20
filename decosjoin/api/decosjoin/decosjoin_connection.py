@@ -4,8 +4,8 @@ from pprint import pprint
 import requests
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
+from werkzeug.exceptions import HTTPException
 
-from decosjoin.api.decosjoin.Exception import DecosJoinConnectionError
 from decosjoin.api.decosjoin.field_parsers import (
     get_fields,
     to_date,
@@ -94,7 +94,7 @@ class DecosJoinConnection:
             json = response.json()
             return json
         else:
-            raise DecosJoinConnectionError(response.status_code)
+            raise HTTPException("A connection error occurred", response)
 
     def get_search_query_json(self, bsn: str, book_key: str):
         return {
