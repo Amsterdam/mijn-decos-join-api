@@ -58,7 +58,7 @@ class MockedResponse:
     headers = {"Content-Type": "application/pdf"}
 
 
-_folder_params = "?select=title,mark,text45,subject1,bol10,company,date5,date6,date7,dfunction,document_date,text6,text7,text8,text9,text10,text11,text12,text13,text20,text25&top=10"
+_folder_params = "?select=title,mark,text45,subject1,bol10,company,date5,date6,date7,dfunction,document_date,num3,text6,text7,text8,text9,text10,text11,text12,text13,text20,text25&top=10"
 # For readability sake, this is a tuple which is converted into a dict
 mocked_get_urls_tuple = (
     (

@@ -33,6 +33,7 @@ SELECT_FIELDS = ",".join(
         "date7",
         "dfunction",
         "document_date",
+        "num3",
         "text6",
         "text7",
         "text8",
@@ -238,7 +239,8 @@ class DecosJoinConnection:
         return sorted(zaken, key=lambda x: x["identifier"], reverse=True)
 
     def get_document_data(self, document_id: str):
-        res_json = self.request(f"{self.api_url}items/{document_id}/blob?select=bol10")
+        res_json = self.request(
+            f"{self.api_url}items/{document_id}/blob?select=bol10")
 
         content = res_json["content"]
         if content:
@@ -260,12 +262,16 @@ class DecosJoinConnection:
             pprint(res)
 
         parse_fields = [
-            {"name": "title", "from": "text41", "parser": to_string_or_empty_string},
+            {"name": "title", "from": "text41",
+                "parser": to_string_or_empty_string},
             {"name": "id", "from": "mark", "parser": to_string},
             {"name": "sequence", "from": "sequence", "parser": to_int},
-            {"name": "text39", "from": "text39", "parser": to_string_or_empty_string},
-            {"name": "text40", "from": "text40", "parser": to_string_or_empty_string},
-            {"name": "text41", "from": "text41", "parser": to_string_or_empty_string},
+            {"name": "text39", "from": "text39",
+                "parser": to_string_or_empty_string},
+            {"name": "text40", "from": "text40",
+                "parser": to_string_or_empty_string},
+            {"name": "text41", "from": "text41",
+                "parser": to_string_or_empty_string},
         ]
 
         new_docs = []
@@ -331,7 +337,8 @@ class DecosJoinConnection:
 
             # Return first date
             return (
-                to_date(single_workflow_response["content"][0]["fields"]["date1"])
+                to_date(
+                    single_workflow_response["content"][0]["fields"]["date1"])
                 if single_workflow_response
                 and "content" in single_workflow_response
                 and len(single_workflow_response["content"]) > 0
