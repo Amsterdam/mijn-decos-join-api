@@ -7,6 +7,7 @@ BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 # Use the Sentry environment
 IS_PRODUCTION = os.getenv("SENTRY_ENVIRONMENT") == "production"
 IS_ACCEPTANCE = os.getenv("SENTRY_ENVIRONMENT") == "acceptance"
+IS_AP = IS_PRODUCTION or IS_ACCEPTANCE
 
 
 def get_sentry_dsn():
@@ -45,6 +46,9 @@ def get_encrytion_key():
 
 
 def get_tma_certificate():
+    if not IS_AP:
+        return ""
+
     tma_cert_location = os.getenv("TMA_CERTIFICATE")
     with open(tma_cert_location) as f:
         return f.read()

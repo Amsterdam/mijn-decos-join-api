@@ -1,4 +1,3 @@
-
 class DecosJoinConnectionError(Exception):
     pass
 
@@ -8,7 +7,7 @@ class ParseError(Exception):
 
 
 class MissingSamlTokenException(Exception):
-    message = {'status': 'ERROR', 'message': 'Missing SAML token'}
+    message = {"status": "ERROR", "message": "Missing SAML token"}
     status_code = 400
 
 
