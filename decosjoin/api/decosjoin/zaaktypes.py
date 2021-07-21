@@ -100,7 +100,7 @@ class Zaak:
 class TVM_RVV_Object(Zaak):
 
     zaak_type = "TVM - RVV - Object"
-    title = "Tijdelijke verkeersmaatregel"
+    title = "Tijdelijke verkeersmaatregel (TVM - RVV - Object)"
 
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},
@@ -301,7 +301,7 @@ class GPK(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "GPK"
-    title = "Europse gehandicaptenparkeerkaart (GPK)"
+    title = "Europese gehandicaptenparkeerkaart (GPK)"
 
     decision_translations = [
         ["Ingetrokken", "Ingetrokken"],
@@ -403,7 +403,7 @@ class Omzettingsvergunning(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "Omzettingsvergunning"
-    title = "Vergunning voor kamerverhuur"
+    title = "Vergunning voor kamerverhuur (omzettingsvergunning)"
 
     parse_fields = [
         {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
