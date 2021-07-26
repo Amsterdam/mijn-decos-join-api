@@ -100,7 +100,7 @@ class Zaak:
 class TVM_RVV_Object(Zaak):
 
     zaak_type = "TVM - RVV - Object"
-    title = "Tijdelijke verkeersmaatregel (TVM - RVV - Object)"
+    title = "Tijdelijke verkeersmaatregel (TVM-RVV-Object)"
 
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},
