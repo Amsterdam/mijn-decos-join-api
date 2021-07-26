@@ -61,7 +61,7 @@ class ZaaktypesTest(TestCase):
         zaak_transformed = {
             "id": "zaak-1",
             "caseType": "TVM - RVV - Object",
-            "title": "Tijdelijke verkeersmaatregel (TVM - RVV - Object)",
+            "title": "Tijdelijke verkeersmaatregel (TVM-RVV-Object)",
             "identifier": "Z/20/1234567",
             "dateRequest": to_date(zaak_source["document_date"]),
             "status": "Ontvangen",
