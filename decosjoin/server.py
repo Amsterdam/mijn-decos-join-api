@@ -19,7 +19,6 @@ from decosjoin.config import (
     logger,
 )
 from decosjoin.crypto import decrypt
-from sentry_sdk import capture_exception
 
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
@@ -73,11 +72,12 @@ def health_check():
 def handle_error(error):
 
     logger.exception(error)
-    # Sentry exception
-    capture_exception(error)
 
     if isinstance(error, HTTPException):
-        return error_response_json(error.description, error.code)
+        return error_response_json(
+            error.description if error.description else "A http request error occurred",
+            error.code if error.code else 500,
+        )
     elif isinstance(error, TMAException):
         return error_response_json(str(error), 400)
 
