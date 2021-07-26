@@ -1,17 +1,14 @@
 import os
 from functools import wraps
 
-from flask import request, g
-import flask
+from flask import g, request
 from tma_saml import HR_KVK_NUMBER_KEY
-from tma_saml import InvalidBSNException as TmaInvalidBSNException
 from tma_saml import SamlVerificationException, get_digi_d_bsn, get_e_herkenning_attribs
 from tma_saml.tma_saml import get_user_type
 from tma_saml.user_type import UserType
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.config import (
-    logger,
     get_decosjoin_adres_boeken,
     get_decosjoin_api_host,
     get_decosjoin_password,
@@ -24,7 +21,7 @@ def get_tma_certificate():
     tma_certificate = g.get("tma_certificate", None)
 
     if not tma_certificate:
-        tma_cert_location = os.getenv("TMA_CERTIFICATE_LOCATION")
+        tma_cert_location = os.getenv("TMA_CERTIFICATE")
 
         if tma_cert_location:
             with open(tma_cert_location) as f:

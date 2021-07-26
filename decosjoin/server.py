@@ -19,14 +19,15 @@ from decosjoin.config import (
     logger,
 )
 from decosjoin.crypto import decrypt
-
+from sentry_sdk import capture_exception
 
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
 
-if get_sentry_dsn():  # pragma: no cover
+sentry_dsn = get_sentry_dsn()
+if sentry_dsn:  # pragma: no cover
     sentry_sdk.init(
-        dsn=get_sentry_dsn(), integrations=[FlaskIntegration()], with_locals=False
+        dsn=sentry_dsn, integrations=[FlaskIntegration()], with_locals=False
     )
 
 
@@ -71,8 +72,9 @@ def health_check():
 @app.errorhandler(Exception)
 def handle_error(error):
 
-    if IS_DEV:
-        logger.exception(error)
+    logger.exception(error)
+    # Sentry exception
+    capture_exception(error)
 
     if isinstance(error, HTTPException):
         return error_response_json(error.description, error.code)

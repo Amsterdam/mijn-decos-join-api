@@ -22,7 +22,7 @@ test_app = Flask(__name__)
 @patch.dict(
     os.environ,
     {
-        "TMA_CERTIFICATE_LOCATION": __file__,
+        "TMA_CERTIFICATE": __file__,
         "SENTRY_DSN": "sentry",
         "DECOS_JOIN_USERNAME": "username",
         "DECOS_JOIN_PASSWORD": "password",
