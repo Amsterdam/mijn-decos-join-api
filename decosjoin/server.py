@@ -1,167 +1,86 @@
-import logging
-from datetime import date, time
-
 import sentry_sdk
-import tma_saml
-from cryptography.fernet import InvalidToken
-from flask import Flask, make_response, request
-from flask.json import JSONEncoder
+from flask import Flask, make_response
 from sentry_sdk.integrations.flask import FlaskIntegration
-from tma_saml import (HR_KVK_NUMBER_KEY, SamlVerificationException,
-                      get_digi_d_bsn, get_e_herkenning_attribs)
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
-from decosjoin.api.decosjoin.Exception import (GeneralError,
-                                               InvalidBSNException,
-                                               MissingSamlTokenException,
-                                               SamlException)
-from decosjoin.config import (get_decosjoin_adres_boeken,
-                              get_decosjoin_api_host, get_decosjoin_password,
-                              get_decosjoin_username, get_sentry_dsn,
-                              get_tma_certificate)
+from werkzeug.exceptions import HTTPException
+
+from decosjoin.api.helpers import (
+    error_response_json,
+    get_connection,
+    get_tma_user,
+    success_response_json,
+    verify_tma_user,
+)
+from decosjoin.config import (
+    CustomJSONEncoder,
+    IS_DEV,
+    TMAException,
+    get_sentry_dsn,
+    logger,
+)
 from decosjoin.crypto import decrypt
 
-logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
+app.json_encoder = CustomJSONEncoder
 
 if get_sentry_dsn():  # pragma: no cover
     sentry_sdk.init(
-        dsn=get_sentry_dsn(),
-        integrations=[FlaskIntegration()],
-        with_locals=False
+        dsn=get_sentry_dsn(), integrations=[FlaskIntegration()], with_locals=False
     )
 
 
-class CustomJSONEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, time):
-            return obj.isoformat(timespec='minutes')
-        if isinstance(obj, date):
-            return obj.isoformat()
-
-        return JSONEncoder.default(self, obj)
-
-
-app.json_encoder = CustomJSONEncoder
-
-
-def get_bsn_from_request(request):
-    """
-    Get the BSN based on a request, expecting a SAML token in the headers
-    """
-    # Load the TMA certificate
-    tma_certificate = get_tma_certificate()
-
-    # Decode the BSN from the request with the TMA certificate
-    bsn = get_digi_d_bsn(request, tma_certificate)
-    return bsn
-
-
-def get_kvk_number_from_request(request):
-    """
-    Get the KVK number from the request headers.
-    """
-    # Load the TMA certificate
-    tma_certificate = get_tma_certificate()
-
-    # Decode the BSN from the request with the TMA certificate
-    attribs = get_e_herkenning_attribs(request, tma_certificate)
-    kvk = attribs[HR_KVK_NUMBER_KEY]
-    return kvk
-
-
-def get_kind_and_identifier_or_error(request):
-    kind = None
-    identifier = None
-
-    try:
-        identifier = get_kvk_number_from_request(request)
-        kind = 'kvk'
-    except SamlVerificationException:
-        raise MissingSamlTokenException
-    except KeyError:
-        # does not contain kvk number, might still contain BSN
-        pass
-
-    if not identifier:
-        try:
-            identifier = get_bsn_from_request(request)
-            kind = 'bsn'
-        except tma_saml.InvalidBSNException:
-            raise InvalidBSNException
-        except SamlVerificationException as e:
-            raise SamlException(e.args[0])
-        except Exception as e:
-            logger.error("Error", type(e), str(e))
-            raise GeneralError
-
-    return kind, identifier
-
-
-@app.route('/decosjoin/getvergunningen', methods=['GET'])
+@app.route("/decosjoin/getvergunningen", methods=["GET"])
+@verify_tma_user
 def get_vergunningen():
-    try:
-        kind, identifier = get_kind_and_identifier_or_error(request)
-    except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
-        return e.message, e.status_code
+    user = get_tma_user()
+    zaken = get_connection().get_zaken(user["type"], user["id"])
 
-    connection = DecosJoinConnection(get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
-    zaken = connection.get_zaken(kind, identifier)
-    return {
-        'status': 'OK',
-        'content': zaken,
-    }
+    return success_response_json(zaken)
 
 
-@app.route('/decosjoin/listdocuments/<string:encrypted_zaak_id>', methods=['GET'])
+@app.route("/decosjoin/listdocuments/<string:encrypted_zaak_id>", methods=["GET"])
+@verify_tma_user
 def get_documents(encrypted_zaak_id):
-    connection = DecosJoinConnection(
-        get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
+    user = get_tma_user()
+    zaak_id = decrypt(encrypted_zaak_id, user["id"])
 
-    try:
-        kind, identifier = get_kind_and_identifier_or_error(request)
-    except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
-        return e.message, e.status_code
-
-    try:
-        zaak_id = decrypt(encrypted_zaak_id, identifier)
-    except InvalidToken:
-        return {'status': "ERROR", "message": "decryption zaak ID invalid"}, 400
-    documents = connection.get_documents(zaak_id, identifier)
-    return {
-        'status': 'OK',
-        'content': documents
-    }
+    documents = get_connection().get_documents(zaak_id, user["id"])
+    return success_response_json(documents)
 
 
-@app.route('/decosjoin/document/<string:encrypted_doc_id>', methods=['GET'])
+@app.route("/decosjoin/document/<string:encrypted_doc_id>", methods=["GET"])
+@verify_tma_user
 def get_document_blob(encrypted_doc_id):
-    connection = DecosJoinConnection(
-        get_decosjoin_username(), get_decosjoin_password(), get_decosjoin_api_host(), get_decosjoin_adres_boeken())
+    user = get_tma_user()
 
-    try:
-        kind, identifier = get_kind_and_identifier_or_error(request)
-    except (MissingSamlTokenException, InvalidBSNException, SamlException, GeneralError) as e:
-        return e.message, e.status_code
+    doc_id = decrypt(encrypted_doc_id, user["id"])
+    document = get_connection().get_document_blob(doc_id)
 
-    try:
-        doc_id = decrypt(encrypted_doc_id, identifier)
-        document = connection.get_document_blob(doc_id)
-    except InvalidToken:
-        return {"status": "ERROR", "message": "decryption zaak ID invalid"}, 400
-    except Exception as e:
-        logger.error("Error", type(e), str(e))
-        return {"status": "ERROR", "message": "Unknown Error"}, 400
-
-    new_response = make_response(document['file_data'])
+    new_response = make_response(document["file_data"])
     new_response.headers["Content-Type"] = document["Content-Type"]
+
     return new_response
 
 
-@app.route('/status/health')
+@app.route("/status/health")
 def health_check():
-    return 'OK'
+    return "OK"
 
 
-if __name__ == '__main__':  # pragma: no cover
+@app.errorhandler(Exception)
+def handle_error(error):
+
+    if IS_DEV:
+        logger.exception(error)
+
+    if isinstance(error, HTTPException):
+        return error_response_json(error.description, error.code)
+    elif isinstance(error, TMAException):
+        return error_response_json(str(error), 400)
+
+    return error_response_json("A server error occurred" if not IS_DEV else str(error))
+
+
+if __name__ == "__main__":  # pragma: no cover
     app.run()

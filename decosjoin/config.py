@@ -1,5 +1,15 @@
+from datetime import date, time
+import logging
 import os
 import os.path
+
+from flask.json import JSONDecoder, JSONEncoder
+from tma_saml.exceptions import (
+    InvalidBSNException,
+    SamlExpiredException,
+    SamlVerificationException,
+)
+from tma_saml.user_type import UserType
 
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -7,6 +17,8 @@ BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 # Use the Sentry environment
 IS_PRODUCTION = os.getenv("SENTRY_ENVIRONMENT") == "production"
 IS_ACCEPTANCE = os.getenv("SENTRY_ENVIRONMENT") == "acceptance"
+IS_AP = IS_PRODUCTION or IS_ACCEPTANCE
+IS_DEV = os.getenv("FLASK_ENV") == "development" and not IS_AP
 
 
 def get_sentry_dsn():
@@ -35,8 +47,8 @@ def get_decosjoin_adres_boeken_kvk():
 
 def get_decosjoin_adres_boeken():
     return {
-        "bsn": get_decosjoin_adres_boeken_bsn(),
-        "kvk": get_decosjoin_adres_boeken_kvk(),
+        UserType.BURGER: get_decosjoin_adres_boeken_bsn(),
+        UserType.BEDRIJF: get_decosjoin_adres_boeken_kvk(),
     }
 
 
@@ -44,7 +56,16 @@ def get_encrytion_key():
     return os.getenv("FERNET_KEY")
 
 
-def get_tma_certificate():
-    tma_cert_location = os.getenv("TMA_CERTIFICATE")
-    with open(tma_cert_location) as f:
-        return f.read()
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, time):
+            return obj.isoformat(timespec="minutes")
+        if isinstance(obj, date):
+            return obj.isoformat()
+
+        return JSONEncoder.default(self, obj)
+
+
+TMAException = (SamlVerificationException, InvalidBSNException, SamlExpiredException)
+
+logger = logging.getLogger(__name__)

@@ -7,20 +7,23 @@ from decosjoin.server import app
 
 # from decosjoin.tests.fixtures.data import get_document
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
-from tma_saml import FlaskServerTMATestCase
+from tma_saml import FlaskServerTMATestCase, UserType
 from tma_saml.for_tests.cert_and_key import server_crt
 
 TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 
 
-@patch("decosjoin.server.get_tma_certificate", lambda: server_crt)
+@patch("decosjoin.api.helpers.get_tma_certificate", lambda: server_crt)
 @patch("decosjoin.crypto.get_encrytion_key", lambda: TESTKEY)
-@patch("decosjoin.server.get_decosjoin_api_host", lambda: "http://localhost")
+@patch("decosjoin.api.helpers.get_decosjoin_api_host", lambda: "http://localhost")
 @patch(
-    "decosjoin.server.get_decosjoin_adres_boeken",
+    "decosjoin.api.helpers.get_decosjoin_adres_boeken",
     lambda: {
-        "bsn": ["hexkey32chars000000000000000BSN1", "hexkey32chars000000000000000BSN2"],
-        "kvk": ["hexkey32chars0000000000000000KVK"],
+        UserType.BURGER: [
+            "hexkey32chars000000000000000BSN1",
+            "hexkey32chars000000000000000BSN2",
+        ],
+        UserType.BEDRIJF: ["hexkey32chars0000000000000000KVK"],
     },
 )
 class ApiTests(FlaskServerTMATestCase):
@@ -69,8 +72,10 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, b"OK")
 
-    @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
-    @patch("decosjoin.server.DecosJoinConnection.post_response", post_response_mock)
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
+    @patch(
+        "decosjoin.api.helpers.DecosJoinConnection.post_response", post_response_mock
+    )
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_getvergunningen(self):
         response = self.client_get("/decosjoin/getvergunningen")
@@ -85,15 +90,16 @@ class ApiTests(FlaskServerTMATestCase):
 
         self.assertEqual(data["content"][-1], self.expected_zaak())
 
-    @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_getvergunningen_no_header(self):
         response = self.client.get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
-            response.json, {"message": "Missing SAML token", "status": "ERROR"}
+            response.json,
+            {"message": "Missing SAML token", "status": "ERROR"},
         )
 
-    @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_listdocuments(self):
         response = self.client_get(
@@ -103,7 +109,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(len(data), 2)
         self.assertTrue(data[0]["url"].startswith("/api/decosjoin/document/"))
 
-    @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_listdocuments_kvk(self):
         response = self.client_get_kvk(
@@ -113,15 +119,15 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(len(data), 2)
         self.assertTrue(data[0]["url"].startswith("/api/decosjoin/document/"))
 
-    @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_listdocuments_unencrypted(self):
         response = self.client_get("/decosjoin/listdocuments/ZAAKKEY1")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 500)
         self.assertEqual(
-            response.json, {"message": "decryption zaak ID invalid", "status": "ERROR"}
+            response.json, {"message": "A server error occurred", "status": "ERROR"}
         )
 
-    @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_listdocuments_expired_token(self):
         f = Fernet(TESTKEY)
         value = f"{self.TEST_BSN}:ZAAKKEY1".encode()
@@ -129,23 +135,23 @@ class ApiTests(FlaskServerTMATestCase):
         encrypted_token = f.encrypt_at_time(value, expired_time)
 
         response = self.client_get(f"/decosjoin/listdocuments/{encrypted_token}")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 500)
         self.assertEqual(
-            response.json, {"message": "decryption zaak ID invalid", "status": "ERROR"}
+            response.json, {"message": "A server error occurred", "status": "ERROR"}
         )
 
-    # @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
+    # @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     # def test_get_document_blob(self):
     #     response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}", headers=self.saml_headers())
     #     self.assertEqual(response.data, get_document_blob())
     #     self.assertEqual(response.headers['Content-Type'], 'application/pdf')
 
-    @patch("decosjoin.server.DecosJoinConnection.get_response", get_response_mock)
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_get_document_unencrypted(self):
         response = self.client.get(
             "/decosjoin/document/DOCUMENTKEY01", headers=self.saml_headers()
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 500)
         self.assertEqual(
-            response.json, {"message": "decryption zaak ID invalid", "status": "ERROR"}
+            response.json, {"message": "A server error occurred", "status": "ERROR"}
         )
