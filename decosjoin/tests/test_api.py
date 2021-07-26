@@ -46,7 +46,7 @@ class ApiTests(FlaskServerTMATestCase):
             "description": "Test MA MIJN-3031",
             "timeEnd": "16:00",
             "timeStart": "10:00",
-            "title": "Tijdelijke verkeersmaatregel",
+            "title": "Tijdelijke verkeersmaatregel (TVM - RVV - Object)",
             # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 

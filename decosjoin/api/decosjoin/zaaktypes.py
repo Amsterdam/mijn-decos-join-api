@@ -8,6 +8,7 @@ from decosjoin.api.decosjoin.field_parsers import (
     to_date,
     to_datetime,
     to_string,
+    to_int,
     to_string_if_exists,
     to_time,
 )
@@ -99,7 +100,7 @@ class Zaak:
 class TVM_RVV_Object(Zaak):
 
     zaak_type = "TVM - RVV - Object"
-    title = "Tijdelijke verkeersmaatregel"
+    title = "Tijdelijke verkeersmaatregel (TVM - RVV - Object)"
 
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},
@@ -300,7 +301,7 @@ class GPK(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "GPK"
-    title = "Europse gehandicaptenparkeerkaart (GPK)"
+    title = "Europese gehandicaptenparkeerkaart (GPK)"
 
     decision_translations = [
         ["Ingetrokken", "Ingetrokken"],
@@ -330,7 +331,7 @@ class GPK(Zaak):
     ]
 
     parse_fields = [
-        {"name": "cardNumber", "from": "num3", "parser": to_string},  # kaartnummer
+        {"name": "cardNumber", "from": "num3", "parser": to_int},  # kaartnummer
         {"name": "cardtype", "from": "text7", "parser": to_string},
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # vervaldatum
     ]
@@ -402,7 +403,7 @@ class Omzettingsvergunning(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "Omzettingsvergunning"
-    title = "Vergunning voor kamerverhuur"
+    title = "Vergunning voor kamerverhuur (omzettingsvergunning)"
 
     parse_fields = [
         {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
