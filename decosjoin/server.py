@@ -24,9 +24,10 @@ from decosjoin.crypto import decrypt
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
 
-if get_sentry_dsn():  # pragma: no cover
+sentry_dsn = get_sentry_dsn()
+if sentry_dsn:  # pragma: no cover
     sentry_sdk.init(
-        dsn=get_sentry_dsn(), integrations=[FlaskIntegration()], with_locals=False
+        dsn=sentry_dsn, integrations=[FlaskIntegration()], with_locals=False
     )
 
 
