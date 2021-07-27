@@ -83,14 +83,22 @@ class DateParserTests(TestCase):
 
         self.assertEqual(to_time("14:30"), "14:30")
         self.assertEqual(to_time("14.30"), "14:30")
+        self.assertEqual(to_time("4.30"), "04:30")
+        self.assertEqual(to_time("4;30"), "04:30")
+        self.assertEqual(to_time("4;3"), "04:30")
+        self.assertEqual(to_time("4.3"), "04:30")
+        self.assertEqual(to_time("20;2"), "20:20")
+        self.assertEqual(to_time("9.00"), "09:00")
+        self.assertEqual(to_time("9;0"), "09:00")
+        self.assertEqual(to_time("17.0"), "17:00")
 
         self.assertEqual(to_time("24.00"), "24:00")
 
         self.assertIsNone(to_time("30:70"))
         self.assertIsNone(to_time("24:01"))
         self.assertIsNone(to_time("not parsable"))
+        self.assertIsNone(to_time("089:0"))
         self.assertIsNone(to_time(1))
-        self.assertIsNone(None)
 
     def test_to_datetime(self):
         self.assertEqual(

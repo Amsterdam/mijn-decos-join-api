@@ -4,7 +4,6 @@ from pprint import pprint
 import requests
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
-from werkzeug.exceptions import HTTPException
 
 from decosjoin.api.decosjoin.field_parsers import (
     get_fields,
@@ -94,7 +93,7 @@ class DecosJoinConnection:
             json = response.json()
             return json
         else:
-            raise HTTPException("A connection error occurred", response)
+            response.raise_for_status()
 
     def get_search_query_json(self, bsn: str, book_key: str):
         return {
@@ -119,9 +118,11 @@ class DecosJoinConnection:
 
         for boek in adres_boeken:
             url = f"{self.api_url}search/books?properties=false"
+
             res_json = self.request(
                 url, json=self.get_search_query_json(identifier, boek), method="post"
             )
+
             if res_json["itemDataResultSet"]["count"] > 0:
                 for item in res_json["itemDataResultSet"]["content"]:
                     user_key = item["key"]
