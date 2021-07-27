@@ -1,3 +1,4 @@
+import os
 import time
 from unittest.mock import patch
 
@@ -6,7 +7,11 @@ from decosjoin.crypto import encrypt
 from decosjoin.server import app
 
 # from decosjoin.tests.fixtures.data import get_document
-from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
+from decosjoin.tests.fixtures.response_mock import (
+    get_response_mock,
+    post_response_mock,
+    post_response_mock_unauthorized,
+)
 from tma_saml import FlaskServerTMATestCase, UserType
 from tma_saml.for_tests.cert_and_key import server_crt
 
@@ -79,6 +84,7 @@ class ApiTests(FlaskServerTMATestCase):
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_getvergunningen(self):
         response = self.client_get("/decosjoin/getvergunningen")
+
         self.assertEqual(response.status_code, 200, response.data)
         data = response.get_json()
 
@@ -91,12 +97,28 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(data["content"][-1], self.expected_zaak())
 
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
+    @patch(
+        "decosjoin.api.helpers.DecosJoinConnection.post_response",
+        post_response_mock_unauthorized,
+    )
+    @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
+    def test_getvergunningen_unauthorized(self):
+        response = self.client_get("/decosjoin/getvergunningen")
+
+        self.assertEqual(response.status_code, 401, response.data)
+        data = response.get_json()
+
+        self.assertEqual(data["status"], "ERROR")
+        self.assertEqual(data["message"], "Request error occurred")
+        self.assertTrue("content" not in data)
+
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_getvergunningen_no_header(self):
         response = self.client.get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json,
-            {"message": "Missing SAML token", "status": "ERROR"},
+            {"message": "TMA error occurred", "status": "ERROR"},
         )
 
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
@@ -124,7 +146,7 @@ class ApiTests(FlaskServerTMATestCase):
         response = self.client_get("/decosjoin/listdocuments/ZAAKKEY1")
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
-            response.json, {"message": "A server error occurred", "status": "ERROR"}
+            response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
 
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
@@ -137,7 +159,7 @@ class ApiTests(FlaskServerTMATestCase):
         response = self.client_get(f"/decosjoin/listdocuments/{encrypted_token}")
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
-            response.json, {"message": "A server error occurred", "status": "ERROR"}
+            response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
 
     # @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
@@ -153,5 +175,5 @@ class ApiTests(FlaskServerTMATestCase):
         )
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
-            response.json, {"message": "A server error occurred", "status": "ERROR"}
+            response.json, {"message": "Server error occurred", "status": "ERROR"}
         )

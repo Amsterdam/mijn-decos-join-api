@@ -1,3 +1,4 @@
+import json
 from decosjoin.tests.fixtures.data import (
     get_blob_response,
     get_blob_response_no_pdf,
@@ -17,6 +18,7 @@ from decosjoin.tests.fixtures.data import (
     get_all_workflows_response,
     get_single_workflow_response,
 )
+from requests import Response
 
 
 def get_response_mock(self, *args, **kwargs):
@@ -25,7 +27,7 @@ def get_response_mock(self, *args, **kwargs):
         res_data = mocked_get_urls[args[0]]
     except KeyError:
         raise Exception("Url not defined %s", args[0])
-    return MockedResponse(res_data)
+    return MockedResponse(json_=res_data)
 
 
 def post_response_mock(self, *args, **kwargs):
@@ -36,26 +38,45 @@ def post_response_mock(self, *args, **kwargs):
         if url == item["url"]:
             # Does the body also match?
             if body == item["post_body"]:
-                return MockedResponse(item["response"])
+                status_code = item.get("status_code", 200)
+                return MockedResponse(
+                    json_=item["response"],
+                    status_code=status_code,
+                    url=item["url"],
+                    reason=item.get("reason", "Success"),
+                )
 
     # if nothing is found
     raise Exception("Url with body not defined", url, body)
 
 
-class MockedResponse:
-    status_code = 200
+def post_response_mock_unauthorized(self, *args, **kwargs):
+    return post_response_mock(
+        self, mocked_post_urls[-1]["url"], json=mocked_post_urls[-1]["post_body"]
+    )
 
-    def __init__(self, data):
-        self.data = data
 
-    def json(self):
-        return self.data
+class MockedResponse(Response):
+    def __init__(
+        self,
+        url="http://example.com",
+        headers={"Content-Type": "application/json"},
+        status_code=200,
+        reason="Success",
+        _content=None,
+        json_=None,
+        encoding="UTF-8",
+    ):
+        self.url = url
+        self.headers = headers
+        if json_ and headers["Content-Type"] == "application/json":
+            self._content = json.dumps(json_).encode(encoding)
+        else:
+            self._content = _content.encode(encoding) if _content else None
 
-    @property
-    def content(self):
-        return self.data
-
-    headers = {"Content-Type": "application/pdf"}
+        self.status_code = status_code
+        self.reason = reason
+        self.encoding = encoding
 
 
 _folder_params = "?select=title,mark,text45,subject1,bol10,company,date5,date6,date7,dfunction,document_date,num3,text6,text7,text8,text9,text10,text11,text12,text13,text20,text25&top=10"
@@ -232,5 +253,28 @@ mocked_post_urls = (
             },
         },
         "response": get_search_addresses_bsn_111222333_response_empty(),
+    },
+    {
+        "url": "http://localhost/decosweb/aspx/api/v1/search/books?properties=false",
+        "post_body": {
+            "bookKey": "hexkey32chars000000000000000BSN4",
+            "orderBy": "sequence",
+            "skip": 0,
+            "take": 50,
+            "searchInHierarchyPath": False,
+            "searchInPendingItemContainerKeys": False,
+            "filterFields": {
+                "num1": [
+                    {
+                        "FilterOperation": 1,
+                        "FilterValue": "111222333",
+                        "FilterOperator": "=",
+                    }
+                ]
+            },
+        },
+        "response": None,
+        "status_code": 401,
+        "reason": "Unauthorized",
     },
 )
