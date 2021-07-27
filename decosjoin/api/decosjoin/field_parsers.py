@@ -64,13 +64,16 @@ def to_time(value) -> Union[str, None]:
         return to_time(value.time())
 
     if type(value) == str:
-        time_pattern = r"([0-9]{2})[\.:]([0-9]{2})"
+        time_pattern = r"([0-9]{1,2})[\.:;]([0-9]{1,2})"
         matches = re.match(time_pattern, value)
         if matches:
             hour = int(matches.group(1))
             minute = int(matches.group(2))
 
             if (0 <= hour <= 23 and 0 <= minute <= 59) or (hour == 24 and minute == 00):
+                if minute < 6:
+                    return f"{hour:02}:{minute}0"
+
                 return f"{hour:02}:{minute:02}"
 
     logging.error(f"Error parsing time, value: {value}")
