@@ -436,8 +436,8 @@ class ERVV_TVM(Zaak):
         {"name": "location", "from": "text8", "parser": to_string},
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
-        {"name": "timeStart", "from": "text10", "parser": to_time},
-        {"name": "timeEnd", "from": "text13", "parser": to_time},  # tijd tot
+        {"name": "timeStart", "from": "text10", "parser": to_datetime},
+        {"name": "timeEnd", "from": "text13", "parser": to_datetime},  # tijd tot
     ]
 
     decision_translations = [
