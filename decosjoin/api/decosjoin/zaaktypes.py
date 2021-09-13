@@ -318,9 +318,19 @@ class GPK(Zaak):
             "Verleend Bestuurder, niet verleend Passagier",
             "Verleend Bestuurder, niet verleend Passagier",
         ],
+        # Decos cuts of the field at 50 chars, we sadly have to anticipate on this
+        [
+            "Verleend Bestuurder met GPP (niet verleend passagi",
+            "Verleend Bestuurder, niet verleend Passagier",
+        ],
         ["Verleend met GPP", "Verleend"],
         [
             "Verleend Passagier met GPP (niet verleend Bestuurder)",
+            "Verleend Passagier, niet verleend Bestuurder",
+        ],
+        # Decos cuts of the field at 50 chars, we sadly have to anticipate on this
+        [
+            "Verleend Passagier met GPP (niet verleend Bestuurd",
             "Verleend Passagier, niet verleend Bestuurder",
         ],
         [
@@ -433,7 +443,7 @@ class ERVV_TVM(Zaak):
 
     parse_fields = [
         {"name": "dateRequest", "from": "document_date", "parser": to_string},
-        {"name": "location", "from": "text8", "parser": to_string},
+        {"name": "location", "from": "text5", "parser": to_string},
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
         {"name": "timeStart", "from": "text10", "parser": to_time},
