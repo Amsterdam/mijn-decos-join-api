@@ -322,7 +322,7 @@ class GPK(Zaak):
         [
             "Verleend Bestuurder met GPP (niet verleend passagi",
             "Verleend Bestuurder, niet verleend Passagier",
-        ]
+        ],
         ["Verleend met GPP", "Verleend"],
         [
             "Verleend Passagier met GPP (niet verleend Bestuurder)",
