@@ -227,7 +227,7 @@ class DecosJoinConnection:
         return items
 
     def get_zaken(self, kind, user_identifier):
-        """Get all zaken for a kind ['bsn' or 'kvk']."""
+        """Get all zaken for a kind [UserType.BURGER or UserType.BEDRIJF]."""
         zaken_source = []
         user_keys = self.get_user_keys(kind, user_identifier)
 
