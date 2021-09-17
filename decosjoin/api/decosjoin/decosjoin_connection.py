@@ -309,8 +309,6 @@ class DecosJoinConnection:
         )
 
         if LOG_RAW:
-            from pprint import pprint
-
             pprint(document_response.content)
             pprint(document_response.headers)
 
@@ -326,6 +324,13 @@ class DecosJoinConnection:
 
         if all_workflows_response and all_workflows_response["count"] > 0:
             # Take last workflow key
+
+            if LOG_RAW:
+                print("\n\nAll workflows")
+                pprint(all_workflows_response.headers)
+                pprint(all_workflows_response.content)
+                print("====\n\n")
+
             worflow_key = all_workflows_response["content"][-1]["key"]
             single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
             single_workflow_response = self.request(single_workflow_url)
