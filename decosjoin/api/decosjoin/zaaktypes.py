@@ -443,7 +443,7 @@ class ERVV_TVM(Zaak):
 
     parse_fields = [
         {"name": "dateRequest", "from": "document_date", "parser": to_string},
-        {"name": "location", "from": "text5", "parser": to_string},
+        {"name": "location", "from": "text6", "parser": to_string},
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
         {"name": "timeStart", "from": "text10", "parser": to_time},
