@@ -17,7 +17,7 @@ from decosjoin.crypto import encrypt
 
 LOG_RAW = False
 PAGE_SIZE = 30
-
+B_AND_B_WORKFLOW_BEHANDELEN_STEP = "B&B - vergunning - Behandelen"
 
 SELECT_FIELDS = ",".join(
     [
@@ -167,8 +167,10 @@ class DecosJoinConnection:
                 ["wacht op online betaling", "wacht op ideal betaling"],
             ):
                 continue
+
             if self.is_list_match(new_zaak, "decision", ["buiten behandeling"]):
                 continue
+
             if new_zaak["description"] and new_zaak["description"].lower().startswith(
                 "*verwijder"
             ):
@@ -309,8 +311,6 @@ class DecosJoinConnection:
         )
 
         if LOG_RAW:
-            from pprint import pprint
-
             pprint(document_response.content)
             pprint(document_response.headers)
 
@@ -326,18 +326,26 @@ class DecosJoinConnection:
 
         if all_workflows_response and all_workflows_response["count"] > 0:
             # Take last workflow key
+
+            if LOG_RAW:
+                print("\n\nAll workflows")
+                pprint(all_workflows_response.headers)
+                pprint(all_workflows_response.content)
+                print("====\n\n")
+
             worflow_key = all_workflows_response["content"][-1]["key"]
             single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
             single_workflow_response = self.request(single_workflow_url)
 
-            # Return first date
-            return (
-                to_date(single_workflow_response["content"][0]["fields"]["date1"])
-                if single_workflow_response
-                and "content" in single_workflow_response
-                and len(single_workflow_response["content"]) > 0
-                and "fields" in single_workflow_response["content"][0]
-                else None
-            )
+            if not single_workflow_response["content"]:
+                return None
+
+            date_in_behandeling = None
+
+            for workflow_step in single_workflow_response["content"]:
+                if "text7" in workflow_step["fields"] and workflow_step["fields"]["text7"] == B_AND_B_WORKFLOW_BEHANDELEN_STEP:
+                    date_in_behandeling = to_date(workflow_step["fields"]["date1"])
+
+            return date_in_behandeling
 
         return None

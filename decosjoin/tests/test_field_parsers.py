@@ -91,6 +91,7 @@ class DateParserTests(TestCase):
         self.assertEqual(to_time("9.00"), "09:00")
         self.assertEqual(to_time("9;0"), "09:00")
         self.assertEqual(to_time("17.0"), "17:00")
+        self.assertEqual(to_time("18,00"), "18:00")
 
         self.assertEqual(to_time("24.00"), "24:00")
 
