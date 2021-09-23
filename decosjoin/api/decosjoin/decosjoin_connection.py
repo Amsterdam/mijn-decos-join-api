@@ -110,7 +110,7 @@ class DecosJoinConnection:
             },
         }
 
-    def get_user_keys(self, kind, identifier):
+    def get_user_keys(self, kind, user_identifier):
         """Retrieve the internal ids used for a user."""
         keys = []
 
@@ -120,7 +120,7 @@ class DecosJoinConnection:
             url = f"{self.api_url}search/books?properties=false"
 
             res_json = self.request(
-                url, json=self.get_search_query_json(identifier, boek), method="post"
+                url, json=self.get_search_query_json(user_identifier, boek), method="post"
             )
 
             if res_json["itemDataResultSet"]["count"] > 0:
@@ -230,6 +230,7 @@ class DecosJoinConnection:
 
     def get_zaken(self, kind, user_identifier):
         """Get all zaken for a kind [UserType.BURGER or UserType.BEDRIJF]."""
+
         zaken_source = []
         user_keys = self.get_user_keys(kind, user_identifier)
 
