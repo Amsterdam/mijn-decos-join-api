@@ -329,8 +329,7 @@ class DecosJoinConnection:
 
             if LOG_RAW:
                 print("\n\nAll workflows")
-                pprint(all_workflows_response.headers)
-                pprint(all_workflows_response.content)
+                pprint(all_workflows_response)
                 print("====\n\n")
 
             worflow_key = all_workflows_response["content"][-1]["key"]
