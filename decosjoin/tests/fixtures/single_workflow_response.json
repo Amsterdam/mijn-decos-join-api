@@ -1,37 +1,94 @@
 {
-  "count": 2,
+  "count": 19,
   "content": [
     {
-      "key": "HEXSTRING-SINGLE-WORKFLOW",
       "fields": {
         "mark": "Afgehandeld",
-        "date1": "2021-06-22:04:53",
-        "date2": "2021-06-22T10:04:58",
-        "text7": "B&B - vergunning - Huisbezoek",
-        "sequence": 1.0
-      },
-      "links": [
-        {
-          "rel": "self",
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING-SINGLE-WORKFLOW"
-        }
-      ]
+        "date1": "2021-09-13T17:09:00",
+        "date2": "2021-09-13T17:09:00",
+        "sequence": 2.0
+      }
     },
     {
       "fields": {
-        "date1": "2021-06-23T10:04:53",
-        "date2": "2021-06-23T10:04:53",
         "mark": "Afgehandeld",
-        "sequence": 2.0,
-        "text7": "Status bijwerken en notificatie verzenden - Behandelen aanvraag"
-      },
-      "key": "HEXSTRING-SINGLE-WORKFLOW-2",
-      "links": [
-        {
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING-SINGLE-WORKFLOW-2",
-          "rel": "self"
-        }
-      ]
+        "date1": "2021-09-13T17:09:00",
+        "date2": "2021-09-15T09:45:01",
+        "text7": "Kan de aanvraag worden gepubliceerd?",
+        "sequence": 3.0
+      }
+    },
+    {
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-09-15T09:45:01",
+        "date2": "2021-09-15T09:45:01",
+        "text7": "Status bijwerken en notificatie verzenden - Publicatie aanvraag",
+        "sequence": 4.0
+      }
+    },
+    {
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-09-15T09:45:02",
+        "date2": "2021-09-15T09:45:02",
+        "text7": "Publicatie aanvraag",
+        "sequence": 5.0
+      }
+    },
+    {
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-09-15T09:45:03",
+        "date2": "2021-09-15T09:45:40",
+        "text7": "B&B - vergunning - Volledigheidstoets uitvoeren",
+        "sequence": 6.0
+      }
+    },
+    {
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-09-15T09:45:40",
+        "date2": "2021-09-15T09:45:40",
+        "text7": "Status bijwerken en notificatie verzenden - Volledigheidstoets uitvoeren",
+        "sequence": 7.0
+      }
+    },
+    {
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-09-15T09:45:40",
+        "date2": "2021-09-15T09:45:46",
+        "text7": "B&B - vergunning - Behandelen",
+        "sequence": 8.0
+      }
+    },
+    {
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-09-15T09:45:46",
+        "date2": "2021-09-15T09:45:46",
+        "text7": "Status bijwerken en notificatie verzenden - Behandelen aanvraag",
+        "sequence": 9.0
+      }
+    },
+    {
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-09-15T09:45:46",
+        "date2": "2021-09-17T12:39:26",
+        "text7": "B&B - vergunning - Huisbezoek",
+        "sequence": 10.0
+      }
+    },
+    {
+      "fields": {
+        "mark": "Afgehandeld",
+        "date1": "2021-09-17T12:39:27",
+        "date2": "2021-09-17T12:39:27",
+        "text7": "Status bijwerken en notificatie verzenden - Huisbezoek",
+        "sequence": 11.0
+      }
     }
   ]
 }

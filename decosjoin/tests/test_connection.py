@@ -232,7 +232,12 @@ class ConnectionTests(TestCase):
         self.assertEqual(len(zaken_result), 1)
         self.assertEqual(zaken_result[0]["caseType"], "B&B - vergunning")
         self.assertEqual(zaken_result[0]["identifier"], "Z/21/78901234")
-        self.assertEqual(zaken_result[0]["dateWorkflowActive"], to_date("2021-06-22"))
+        self.assertEqual(zaken_result[0]["dateWorkflowActive"], to_date("2021-09-15"))
+
+    def test_get_workflow(self):
+        workflow_date = self.connection.get_workflow("HEXSTRING17")
+
+        self.assertEqual(workflow_date, to_date("2021-09-15"))
 
     # def test_get_document_blob(self):
     #     documents = self.connection.get_document_blob('DOCUMENTKEY01')

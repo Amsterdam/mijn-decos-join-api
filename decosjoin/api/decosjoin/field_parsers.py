@@ -64,7 +64,7 @@ def to_time(value) -> Union[str, None]:
         return to_time(value.time())
 
     if type(value) == str:
-        time_pattern = r"([0-9]{1,2})[\.:;]([0-9]{1,2})"
+        time_pattern = r"([0-9]{1,2})[\.,:;]([0-9]{1,2})"
         matches = re.match(time_pattern, value)
         if matches:
             hour = int(matches.group(1))
