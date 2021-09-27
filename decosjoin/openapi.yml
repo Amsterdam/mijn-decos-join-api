@@ -16,7 +16,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/vergunningenlist'
+                $ref: '#/components/schemas/Vergunningenlist'
   /decosjoin/listdocuments/{encrypted_zaak_id}:
     parameters:
       - name: encrypted_zaak_id
@@ -27,14 +27,13 @@ paths:
         required: true
     get:
       summary: Returns a list of documents for zaak
-      #      description: ""
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/docomentlist'
+                $ref: '#/components/schemas/Documentlist'
         '400':
           description: errors
   /decosjoin/document/{encrypted_doc_id}:
@@ -49,7 +48,7 @@ paths:
       summary: Returns a document as http download
       responses:
         '200':
-          description: document blob
+          description: Returns document blob
   /status/health:
     get:
       summary: returns "OK"
@@ -58,71 +57,132 @@ paths:
           description: Returns "OK"
 components:
   schemas:
-    vergunningenlist:
-      type: array
-      items:
-        $ref: '#/components/schemas/vergunning'
-    vergunning:
+    Vergunningenlist:
+      anyOf:
+        - $ref: '#/components/schemas/Vergunning_TVM_RVV_Object'
+        - $ref: '#/components/schemas/Vergunning_VakantieVerhuurVergunning'
+        - $ref: '#/components/schemas/Vergunning_VakantieVerhuur'
+        - $ref: '#/components/schemas/Vergunning_VakantieVerhuurAfmelding'
+        - $ref: '#/components/schemas/Vergunning_BBVergunning'
+        - $ref: '#/components/schemas/Vergunning_GPP'
+        - $ref: '#/components/schemas/Vergunning_GPK'
+        - $ref: '#/components/schemas/Vergunning_EvenementMelding'
+        - $ref: '#/components/schemas/Vergunning_EvenementVergunning'
+        - $ref: '#/components/schemas/Vergunning_Omzettingsvergunning'
+        - $ref: '#/components/schemas/Vergunning_ERVV_TVM'
+        - $ref: '#/components/schemas/Vergunning_BZP'
+        - $ref: '#/components/schemas/Vergunning_BZB'
+    Vergunning:
       type: object
       properties:
+        title:
+          type: string
+          example: 'SB RVV ontheffing hele stad'
         caseType:
           type: string
           example: 'TVM - RVV - Object'
-        dateEnd:
-          type: string
-          format: date
-          example: '2020-06-16'
-        dateStart:
-          type: string
-          format: date
-          example: '2020-06-16'
-        dateRequest:
-          type: string
-          format: date-time
-          example: '2020-06-08T00:00:00'
         identifier:
           type: string
           example: 'Z/20/1234567'
-        kenteken:
+        dateRequest:
+          $ref: '#/components/schemas/DateTime'
+        status:
           type: string
-          example: 'aa-11-aa'
-        location:
-          type: string
+          example: 'Ontvangen'
         decision:
           type: string
           example: '?'
         dateDecision:
           type: string
           format: date-time
-        status:
-          type: string
-          example: 'Ontvangen'
-        timeEnd:
-          type: string
-        timeStart:
-          type: string
-        title:
-          type: string
-          example: 'SB RVV ontheffing hele stad'
         documentsUrl:
           type: string
           example: '/api/decos/listdocuments/<fernetstring>'
-    docomentlist:
+    TvmRvvObjectVergunning:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+        - type: object
+          properties:
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+            kenteken:
+              $ref: '#/components/schemas/Kenteken'
+            location:
+              $ref: '#/components/schemas/Location'
+            timeEnd:
+              $ref: '#/components/schemas/Time'
+            timeStart:
+              $ref: '#/components/schemas/Time'
+    Vergunning_TVM_RVV_Object:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_VakantieVerhuurVergunning:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_VakantieVerhuur:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_VakantieVerhuurAfmelding:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_BBVergunning:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_GPP:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_GPK:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_EvenementMelding:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_EvenementVergunning:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_Omzettingsvergunning:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_ERVV_TVM:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_BZP:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Vergunning_BZB:
+      allOf:
+        - $ref: '#/components/schemas/Vergunning'
+    Documentlist:
       type: array
       items:
-        $ref: '#/components/schemas/document'
-    document:
+        $ref: '#/components/schemas/Document'
+    Document:
       type: object
       properties:
         id:
           type: string
           example: D/2296393
-        sequence:
-          type: number
-          example: 1
         title:
           type: string
           example: Besluit toekenning
         url:
           type: string
           example: 'api/decosjoin/document/<fernetstring>'
+    Date:
+      type: string
+      format: date
+      example: '2020-06-16'
+    Time:
+      type: string
+      example: '10:15'
+    DateTime:
+      type: string
+      format: date-time
+      example: '2020-06-08T00:00:00'
+    Kenteken:
+      type: string
+      example: 'aa-11-aa'
+    Location:
+      type: string
