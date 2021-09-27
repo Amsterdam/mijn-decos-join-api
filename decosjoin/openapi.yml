@@ -16,7 +16,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vergunningenlist'
+                $ref: '#/components/schemas/Zaken'
   /decosjoin/listdocuments/{encrypted_zaak_id}:
     parameters:
       - name: encrypted_zaak_id
@@ -33,7 +33,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Documentlist'
+                anyOf:
+                  - $ref: '#/components/schemas/Document'
         '400':
           description: errors
   /decosjoin/document/{encrypted_doc_id}:
@@ -57,22 +58,22 @@ paths:
           description: Returns "OK"
 components:
   schemas:
-    Vergunningenlist:
+    Zaken:
       anyOf:
-        - $ref: '#/components/schemas/Vergunning_TVM_RVV_Object'
-        - $ref: '#/components/schemas/Vergunning_VakantieVerhuurVergunning'
-        - $ref: '#/components/schemas/Vergunning_VakantieVerhuur'
-        - $ref: '#/components/schemas/Vergunning_VakantieVerhuurAfmelding'
-        - $ref: '#/components/schemas/Vergunning_BBVergunning'
-        - $ref: '#/components/schemas/Vergunning_GPP'
-        - $ref: '#/components/schemas/Vergunning_GPK'
-        - $ref: '#/components/schemas/Vergunning_EvenementMelding'
-        - $ref: '#/components/schemas/Vergunning_EvenementVergunning'
-        - $ref: '#/components/schemas/Vergunning_Omzettingsvergunning'
-        - $ref: '#/components/schemas/Vergunning_ERVV_TVM'
-        - $ref: '#/components/schemas/Vergunning_BZP'
-        - $ref: '#/components/schemas/Vergunning_BZB'
-    Vergunning:
+        - $ref: '#/components/schemas/Zaak_TVM_RVV_Object'
+        - $ref: '#/components/schemas/Zaak_VakantieVerhuurVergunning'
+        - $ref: '#/components/schemas/Zaak_VakantieVerhuur'
+        - $ref: '#/components/schemas/Zaak_VakantieVerhuurAfmelding'
+        - $ref: '#/components/schemas/Zaak_BBVergunning'
+        - $ref: '#/components/schemas/Zaak_GPP'
+        - $ref: '#/components/schemas/Zaak_GPK'
+        - $ref: '#/components/schemas/Zaak_EvenementMelding'
+        - $ref: '#/components/schemas/Zaak_EvenementVergunning'
+        - $ref: '#/components/schemas/Zaak_Omzettingsvergunning'
+        - $ref: '#/components/schemas/Zaak_ERVV_TVM'
+        - $ref: '#/components/schemas/Zaak_BZP'
+        - $ref: '#/components/schemas/Zaak_BZB'
+    Zaak:
       type: object
       properties:
         title:
@@ -98,11 +99,14 @@ components:
         documentsUrl:
           type: string
           example: '/api/decos/listdocuments/<fernetstring>'
-    TvmRvvObjectVergunning:
+    Zaak_TVM_RVV_Object:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
+        - $ref: '#/components/schemas/Zaak'
         - type: object
           properties:
+            caseType:
+              type: string
+              example: TVM - RVV - Object
             dateEnd:
               $ref: '#/components/schemas/Date'
             dateStart:
@@ -115,49 +119,180 @@ components:
               $ref: '#/components/schemas/Time'
             timeStart:
               $ref: '#/components/schemas/Time'
-    Vergunning_TVM_RVV_Object:
+    Zaak_VakantieVerhuurVergunning:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_VakantieVerhuurVergunning:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: Vakantieverhuur vergunningsaanvraag
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+    Zaak_VakantieVerhuur:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_VakantieVerhuur:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: Vakantieverhuur
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+            location:
+              $ref: '#/components/schemas/Location'
+    Zaak_VakantieVerhuurAfmelding:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_VakantieVerhuurAfmelding:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: Vakantieverhuur afmelding
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+    Zaak_BBVergunning:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_BBVergunning:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: B&B - vergunning
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+            requester:
+              type: string
+            owner:
+              type: string
+            hasTransitionAgreement:
+              type: boolean
+    Zaak_GPP:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_GPP:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: GPP
+            kenteken:
+              $ref: '#/components/schemas/Kenteken'
+            location:
+              $ref: '#/components/schemas/Location'
+    Zaak_GPK:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_GPK:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: GPK
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            cardNumber:
+              type: string
+            cardType:
+              type: string
+    Zaak_EvenementMelding:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_EvenementMelding:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: Evenement melding
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+            location:
+              $ref: '#/components/schemas/Location'
+            timeEnd:
+              $ref: '#/components/schemas/Time'
+            timeStart:
+              $ref: '#/components/schemas/Time'
+    Zaak_EvenementVergunning:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_EvenementVergunning:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: Evenement vergunning
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+            location:
+              $ref: '#/components/schemas/Location'
+            timeEnd:
+              $ref: '#/components/schemas/Time'
+            timeStart:
+              $ref: '#/components/schemas/Time'
+    Zaak_Omzettingsvergunning:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_Omzettingsvergunning:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: Omzettingsvergunning
+            location:
+              $ref: '#/components/schemas/Location'
+    Zaak_ERVV_TVM:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_ERVV_TVM:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: E-RVV - TVM
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+            location:
+              $ref: '#/components/schemas/Location'
+            timeEnd:
+              $ref: '#/components/schemas/Time'
+            timeStart:
+              $ref: '#/components/schemas/Time'
+    Zaak_BZP:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_BZP:
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: Parkeerontheffingen Blauwe zone particulieren
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+            kenteken:
+              $ref: '#/components/schemas/Kenteken'
+    Zaak_BZB:
       allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Vergunning_BZB:
-      allOf:
-        - $ref: '#/components/schemas/Vergunning'
-    Documentlist:
-      type: array
-      items:
-        $ref: '#/components/schemas/Document'
+        - $ref: '#/components/schemas/Zaak'
+        - type: object
+          properties:
+            caseType:
+              type: string
+              example: Parkeerontheffingen Blauwe zone bedrijven
+            dateEnd:
+              $ref: '#/components/schemas/Date'
+            dateStart:
+              $ref: '#/components/schemas/Date'
+            kenteken:
+              $ref: '#/components/schemas/Kenteken'
     Document:
       type: object
       properties:
