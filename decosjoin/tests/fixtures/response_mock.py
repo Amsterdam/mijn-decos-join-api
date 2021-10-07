@@ -183,8 +183,16 @@ mocked_get_urls_tuple = (
         get_all_workflows_response(),
     ),
     (
+        "http://localhost/decosweb/aspx/api/v1/items/HEXSTRING23/workflows",
+        get_all_workflows_response("omzettingsvergunning"),
+    ),
+    (
         "http://localhost/decosweb/aspx/api/v1/items/HEXSTRING_ALL_WORKFLOWS_RESPONSE/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence",
         get_single_workflow_response(),
+    ),
+    (
+        "http://localhost/decosweb/aspx/api/v1/items/HEXSTRING_ALL_WORKFLOWS_RESPONSE_OMZETTINGSVERGUNNING/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence",
+        get_single_workflow_response("omzettingsvergunning"),
     ),
 )
 mocked_get_urls = dict(mocked_get_urls_tuple)

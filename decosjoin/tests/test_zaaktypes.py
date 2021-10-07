@@ -1,11 +1,13 @@
 from datetime import date
 from unittest.case import TestCase
+from unittest.mock import MagicMock
 
 from decosjoin.api.decosjoin.field_parsers import to_date
 from decosjoin.api.decosjoin.zaaktypes import (
     BZB,
     BZP,
     BBVergunning,
+    Omzettingsvergunning,
     TVM_RVV_Object,
     VakantieVerhuur,
     VakantieVerhuurAfmelding,
@@ -193,8 +195,46 @@ class ZaaktypesTest(TestCase):
     # def test_EvenementVergunning(self):
     #     self.assertEqual()
 
-    # def test_Omzettingsvergunning(self):
-    #     self.assertEqual()
+    def test_Omzettingsvergunning(self):
+        zaak_source = {
+            "id": "zaak-omzettingsvergunning-1",
+            "company": "Achternaam",
+            "date6": "2021-06-02T00:00:00",
+            "document_date": "2021-05-19T00:00:00",
+            "mark": "Z/21/99012348",
+            "subject1": "Omzettingsvergunning aanvragen",
+            "text11": "Geheel",
+            "text12": "Online voldaan",
+            "text45": "Omzettingsvergunning",
+            "text6": "Amstel 1 1012AK AMSTERDAM",
+            "text7": "Amstel",
+            "title": "Ontvangen",
+        }
+        zaak_transformed = Omzettingsvergunning(zaak_source).result()
+        self.assertEqual(
+            zaak_transformed["caseType"],
+            "Omzettingsvergunning",
+        )
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Vergunning voor kamerverhuur (omzettingsvergunning)",
+        )
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2021-10-15"))
+
+        zaken_all = []
+
+        Omzettingsvergunning.defer_transform(
+            zaak_transformed, zaken_all, connection_mock()
+        )
+
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2021-10-15"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-omzettingsvergunning-1",
+            Omzettingsvergunning.date_workflow_active_step_title,
+        )
 
     # def test_ERVV_TVM(self):
     #     self.assertEqual()
