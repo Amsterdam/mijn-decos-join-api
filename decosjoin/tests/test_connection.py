@@ -121,22 +121,12 @@ class ConnectionTests(TestCase):
     def test_get_documents(self):
         documents = self.connection.get_documents("ZAAKKEY1", "111222333")
         self.assertEqual(len(documents), 2)
-        self.assertEqual(documents[0]["sequence"], 2)
-        self.assertEqual(documents[1]["sequence"], 5)
 
         doc0 = documents[0]
-        self.assertEqual(doc0["sequence"], 2)
         self.assertEqual(doc0["id"], "D/2")
         self.assertTrue(doc0["url"].startswith("/api/decosjoin/document/"))
 
-        # check exclusions
-        sequence_numbers = [d["sequence"] for d in documents]
-        self.assertEqual([2, 5], sequence_numbers)
-
-        self.assertNotIn(7, sequence_numbers)
-        self.assertNotIn(8, sequence_numbers)
-        self.assertNotIn(9, sequence_numbers)
-
+        
     def test_transform_vakantieverhuur(self):
         def wrap(zaak, key):
             return {
