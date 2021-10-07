@@ -3,6 +3,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
+from decosjoin.api.decosjoin.zaaktypes import BBVergunning
 from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 from freezegun import freeze_time
 
@@ -235,7 +236,9 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken_result[0]["dateWorkflowActive"], to_date("2021-09-15"))
 
     def test_get_workflow(self):
-        workflow_date = self.connection.get_workflow("HEXSTRING17")
+        workflow_date = self.connection.get_workflow(
+            "HEXSTRING17", BBVergunning.date_workflow_active_step_title
+        )
 
         self.assertEqual(workflow_date, to_date("2021-09-15"))
 

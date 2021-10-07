@@ -73,9 +73,17 @@ def get_document_blob():
         return fh.read()
 
 
-def get_all_workflows_response():
-    return load_fixture("all_workflows_response.json")
+def get_all_workflows_response(kind: str = ""):
+    file_name = "all_workflows_response.json"
+    if kind == "omzettingsvergunning":
+        file_name = "all_workflows_response_omzettingsvergunning.json"
+
+    return load_fixture(file_name)
 
 
-def get_single_workflow_response():
-    return load_fixture("single_workflow_response.json")
+def get_single_workflow_response(kind: str = ""):
+    file_name = "single_workflow_response.json"
+    if kind == "omzettingsvergunning":
+        file_name = "single_workflow_response_omzettingsvergunning.json"
+
+    return load_fixture(file_name)
