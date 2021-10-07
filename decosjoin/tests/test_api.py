@@ -1,5 +1,7 @@
+from decosjoin.config import BASE_PATH
 import os
 import time
+import yaml
 from unittest.mock import patch
 
 from cryptography.fernet import Fernet
@@ -177,3 +179,9 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
+
+    def test_valid_response(self):
+        
+        with open(os.path.join(BASE_PATH, "openapi.yml")) as fh:
+            schema = yaml.load(fh.read())
+            print(schema)

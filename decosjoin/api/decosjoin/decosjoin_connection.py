@@ -269,6 +269,7 @@ class DecosJoinConnection:
         parse_fields = [
             {"name": "title", "from": "text41", "parser": to_string_or_empty_string},
             {"name": "id", "from": "mark", "parser": to_string},
+            {"name": "sequence", "from": "sequence", "parser": to_int},
             {"name": "text39", "from": "text39", "parser": to_string_or_empty_string},
             {"name": "text40", "from": "text40", "parser": to_string_or_empty_string},
             {"name": "text41", "from": "text41", "parser": to_string_or_empty_string},
@@ -298,10 +299,13 @@ class DecosJoinConnection:
                         del document_meta_data["text39"]
                         del document_meta_data["text40"]
                         del document_meta_data["text41"]
-                        
+
                         new_docs.append(document_meta_data)
 
         new_docs.sort(key=lambda x: x["sequence"])
+
+        for doc in new_docs:
+            del doc["sequence"]
 
         return new_docs
 
