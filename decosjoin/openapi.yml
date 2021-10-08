@@ -4,19 +4,19 @@ info:
   description: Dit is het koppelstuk tussen mijn amsterdam en decos join
   version: 1.0.0
 servers:
-  - url: 'https://mijn.amsterdam.nl'
+  - url: "https://mijn.amsterdam.nl"
 paths:
   /decosjoin/getvergunningen:
     get:
       summary: Returns a list verguningen.
       description: Returns a list of vergunningen
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Zaken'
+                $ref: "#/components/schemas/Zaken"
   /decosjoin/listdocuments/{encrypted_zaak_id}:
     parameters:
       - name: encrypted_zaak_id
@@ -28,14 +28,14 @@ paths:
     get:
       summary: Returns a list of documents for zaak
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 anyOf:
-                  - $ref: '#/components/schemas/Document'
-        '400':
+                  - $ref: "#/components/schemas/Document"
+        "400":
           description: errors
   /decosjoin/document/{encrypted_doc_id}:
     parameters:
@@ -48,127 +48,129 @@ paths:
     get:
       summary: Returns a document as http download
       responses:
-        '200':
+        "200":
           description: Returns document blob
   /status/health:
     get:
       summary: returns "OK"
       responses:
-        '200':
+        "200":
           description: Returns "OK"
 components:
   schemas:
     Zaken:
       anyOf:
-        - $ref: '#/components/schemas/Zaak_TVM_RVV_Object'
-        - $ref: '#/components/schemas/Zaak_VakantieVerhuurVergunning'
-        - $ref: '#/components/schemas/Zaak_VakantieVerhuur'
-        - $ref: '#/components/schemas/Zaak_VakantieVerhuurAfmelding'
-        - $ref: '#/components/schemas/Zaak_BBVergunning'
-        - $ref: '#/components/schemas/Zaak_GPP'
-        - $ref: '#/components/schemas/Zaak_GPK'
-        - $ref: '#/components/schemas/Zaak_EvenementMelding'
-        - $ref: '#/components/schemas/Zaak_EvenementVergunning'
-        - $ref: '#/components/schemas/Zaak_Omzettingsvergunning'
-        - $ref: '#/components/schemas/Zaak_ERVV_TVM'
-        - $ref: '#/components/schemas/Zaak_BZP'
-        - $ref: '#/components/schemas/Zaak_BZB'
+        - $ref: "#/components/schemas/Zaak_TVM_RVV_Object"
+        - $ref: "#/components/schemas/Zaak_VakantieVerhuurVergunning"
+        - $ref: "#/components/schemas/Zaak_VakantieVerhuur"
+        - $ref: "#/components/schemas/Zaak_VakantieVerhuurAfmelding"
+        - $ref: "#/components/schemas/Zaak_BBVergunning"
+        - $ref: "#/components/schemas/Zaak_GPP"
+        - $ref: "#/components/schemas/Zaak_GPK"
+        - $ref: "#/components/schemas/Zaak_EvenementMelding"
+        - $ref: "#/components/schemas/Zaak_EvenementVergunning"
+        - $ref: "#/components/schemas/Zaak_Omzettingsvergunning"
+        - $ref: "#/components/schemas/Zaak_ERVV_TVM"
+        - $ref: "#/components/schemas/Zaak_BZP"
+        - $ref: "#/components/schemas/Zaak_BZB"
     Zaak:
       type: object
       properties:
         title:
           type: string
-          example: 'SB RVV ontheffing hele stad'
+          example: "SB RVV ontheffing hele stad"
         caseType:
           type: string
-          example: 'TVM - RVV - Object'
+          example: "TVM - RVV - Object"
         identifier:
           type: string
-          example: 'Z/20/1234567'
+          example: "Z/20/1234567"
         dateRequest:
-          $ref: '#/components/schemas/DateTime'
+          $ref: "#/components/schemas/DateTime"
         status:
           type: string
-          example: 'Ontvangen'
+          example: "Ontvangen"
         decision:
           type: string
-          example: '?'
+          example: "?"
         dateDecision:
           type: string
           format: date-time
         documentsUrl:
           type: string
-          example: '/api/decos/listdocuments/<fernetstring>'
+          example: "/api/decos/listdocuments/<fernetstring>"
     Zaak_TVM_RVV_Object:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: TVM - RVV - Object
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             kenteken:
-              $ref: '#/components/schemas/Kenteken'
+              $ref: "#/components/schemas/Kenteken"
             location:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
             timeEnd:
-              $ref: '#/components/schemas/Time'
+              $ref: "#/components/schemas/Time"
             timeStart:
-              $ref: '#/components/schemas/Time'
+              $ref: "#/components/schemas/Time"
     Zaak_VakantieVerhuurVergunning:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: Vakantieverhuur vergunningsaanvraag
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
     Zaak_VakantieVerhuur:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: Vakantieverhuur
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             location:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
     Zaak_VakantieVerhuurAfmelding:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: Vakantieverhuur afmelding
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
     Zaak_BBVergunning:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: B&B - vergunning
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
+            dateWorkflowActive:
+              $ref: "#/components/schemas/Date"
             requester:
               type: string
             owner:
@@ -177,122 +179,124 @@ components:
               type: boolean
     Zaak_GPP:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: GPP
             kenteken:
-              $ref: '#/components/schemas/Kenteken'
+              $ref: "#/components/schemas/Kenteken"
             location:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
     Zaak_GPK:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: GPK
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             cardNumber:
               type: string
             cardType:
               type: string
     Zaak_EvenementMelding:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: Evenement melding
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             location:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
             timeEnd:
-              $ref: '#/components/schemas/Time'
+              $ref: "#/components/schemas/Time"
             timeStart:
-              $ref: '#/components/schemas/Time'
+              $ref: "#/components/schemas/Time"
     Zaak_EvenementVergunning:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: Evenement vergunning
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             location:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
             timeEnd:
-              $ref: '#/components/schemas/Time'
+              $ref: "#/components/schemas/Time"
             timeStart:
-              $ref: '#/components/schemas/Time'
+              $ref: "#/components/schemas/Time"
     Zaak_Omzettingsvergunning:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: Omzettingsvergunning
             location:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
+            dateWorkflowActive:
+              $ref: "#/components/schemas/Date"
     Zaak_ERVV_TVM:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: E-RVV - TVM
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             location:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
             timeEnd:
-              $ref: '#/components/schemas/Time'
+              $ref: "#/components/schemas/Time"
             timeStart:
-              $ref: '#/components/schemas/Time'
+              $ref: "#/components/schemas/Time"
     Zaak_BZP:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: Parkeerontheffingen Blauwe zone particulieren
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             kenteken:
-              $ref: '#/components/schemas/Kenteken'
+              $ref: "#/components/schemas/Kenteken"
     Zaak_BZB:
       allOf:
-        - $ref: '#/components/schemas/Zaak'
+        - $ref: "#/components/schemas/Zaak"
         - type: object
           properties:
             caseType:
               type: string
               example: Parkeerontheffingen Blauwe zone bedrijven
             dateEnd:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             dateStart:
-              $ref: '#/components/schemas/Date'
+              $ref: "#/components/schemas/Date"
             kenteken:
-              $ref: '#/components/schemas/Kenteken'
+              $ref: "#/components/schemas/Kenteken"
     Document:
       type: object
       properties:
@@ -304,20 +308,20 @@ components:
           example: Besluit toekenning
         url:
           type: string
-          example: 'api/decosjoin/document/<fernetstring>'
+          example: "api/decosjoin/document/<fernetstring>"
     Date:
       type: string
       format: date
-      example: '2020-06-16'
+      example: "2020-06-16"
     Time:
       type: string
-      example: '10:15'
+      example: "10:15"
     DateTime:
       type: string
       format: date-time
-      example: '2020-06-08T00:00:00'
+      example: "2020-06-08T00:00:00"
     Kenteken:
       type: string
-      example: 'aa-11-aa'
+      example: "aa-11-aa"
     Location:
       type: string
