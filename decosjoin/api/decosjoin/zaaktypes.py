@@ -224,6 +224,8 @@ class BBVergunning(Zaak):
     zaak_type = "B&B - vergunning"
     title = "Vergunning bed & breakfast"
 
+    date_workflow_active_step_title = "B&B - vergunning - Behandelen"
+
     @staticmethod
     def to_transition_agreement(value) -> bool:
         if value and value.lower() == "verleend met overgangsrecht":
@@ -232,7 +234,9 @@ class BBVergunning(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
-        date_workflow_active = decosjoin_connection.get_workflow(zaak_deferred["id"])
+        date_workflow_active = decosjoin_connection.get_workflow(
+            zaak_deferred["id"], BBVergunning.date_workflow_active_step_title
+        )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
         zaken_all.append(zaak_deferred)
 
@@ -415,10 +419,19 @@ class Omzettingsvergunning(Zaak):
 
     zaak_type = "Omzettingsvergunning"
     title = "Vergunning voor kamerverhuur (omzettingsvergunning)"
+    date_workflow_active_step_title = "Omzettingsvergunning - Behandelen"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
+        date_workflow_active = decosjoin_connection.get_workflow(
+            zaak_deferred["id"], Omzettingsvergunning.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
 
     parse_fields = [
         {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
-        {"name": "location", "from": "text8", "parser": to_string},
+        {"name": "location", "from": "text6", "parser": to_string},
     ]
 
     decision_translations = [

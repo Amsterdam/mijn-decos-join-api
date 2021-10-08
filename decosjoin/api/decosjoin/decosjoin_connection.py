@@ -17,7 +17,6 @@ from decosjoin.crypto import encrypt
 
 LOG_RAW = False
 PAGE_SIZE = 30
-B_AND_B_WORKFLOW_BEHANDELEN_STEP = "B&B - vergunning - Behandelen"
 
 SELECT_FIELDS = ",".join(
     [
@@ -120,7 +119,9 @@ class DecosJoinConnection:
             url = f"{self.api_url}search/books?properties=false"
 
             res_json = self.request(
-                url, json=self.get_search_query_json(user_identifier, boek), method="post"
+                url,
+                json=self.get_search_query_json(user_identifier, boek),
+                method="post",
             )
 
             if res_json["itemDataResultSet"]["count"] > 0:
@@ -186,9 +187,11 @@ class DecosJoinConnection:
             else:
                 new_zaken.append(new_zaak)
 
-        # Matching start/end dates for Vakantieverhuur afmelding and transforming the geplande verhuur to afgemelde verhuur
-        for [deferred_zaak, Zaak_instance] in deferred_zaken:
-            Zaak_instance.defer_transform(
+        # Makes it possible to defer adding the zaak to the zaken response for example to:
+        # - Match start/end dates for Vakantieverhuur afmelding and transforming the geplande verhuur to afgemelde verhuur
+        # - Adding dateWorkflowActive by querying other Api's
+        for [deferred_zaak, Zaak_cls] in deferred_zaken:
+            Zaak_cls.defer_transform(
                 zaak_deferred=deferred_zaak,
                 zaken_all=new_zaken,
                 decosjoin_connection=self,
@@ -324,7 +327,7 @@ class DecosJoinConnection:
             "file_data": document_response.content,
         }
 
-    def get_workflow(self, zaak_id: str):
+    def get_workflow(self, zaak_id: str, step_title: str):
         all_workflows_response = self.request(
             f"{self.api_url}items/{zaak_id}/workflows"
         )
@@ -347,7 +350,10 @@ class DecosJoinConnection:
             date_in_behandeling = None
 
             for workflow_step in single_workflow_response["content"]:
-                if "text7" in workflow_step["fields"] and workflow_step["fields"]["text7"] == B_AND_B_WORKFLOW_BEHANDELEN_STEP:
+                if (
+                    "text7" in workflow_step["fields"]
+                    and workflow_step["fields"]["text7"] == step_title
+                ):
                     date_in_behandeling = to_date(workflow_step["fields"]["date1"])
 
             return date_in_behandeling
