@@ -76,7 +76,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.maxDiff = None
 
     def test_status(self):
-        response = self.client.get("http://test/status/health")
+        response = self.client.get("/status/health")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.decode(), '"OK"')
 
@@ -86,7 +86,7 @@ class ApiTests(FlaskServerTMATestCase):
     )
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_getvergunningen(self):
-        response = self.client_get("http://test/decosjoin/getvergunningen")
+        response = self.client_get("/decosjoin/getvergunningen")
 
         self.assertEqual(response.status_code, 200, response.data)
         data = response.get_json()
@@ -106,7 +106,7 @@ class ApiTests(FlaskServerTMATestCase):
     )
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_getvergunningen_unauthorized(self):
-        response = self.client_get("http://test/decosjoin/getvergunningen")
+        response = self.client_get("/decosjoin/getvergunningen")
 
         self.assertEqual(response.status_code, 401, response.data)
         data = response.get_json()
@@ -117,7 +117,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_getvergunningen_no_header(self):
-        response = self.client.get("http://test/decosjoin/getvergunningen")
+        response = self.client.get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json,
@@ -128,7 +128,7 @@ class ApiTests(FlaskServerTMATestCase):
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_listdocuments(self):
         response = self.client_get(
-            f"http://test/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}"
+            f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}"
         )
         data = response.json["content"]
         self.assertEqual(len(data), 2)
@@ -138,7 +138,7 @@ class ApiTests(FlaskServerTMATestCase):
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_listdocuments_kvk(self):
         response = self.client_get_kvk(
-            f"http://test/decosjoin/listdocuments/{encrypt('ZAAKKEY2', self.TEST_KVK)}"
+            f"/decosjoin/listdocuments/{encrypt('ZAAKKEY2', self.TEST_KVK)}"
         )
         data = response.json["content"]
         self.assertEqual(len(data), 2)
@@ -146,7 +146,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_listdocuments_unencrypted(self):
-        response = self.client_get("http://test/decosjoin/listdocuments/ZAAKKEY1")
+        response = self.client_get("/decosjoin/listdocuments/ZAAKKEY1")
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
@@ -159,9 +159,7 @@ class ApiTests(FlaskServerTMATestCase):
         expired_time = int(time.time()) - (60 * 60 + 2)  # one hour + 2 seconds
         encrypted_token = f.encrypt_at_time(value, expired_time)
 
-        response = self.client_get(
-            f"http://test/decosjoin/listdocuments/{encrypted_token}"
-        )
+        response = self.client_get(f"/decosjoin/listdocuments/{encrypted_token}")
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
@@ -170,14 +168,14 @@ class ApiTests(FlaskServerTMATestCase):
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_get_document_blob(self):
         response = self.client_get(
-            f"http://test/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}",
+            f"/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}",
         )
         self.assertEqual(response.data, get_document_blob())
         self.assertEqual(response.headers["Content-Type"], "application/pdf")
 
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_get_document_unencrypted(self):
-        response = self.client_get("http://test/decosjoin/document/DOCUMENTKEY01")
+        response = self.client_get("/decosjoin/document/DOCUMENTKEY01")
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
@@ -192,6 +190,6 @@ class ApiTests(FlaskServerTMATestCase):
     )
     @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
     def test_get_with_openapi(self):
-        response = self.client_get("http://test/decosjoin/getvergunningen")
+        response = self.client_get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json["status"], "OK")
