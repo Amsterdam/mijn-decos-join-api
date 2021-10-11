@@ -20,6 +20,8 @@ IS_ACCEPTANCE = os.getenv("SENTRY_ENVIRONMENT") == "acceptance"
 IS_AP = IS_PRODUCTION or IS_ACCEPTANCE
 IS_DEV = os.getenv("FLASK_ENV") == "development" and not IS_AP
 
+DECOS_API_REQUEST_TIMEOUT = 30
+
 
 def get_sentry_dsn():
     return os.getenv("SENTRY_DSN", None)
