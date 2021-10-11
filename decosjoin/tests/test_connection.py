@@ -127,7 +127,6 @@ class ConnectionTests(TestCase):
         self.assertEqual(doc0["id"], "D/2")
         self.assertTrue(doc0["url"].startswith("/api/decosjoin/document/"))
 
-        
     def test_transform_vakantieverhuur(self):
         def wrap(zaak, key):
             return {

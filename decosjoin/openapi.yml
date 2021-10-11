@@ -4,7 +4,10 @@ info:
   description: Dit is het koppelstuk tussen mijn amsterdam en decos join
   version: 1.0.0
 servers:
-  - url: "https://mijn.amsterdam.nl"
+  - url: "http://localhost:5000"
+  - url: "http://test"
+  - url: "https://mijn.amsterdam.nl/api"
+  - url: "https://mijn.amsterdam.nl/api1"
 paths:
   /decosjoin/getvergunningen:
     get:
@@ -16,7 +19,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Zaken"
+                type: object
+                properties:
+                  content:
+                    $ref: "#/components/schemas/Zaken"
+                  status:
+                    type: string
+                    enum:
+                      - "OK"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /decosjoin/listdocuments/{encrypted_zaak_id}:
     parameters:
       - name: encrypted_zaak_id
@@ -33,10 +49,22 @@ paths:
           content:
             application/json:
               schema:
-                anyOf:
-                  - $ref: "#/components/schemas/Document"
-        "400":
-          description: errors
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Document"
+                  status:
+                    type: string
+                    enum:
+                      - "OK"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /decosjoin/document/{encrypted_doc_id}:
     parameters:
       - name: encrypted_doc_id
@@ -50,29 +78,48 @@ paths:
       responses:
         "200":
           description: Returns document blob
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /status/health:
     get:
       summary: returns "OK"
       responses:
         "200":
           description: Returns "OK"
+          content:
+            application/json:
+              schema:
+                type: string
+                enum:
+                  - "OK"
 components:
   schemas:
     Zaken:
-      anyOf:
-        - $ref: "#/components/schemas/Zaak_TVM_RVV_Object"
-        - $ref: "#/components/schemas/Zaak_VakantieVerhuurVergunning"
-        - $ref: "#/components/schemas/Zaak_VakantieVerhuur"
-        - $ref: "#/components/schemas/Zaak_VakantieVerhuurAfmelding"
-        - $ref: "#/components/schemas/Zaak_BBVergunning"
-        - $ref: "#/components/schemas/Zaak_GPP"
-        - $ref: "#/components/schemas/Zaak_GPK"
-        - $ref: "#/components/schemas/Zaak_EvenementMelding"
-        - $ref: "#/components/schemas/Zaak_EvenementVergunning"
-        - $ref: "#/components/schemas/Zaak_Omzettingsvergunning"
-        - $ref: "#/components/schemas/Zaak_ERVV_TVM"
-        - $ref: "#/components/schemas/Zaak_BZP"
-        - $ref: "#/components/schemas/Zaak_BZB"
+      type: array
+      items:
+        anyOf:
+          - $ref: "#/components/schemas/Zaak_TVM_RVV_Object"
+          - $ref: "#/components/schemas/Zaak_VakantieVerhuurVergunning"
+          - $ref: "#/components/schemas/Zaak_VakantieVerhuur"
+          - $ref: "#/components/schemas/Zaak_VakantieVerhuurAfmelding"
+          - $ref: "#/components/schemas/Zaak_BBVergunning"
+          - $ref: "#/components/schemas/Zaak_GPP"
+          - $ref: "#/components/schemas/Zaak_GPK"
+          - $ref: "#/components/schemas/Zaak_EvenementMelding"
+          - $ref: "#/components/schemas/Zaak_EvenementVergunning"
+          - $ref: "#/components/schemas/Zaak_Omzettingsvergunning"
+          - $ref: "#/components/schemas/Zaak_ERVV_TVM"
+          - $ref: "#/components/schemas/Zaak_BZP"
+          - $ref: "#/components/schemas/Zaak_BZB"
     Zaak:
       type: object
       properties:
@@ -86,16 +133,16 @@ components:
           type: string
           example: "Z/20/1234567"
         dateRequest:
-          $ref: "#/components/schemas/DateTime"
+          $ref: "#/components/schemas/Date"
         status:
           type: string
           example: "Ontvangen"
         decision:
           type: string
           example: "?"
+          nullable: true
         dateDecision:
-          type: string
-          format: date-time
+          $ref: "#/components/schemas/Date"
         documentsUrl:
           type: string
           example: "/api/decos/listdocuments/<fernetstring>"
@@ -107,6 +154,8 @@ components:
             caseType:
               type: string
               example: TVM - RVV - Object
+              enum:
+                - TVM - RVV - Object
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -127,6 +176,8 @@ components:
             caseType:
               type: string
               example: Vakantieverhuur vergunningsaanvraag
+              enum:
+                - Vakantieverhuur vergunningsaanvraag
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -139,6 +190,8 @@ components:
             caseType:
               type: string
               example: Vakantieverhuur
+              enum:
+                - Vakantieverhuur
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -153,6 +206,8 @@ components:
             caseType:
               type: string
               example: Vakantieverhuur afmelding
+              enum:
+                - Vakantieverhuur afmelding
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -165,6 +220,8 @@ components:
             caseType:
               type: string
               example: B&B - vergunning
+              enum:
+                - B&B - vergunning
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -173,8 +230,10 @@ components:
               $ref: "#/components/schemas/Date"
             requester:
               type: string
+              nullable: true
             owner:
               type: string
+              nullable: true
             hasTransitionAgreement:
               type: boolean
     Zaak_GPP:
@@ -185,6 +244,8 @@ components:
             caseType:
               type: string
               example: GPP
+              enum:
+                - GPP
             kenteken:
               $ref: "#/components/schemas/Kenteken"
             location:
@@ -197,12 +258,16 @@ components:
             caseType:
               type: string
               example: GPK
+              enum:
+                - GPK
             dateEnd:
               $ref: "#/components/schemas/Date"
             cardNumber:
               type: string
+              nullable: true
             cardType:
               type: string
+              nullable: true
     Zaak_EvenementMelding:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -211,6 +276,8 @@ components:
             caseType:
               type: string
               example: Evenement melding
+              enum:
+                - Evenement melding
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -229,6 +296,8 @@ components:
             caseType:
               type: string
               example: Evenement vergunning
+              enum:
+                - Evenement vergunning
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -247,6 +316,8 @@ components:
             caseType:
               type: string
               example: Omzettingsvergunning
+              enum:
+                - Omzettingsvergunning
             location:
               $ref: "#/components/schemas/Location"
             dateWorkflowActive:
@@ -259,6 +330,8 @@ components:
             caseType:
               type: string
               example: E-RVV - TVM
+              enum:
+                - E-RVV - TVM
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -277,6 +350,8 @@ components:
             caseType:
               type: string
               example: Parkeerontheffingen Blauwe zone particulieren
+              enum:
+                - Parkeerontheffingen Blauwe zone particulieren
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -291,6 +366,8 @@ components:
             caseType:
               type: string
               example: Parkeerontheffingen Blauwe zone bedrijven
+              enum:
+                - Parkeerontheffingen Blauwe zone bedrijven
             dateEnd:
               $ref: "#/components/schemas/Date"
             dateStart:
@@ -313,15 +390,29 @@ components:
       type: string
       format: date
       example: "2020-06-16"
+      nullable: true
     Time:
       type: string
       example: "10:15"
+      nullable: true
     DateTime:
       type: string
       format: date-time
       example: "2020-06-08T00:00:00"
+      nullable: true
     Kenteken:
       type: string
       example: "aa-11-aa"
+      nullable: true
     Location:
       type: string
+      nullable: true
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - "ERROR"
+        message:
+          type: string

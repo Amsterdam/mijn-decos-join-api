@@ -1,9 +1,14 @@
-from requests.exceptions import HTTPError
+import os
 import sentry_sdk
 from flask import Flask, make_response
+from openapi_core import create_spec
+from openapi_core.contrib.flask.decorators import FlaskOpenAPIViewDecorator
+from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
-
 from werkzeug.exceptions import HTTPException
+from yaml import load
+import yaml
+import json
 
 from decosjoin.api.helpers import (
     error_response_json,
@@ -13,8 +18,9 @@ from decosjoin.api.helpers import (
     verify_tma_user,
 )
 from decosjoin.config import (
-    CustomJSONEncoder,
+    BASE_PATH,
     IS_DEV,
+    CustomJSONEncoder,
     TMAException,
     get_sentry_dsn,
     logger,
@@ -31,16 +37,25 @@ if sentry_dsn:  # pragma: no cover
     )
 
 
+with open(os.path.join(BASE_PATH, "openapi.yml"), "r") as spec_file:
+    spec_dict = load(spec_file, Loader=yaml.Loader)
+
+spec = create_spec(spec_dict)
+
+openapi = FlaskOpenAPIViewDecorator.from_spec(spec)
+
+
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
+@openapi
 @verify_tma_user
 def get_vergunningen():
     user = get_tma_user()
     zaken = get_connection().get_zaken(user["type"], user["id"])
-
     return success_response_json(zaken)
 
 
 @app.route("/decosjoin/listdocuments/<string:encrypted_zaak_id>", methods=["GET"])
+@openapi
 @verify_tma_user
 def get_documents(encrypted_zaak_id):
     user = get_tma_user()
@@ -51,6 +66,7 @@ def get_documents(encrypted_zaak_id):
 
 
 @app.route("/decosjoin/document/<string:encrypted_doc_id>", methods=["GET"])
+@openapi
 @verify_tma_user
 def get_document_blob(encrypted_doc_id):
     user = get_tma_user()
@@ -65,13 +81,17 @@ def get_document_blob(encrypted_doc_id):
 
 
 @app.route("/status/health")
+@openapi
 def health_check():
-    return "OK"
+    response = make_response(json.dumps("OK"))
+    response.headers["Content-type"] = "application/json"
+    return response
 
 
 @app.errorhandler(Exception)
+@openapi
 def handle_error(error):
-
+    print("blapperdeblap")
     error_message_original = str(error)
 
     msg_tma_exception = "TMA error occurred"

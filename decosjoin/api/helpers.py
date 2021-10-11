@@ -2,8 +2,13 @@ import os
 from functools import wraps
 
 from flask import g, request
-from tma_saml import HR_KVK_NUMBER_KEY
-from tma_saml import SamlVerificationException, get_digi_d_bsn, get_e_herkenning_attribs
+from flask.helpers import make_response
+from tma_saml import (
+    HR_KVK_NUMBER_KEY,
+    SamlVerificationException,
+    get_digi_d_bsn,
+    get_e_herkenning_attribs,
+)
 from tma_saml.tma_saml import get_user_type
 from tma_saml.user_type import UserType
 
@@ -97,8 +102,8 @@ def get_connection():
 
 
 def success_response_json(response_content):
-    return {"status": "OK", "content": response_content}, 200
+    return make_response({"status": "OK", "content": response_content}, 200)
 
 
 def error_response_json(message: str, code: int = 500):
-    return {"status": "ERROR", "message": message}, code
+    return make_response({"status": "ERROR", "message": message}, code)
