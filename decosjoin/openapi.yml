@@ -3,11 +3,6 @@ info:
   title: Decos join koppel api API
   description: Dit is het koppelstuk tussen mijn amsterdam en decos join
   version: 1.0.0
-servers:
-  - url: "http://localhost:5000"
-  - url: "http://test"
-  - url: "https://mijn.amsterdam.nl/api"
-  - url: "https://mijn.amsterdam.nl/api1"
 paths:
   /decosjoin/getvergunningen:
     get:
