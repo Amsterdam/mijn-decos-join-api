@@ -13,6 +13,7 @@ from decosjoin.api.decosjoin.field_parsers import (
     to_string_or_empty_string,
 )
 from decosjoin.api.decosjoin.zaaktypes import zaken_index
+from decosjoin.config import DECOS_API_REQUEST_TIMEOUT
 from decosjoin.crypto import encrypt
 
 LOG_RAW = False
@@ -70,7 +71,7 @@ class DecosJoinConnection:
                 url,
                 auth=HTTPBasicAuth(self.username, self.password),
                 headers={"Accept": "application/itemdata"},
-                timeout=9,
+                timeout=DECOS_API_REQUEST_TIMEOUT,
             )
         elif method == "post":
             response = self.post_response(
@@ -78,7 +79,7 @@ class DecosJoinConnection:
                 auth=HTTPBasicAuth(self.username, self.password),
                 headers={"Accept": "application/itemdata"},
                 json=json,
-                timeout=9,
+                timeout=DECOS_API_REQUEST_TIMEOUT,
             )
         else:
             raise RuntimeError("Method needs to be GET or POST")
