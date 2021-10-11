@@ -1,6 +1,7 @@
 # flask and plugins
 flask
 Flask-Testing
+openapi-core
 
 requests
 python-dateutil
