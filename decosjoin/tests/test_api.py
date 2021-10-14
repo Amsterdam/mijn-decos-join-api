@@ -2,7 +2,7 @@ import os
 import time
 from unittest.mock import patch
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from requests.models import Response
 from tma_saml import FlaskServerTMATestCase, UserType
 from tma_saml.for_tests.cert_and_key import server_crt
@@ -148,6 +148,7 @@ class ApiTests(FlaskServerTMATestCase):
     def test_listdocuments_unencrypted(self):
         response = self.client_get("/decosjoin/listdocuments/ZAAKKEY1")
         self.assertEqual(response.status_code, 500)
+        self.assertRaises(InvalidToken)
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
@@ -181,10 +182,7 @@ class ApiTests(FlaskServerTMATestCase):
             response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
 
-    @patch(
-        "decosjoin.api.helpers.DecosJoinConnection.get_response",
-        get_response_mock,
-    )
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch(
         "decosjoin.api.helpers.DecosJoinConnection.post_response", post_response_mock
     )
