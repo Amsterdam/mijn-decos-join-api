@@ -21,6 +21,7 @@ from yaml import load
 from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
 from decosjoin.config import (
     BASE_PATH,
+    ENABLE_OPENAPI_VALIDATION,
     get_decosjoin_adres_boeken,
     get_decosjoin_api_host,
     get_decosjoin_password,
@@ -109,18 +110,20 @@ def validate_openapi(function):
     @wraps(function)
     def validate(*args, **kwargs):
 
-        spec = get_openapi_spec()
-        openapi_request = FlaskOpenAPIRequest(request)
-        validator = RequestValidator(spec)
-        result = validator.validate(openapi_request)
-        result.raise_for_errors()
+        if ENABLE_OPENAPI_VALIDATION:
+            spec = get_openapi_spec()
+            openapi_request = FlaskOpenAPIRequest(request)
+            validator = RequestValidator(spec)
+            result = validator.validate(openapi_request)
+            result.raise_for_errors()
 
         response = function(*args, **kwargs)
 
-        openapi_response = FlaskOpenAPIResponse(response)
-        validator = ResponseValidator(spec)
-        result = validator.validate(openapi_request, openapi_response)
-        result.raise_for_errors()
+        if ENABLE_OPENAPI_VALIDATION:
+            openapi_response = FlaskOpenAPIResponse(response)
+            validator = ResponseValidator(spec)
+            result = validator.validate(openapi_request, openapi_response)
+            result.raise_for_errors()
 
         return response
 

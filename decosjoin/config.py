@@ -74,3 +74,5 @@ logger = logging.getLogger(__name__)
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 
 logger.setLevel(LOG_LEVEL)
+
+ENABLE_OPENAPI_VALIDATION = os.environ.get("ENABLE_OPENAPI_VALIDATION", "1")
