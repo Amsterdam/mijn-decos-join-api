@@ -1,13 +1,7 @@
-import os
 from werkzeug.exceptions import NotFound
 import sentry_sdk
 from flask import Flask, make_response
-from openapi_core import create_spec
-from openapi_core.contrib.flask.decorators import FlaskOpenAPIViewDecorator
-from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
-from yaml import load
-import yaml
 import json
 
 from decosjoin.api.helpers import (
@@ -19,8 +13,6 @@ from decosjoin.api.helpers import (
     verify_tma_user,
 )
 from decosjoin.config import (
-    BASE_PATH,
-    IS_DEV,
     CustomJSONEncoder,
     TMAException,
     get_sentry_dsn,
@@ -32,7 +24,7 @@ app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
 
 sentry_dsn = get_sentry_dsn()
-if sentry_dsn:  # pragma: no cover
+if sentry_dsn:
     sentry_sdk.init(
         dsn=sentry_dsn, integrations=[FlaskIntegration()], with_locals=False
     )
