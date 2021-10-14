@@ -1,16 +1,15 @@
-from datetime import date, datetime, time
 import logging
 import os
 import os.path
+from datetime import date, time
 
-from flask.json import JSONDecoder, JSONEncoder
+from flask.json import JSONEncoder
 from tma_saml.exceptions import (
     InvalidBSNException,
     SamlExpiredException,
     SamlVerificationException,
 )
 from tma_saml.user_type import UserType
-
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 

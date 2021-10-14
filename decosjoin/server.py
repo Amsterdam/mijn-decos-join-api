@@ -5,7 +5,6 @@ from openapi_core import create_spec
 from openapi_core.contrib.flask.decorators import FlaskOpenAPIViewDecorator
 from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
-from werkzeug.exceptions import HTTPException
 from yaml import load
 import yaml
 import json
@@ -91,7 +90,6 @@ def health_check():
 @app.errorhandler(Exception)
 @openapi
 def handle_error(error):
-    print("blapperdeblap")
     error_message_original = str(error)
 
     msg_tma_exception = "TMA error occurred"
