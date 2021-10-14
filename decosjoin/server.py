@@ -1,4 +1,5 @@
 import os
+from werkzeug.exceptions import NotFound
 import sentry_sdk
 from flask import Flask, make_response
 from openapi_core import create_spec
@@ -14,6 +15,7 @@ from decosjoin.api.helpers import (
     get_connection,
     get_tma_user,
     success_response_json,
+    validate_openapi,
     verify_tma_user,
 )
 from decosjoin.config import (
@@ -36,17 +38,9 @@ if sentry_dsn:  # pragma: no cover
     )
 
 
-with open(os.path.join(BASE_PATH, "openapi.yml"), "r") as spec_file:
-    spec_dict = load(spec_file, Loader=yaml.Loader)
-
-spec = create_spec(spec_dict)
-
-openapi = FlaskOpenAPIViewDecorator.from_spec(spec)
-
-
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
-@openapi
 @verify_tma_user
+@validate_openapi
 def get_vergunningen():
     user = get_tma_user()
     zaken = get_connection().get_zaken(user["type"], user["id"])
@@ -54,8 +48,8 @@ def get_vergunningen():
 
 
 @app.route("/decosjoin/listdocuments/<string:encrypted_zaak_id>", methods=["GET"])
-@openapi
 @verify_tma_user
+@validate_openapi
 def get_documents(encrypted_zaak_id):
     user = get_tma_user()
     zaak_id = decrypt(encrypted_zaak_id, user["id"])
@@ -65,8 +59,8 @@ def get_documents(encrypted_zaak_id):
 
 
 @app.route("/decosjoin/document/<string:encrypted_doc_id>", methods=["GET"])
-@openapi
 @verify_tma_user
+@validate_openapi
 def get_document_blob(encrypted_doc_id):
     user = get_tma_user()
 
@@ -80,7 +74,7 @@ def get_document_blob(encrypted_doc_id):
 
 
 @app.route("/status/health")
-@openapi
+@validate_openapi
 def health_check():
     response = make_response(json.dumps("OK"))
     response.headers["Content-type"] = "application/json"
@@ -88,25 +82,17 @@ def health_check():
 
 
 @app.errorhandler(Exception)
-@openapi
 def handle_error(error):
-    error_message_original = str(error)
-
     msg_tma_exception = "TMA error occurred"
     msg_request_http_error = "Request error occurred"
     msg_server_error = "Server error occurred"
+    msg_404_error = "Not found"
 
-    if not app.config["TESTING"]:
-        logger.exception(
-            error, extra={"error_message_original": error_message_original}
-        )
+    logger.exception(error)
 
-    if IS_DEV:
-        msg_tma_exception = error_message_original
-        msg_request_http_error = error_message_original
-        msg_server_error = error_message_original
-
-    if isinstance(error, HTTPError):
+    if isinstance(error, NotFound):
+        return error_response_json(msg_404_error, 404)
+    elif isinstance(error, HTTPError):
         return error_response_json(
             msg_request_http_error,
             error.response.status_code,

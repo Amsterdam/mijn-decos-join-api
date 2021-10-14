@@ -5,6 +5,13 @@ info:
   version: 1.0.0
 paths:
   /decosjoin/getvergunningen:
+    parameters:
+      - name: x-saml-attribute-token1
+        in: header
+        description: TMA encoded BSN
+        required: true
+        schema:
+          type: string
     get:
       summary: Returns a list verguningen.
       description: Returns a list of vergunningen
@@ -30,6 +37,12 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
   /decosjoin/listdocuments/{encrypted_zaak_id}:
     parameters:
+      - name: x-saml-attribute-token1
+        in: header
+        description: TMA encoded BSN
+        required: true
+        schema:
+          type: string
       - name: encrypted_zaak_id
         in: path
         description: fernet encoded string of zaak id
@@ -62,6 +75,12 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
   /decosjoin/document/{encrypted_doc_id}:
     parameters:
+      - name: x-saml-attribute-token1
+        in: header
+        description: TMA encoded BSN
+        required: true
+        schema:
+          type: string
       - name: encrypted_doc_id
         in: path
         description: fernet encoded string of document id

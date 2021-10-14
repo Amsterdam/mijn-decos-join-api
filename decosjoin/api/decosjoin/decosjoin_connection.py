@@ -240,7 +240,8 @@ class DecosJoinConnection:
 
         for key in user_keys:
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
-            zaken_source.extend(self.get_all_pages(url))
+            zaken = self.get_all_pages(url)
+            zaken_source.extend(zaken)
 
         zaken = self.transform(zaken_source, user_identifier)
         return sorted(zaken, key=lambda x: x["identifier"], reverse=True)

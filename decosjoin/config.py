@@ -70,3 +70,7 @@ class CustomJSONEncoder(JSONEncoder):
 TMAException = (SamlVerificationException, InvalidBSNException, SamlExpiredException)
 
 logger = logging.getLogger(__name__)
+
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
+
+logger.setLevel(LOG_LEVEL)
