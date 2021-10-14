@@ -1,8 +1,10 @@
-from werkzeug.exceptions import NotFound
+import json
+
 import sentry_sdk
 from flask import Flask, make_response
+from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
-import json
+from werkzeug.exceptions import NotFound
 
 from decosjoin.api.helpers import (
     error_response_json,
@@ -12,12 +14,7 @@ from decosjoin.api.helpers import (
     validate_openapi,
     verify_tma_user,
 )
-from decosjoin.config import (
-    CustomJSONEncoder,
-    TMAException,
-    get_sentry_dsn,
-    logger,
-)
+from decosjoin.config import CustomJSONEncoder, TMAException, get_sentry_dsn, logger
 from decosjoin.crypto import decrypt
 
 app = Flask(__name__)
