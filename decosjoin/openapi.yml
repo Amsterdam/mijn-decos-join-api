@@ -157,6 +157,8 @@ components:
           nullable: true
         dateDecision:
           $ref: "#/components/schemas/Date"
+        dateWorkflowActive:
+          $ref: "#/components/schemas/Date"
         documentsUrl:
           type: string
           example: "/api/decos/listdocuments/<fernetstring>"

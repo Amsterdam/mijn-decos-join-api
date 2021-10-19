@@ -43,6 +43,7 @@ class Zaak:
             "title": self.to_title(),
             "identifier": self.to_identifier(),
             "dateRequest": self.to_date_request(),
+            "dateWorkflowActive": self.to_date_request(),
             "status": self.to_status(),
             "decision": self.to_decision(),
             "dateDecision": self.to_date_decision(),
