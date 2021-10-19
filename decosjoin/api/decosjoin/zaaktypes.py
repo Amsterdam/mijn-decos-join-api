@@ -1,6 +1,5 @@
 from datetime import date
 from decosjoin.config import IS_PRODUCTION
-from os import stat
 
 from decosjoin.api.decosjoin.field_parsers import (
     get_fields,
@@ -50,7 +49,7 @@ class Zaak:
             "description": self.to_description(),
         }
 
-        # Arbitrary data for particualar Zaken
+        # Arbitrary data for individual Zaken
         self.zaak.update(get_fields(self.parse_fields, self.zaak_source))
 
     def after_transform(self):
@@ -80,7 +79,10 @@ class Zaak:
         return get_translation(decision_source, self.decision_translations, True)
 
     def to_date_decision(self) -> str:
-        return to_datetime(to_string_if_exists(self.zaak_source, "date5"))
+        return to_date(to_string_if_exists(self.zaak_source, "date5"))
+
+    def to_date_start(self) -> str:
+        return to_date(to_string_if_exists(self.zaak_source, "date6"))
 
     def to_description(self) -> str:
         return to_string_if_exists(self.zaak_source, "subject1")
@@ -292,7 +294,6 @@ class GPP(Zaak):
     ]
 
     parse_fields = [
-        {"name": "dateRequest", "from": "document_date", "parser": to_string},
         {"name": "kenteken", "from": "text7", "parser": to_string},
         {"name": "location", "from": "text8", "parser": to_string},
     ]
@@ -345,7 +346,7 @@ class GPK(Zaak):
     ]
 
     parse_fields = [
-        {"name": "cardNumber", "from": "num3", "parser": to_int},  # kaartnummer
+        {"name": "cardNumber", "from": "num3", "parser": to_string},  # kaartnummer
         {"name": "cardtype", "from": "text7", "parser": to_string},
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # vervaldatum
     ]
@@ -361,8 +362,8 @@ class EvenementMelding(Zaak):
     title = "Evenement melding"
 
     parse_fields = [
-        {"name": "dateRequest", "from": "document_date", "parser": to_string},
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Op   <datum> ?
+        {"name": "dateEnd", "from": "date7", "parser": to_date},
         {"name": "location", "from": "text8", "parser": to_string},
         {"name": "timeStart", "from": "text7", "parser": to_time},  # Van   <tijd>
         {"name": "timeEnd", "from": "text8", "parser": to_time},  # Tot    <tijd>
@@ -390,7 +391,6 @@ class EvenementVergunning(Zaak):
     title = "Evenement vergunning"
 
     parse_fields = [
-        {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
         {"name": "location", "from": "text8", "parser": to_string},
@@ -429,7 +429,6 @@ class Omzettingsvergunning(Zaak):
         zaken_all.append(zaak_deferred)
 
     parse_fields = [
-        {"name": "dateRequest", "from": "document_date", "parser": to_datetime},
         {"name": "location", "from": "text6", "parser": to_string},
     ]
 
@@ -455,7 +454,6 @@ class ERVV_TVM(Zaak):
     title = "e-RVV (Gratis verkeersontheffing voor elektrisch goederenvervoer)"
 
     parse_fields = [
-        {"name": "dateRequest", "from": "document_date", "parser": to_string},
         {"name": "location", "from": "text6", "parser": to_string},
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met

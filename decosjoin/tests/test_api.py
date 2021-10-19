@@ -2,9 +2,14 @@ import os
 import time
 from unittest.mock import patch
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
+from requests.models import Response
+from tma_saml import FlaskServerTMATestCase, UserType
+from tma_saml.for_tests.cert_and_key import server_crt
+
 from decosjoin.crypto import encrypt
 from decosjoin.server import app
+from decosjoin.tests.fixtures.data import get_document_blob
 
 # from decosjoin.tests.fixtures.data import get_document
 from decosjoin.tests.fixtures.response_mock import (
@@ -12,8 +17,6 @@ from decosjoin.tests.fixtures.response_mock import (
     post_response_mock,
     post_response_mock_unauthorized,
 )
-from tma_saml import FlaskServerTMATestCase, UserType
-from tma_saml.for_tests.cert_and_key import server_crt
 
 TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 
@@ -75,7 +78,7 @@ class ApiTests(FlaskServerTMATestCase):
     def test_status(self):
         response = self.client.get("/status/health")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, b"OK")
+        self.assertEqual(response.data.decode(), '"OK"')
 
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch(
@@ -145,6 +148,7 @@ class ApiTests(FlaskServerTMATestCase):
     def test_listdocuments_unencrypted(self):
         response = self.client_get("/decosjoin/listdocuments/ZAAKKEY1")
         self.assertEqual(response.status_code, 500)
+        self.assertRaises(InvalidToken)
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
@@ -162,18 +166,28 @@ class ApiTests(FlaskServerTMATestCase):
             response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
 
-    # @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
-    # def test_get_document_blob(self):
-    #     response = self.client.get(f"/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}", headers=self.saml_headers())
-    #     self.assertEqual(response.data, get_document_blob())
-    #     self.assertEqual(response.headers['Content-Type'], 'application/pdf')
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
+    def test_get_document_blob(self):
+        response = self.client_get(
+            f"/decosjoin/document/{encrypt('DOCUMENTKEY01', self.TEST_BSN)}",
+        )
+        self.assertEqual(response.data, get_document_blob())
+        self.assertEqual(response.headers["Content-Type"], "application/pdf")
 
     @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_get_document_unencrypted(self):
-        response = self.client.get(
-            "/decosjoin/document/DOCUMENTKEY01", headers=self.saml_headers()
-        )
+        response = self.client_get("/decosjoin/document/DOCUMENTKEY01")
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
+
+    @patch("decosjoin.api.helpers.DecosJoinConnection.get_response", get_response_mock)
+    @patch(
+        "decosjoin.api.helpers.DecosJoinConnection.post_response", post_response_mock
+    )
+    @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
+    def test_get_with_openapi(self):
+        response = self.client_get("/decosjoin/getvergunningen")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json["status"], "OK")
