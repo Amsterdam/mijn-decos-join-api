@@ -45,6 +45,7 @@ class ApiTests(FlaskServerTMATestCase):
             "dateEnd": "2021-04-28",
             "dateStart": "2021-04-27",
             "dateRequest": "2021-04-16",
+            "dateWorkflowActive": "2021-04-16",
             "identifier": "Z/20/1234567",
             "kenteken": None,
             "location": "Amstel 1 1000AB",
