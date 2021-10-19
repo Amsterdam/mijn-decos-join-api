@@ -242,8 +242,6 @@ components:
               $ref: "#/components/schemas/Date"
             dateStart:
               $ref: "#/components/schemas/Date"
-            dateWorkflowActive:
-              $ref: "#/components/schemas/Date"
             requester:
               type: string
               nullable: true
@@ -336,8 +334,6 @@ components:
                 - Omzettingsvergunning
             location:
               $ref: "#/components/schemas/Location"
-            dateWorkflowActive:
-              $ref: "#/components/schemas/Date"
     Zaak_ERVV_TVM:
       allOf:
         - $ref: "#/components/schemas/Zaak"
