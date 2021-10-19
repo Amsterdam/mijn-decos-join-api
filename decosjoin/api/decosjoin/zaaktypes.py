@@ -364,7 +364,7 @@ class EvenementMelding(Zaak):
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Op   <datum> ?
         {"name": "dateEnd", "from": "date7", "parser": to_date},
-        {"name": "location", "from": "text8", "parser": to_string},
+        {"name": "location", "from": "text6", "parser": to_string},
         {"name": "timeStart", "from": "text7", "parser": to_time},  # Van   <tijd>
         {"name": "timeEnd", "from": "text8", "parser": to_time},  # Tot    <tijd>
     ]
@@ -393,7 +393,7 @@ class EvenementVergunning(Zaak):
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
-        {"name": "location", "from": "text8", "parser": to_string},
+        {"name": "location", "from": "text6", "parser": to_string},
         {"name": "timeStart", "from": "text7", "parser": to_time},
         {"name": "timeEnd", "from": "text8", "parser": to_time},  # tijd tot
     ]
