@@ -13,6 +13,7 @@ from decosjoin.api.decosjoin.field_parsers import (
     to_string_or_empty_string,
 )
 from decosjoin.api.decosjoin.zaaktypes import zaken_index
+from decosjoin.config import DECOS_API_REQUEST_TIMEOUT
 from decosjoin.crypto import encrypt
 
 LOG_RAW = False
@@ -70,7 +71,7 @@ class DecosJoinConnection:
                 url,
                 auth=HTTPBasicAuth(self.username, self.password),
                 headers={"Accept": "application/itemdata"},
-                timeout=9,
+                timeout=DECOS_API_REQUEST_TIMEOUT,
             )
         elif method == "post":
             response = self.post_response(
@@ -78,7 +79,7 @@ class DecosJoinConnection:
                 auth=HTTPBasicAuth(self.username, self.password),
                 headers={"Accept": "application/itemdata"},
                 json=json,
-                timeout=9,
+                timeout=DECOS_API_REQUEST_TIMEOUT,
             )
         else:
             raise RuntimeError("Method needs to be GET or POST")
@@ -239,7 +240,8 @@ class DecosJoinConnection:
 
         for key in user_keys:
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
-            zaken_source.extend(self.get_all_pages(url))
+            zaken = self.get_all_pages(url)
+            zaken_source.extend(zaken)
 
         zaken = self.transform(zaken_source, user_identifier)
         return sorted(zaken, key=lambda x: x["identifier"], reverse=True)
@@ -299,9 +301,13 @@ class DecosJoinConnection:
                         del document_meta_data["text39"]
                         del document_meta_data["text40"]
                         del document_meta_data["text41"]
+
                         new_docs.append(document_meta_data)
 
         new_docs.sort(key=lambda x: x["sequence"])
+
+        for doc in new_docs:
+            del doc["sequence"]
 
         return new_docs
 

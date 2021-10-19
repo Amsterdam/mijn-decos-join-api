@@ -2,6 +2,8 @@ from datetime import date
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 
+from freezegun import freeze_time
+
 from decosjoin.api.decosjoin.field_parsers import to_date
 from decosjoin.api.decosjoin.zaaktypes import (
     BZB,
@@ -13,8 +15,6 @@ from decosjoin.api.decosjoin.zaaktypes import (
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
 )
-
-from freezegun import freeze_time
 
 
 class ZaaktypesTest(TestCase):

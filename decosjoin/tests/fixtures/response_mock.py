@@ -21,13 +21,52 @@ from decosjoin.tests.fixtures.data import (
 from requests import Response
 
 
+class MockedResponse(Response):
+    def __init__(
+        self,
+        url="http://example.com",
+        headers={"Content-Type": "application/json"},
+        status_code=200,
+        reason="Success",
+        _content=None,
+        json_=None,
+        encoding="UTF-8",
+    ):
+        self.url = url
+        self.headers = headers
+
+        if json_ and headers["Content-Type"] == "application/json":
+            self._content = json.dumps(json_).encode(encoding)
+        elif isinstance(_content, bytes):
+            self._content = _content
+        elif isinstance(_content, str):
+            self._content = _content.encode(encoding) if _content else None
+        else:
+            self._content = None
+
+        self.status_code = status_code
+        self.reason = reason
+        self.encoding = encoding
+
+
 def get_response_mock(self, *args, **kwargs):
     """Attempt to get data from mock_get_urls."""
-    try:
-        res_data = mocked_get_urls[args[0]]
-    except KeyError:
-        raise Exception("Url not defined %s", args[0])
-    return MockedResponse(json_=res_data)
+
+    url = args[0]
+    headers = {"Content-Type": "application/json"}
+
+    if url in mocked_get_urls:
+        if isinstance(mocked_get_urls[url], tuple):
+            (res_data, headers) = mocked_get_urls[url]
+        else:
+            res_data = mocked_get_urls[url]
+    else:
+        raise Exception("Url not defined %s", url)
+
+    if isinstance(res_data, dict):
+        return MockedResponse(json_=res_data, headers=headers)
+
+    return MockedResponse(_content=res_data, headers=headers)
 
 
 def post_response_mock(self, *args, **kwargs):
@@ -54,29 +93,6 @@ def post_response_mock_unauthorized(self, *args, **kwargs):
     return post_response_mock(
         self, mocked_post_urls[-1]["url"], json=mocked_post_urls[-1]["post_body"]
     )
-
-
-class MockedResponse(Response):
-    def __init__(
-        self,
-        url="http://example.com",
-        headers={"Content-Type": "application/json"},
-        status_code=200,
-        reason="Success",
-        _content=None,
-        json_=None,
-        encoding="UTF-8",
-    ):
-        self.url = url
-        self.headers = headers
-        if json_ and headers["Content-Type"] == "application/json":
-            self._content = json.dumps(json_).encode(encoding)
-        else:
-            self._content = _content.encode(encoding) if _content else None
-
-        self.status_code = status_code
-        self.reason = reason
-        self.encoding = encoding
 
 
 _folder_params = "?select=title,mark,text45,subject1,bol10,company,date5,date6,date7,dfunction,document_date,num3,text6,text7,text8,text9,text10,text11,text12,text13,text20,text25&top=10"
@@ -111,8 +127,8 @@ mocked_get_urls_tuple = (
         get_documents_response(),
     ),
     (
-        "http://localhost/decosweb/aspx/api/v1/items/BLOBKEY01/content",
-        get_document_blob(),
+        "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01/content",
+        (get_document_blob(), {"Content-Type": "application/pdf"}),
     ),
     (
         "http://localhost/decosweb/aspx/api/v1/items/DOCUMENTKEY01/blobs",
