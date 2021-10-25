@@ -66,6 +66,7 @@ class ZaaktypesTest(TestCase):
             "title": "Tijdelijke verkeersmaatregel (TVM-RVV-Object)",
             "identifier": "Z/20/1234567",
             "dateRequest": to_date(zaak_source["document_date"]),
+            "dateWorkflowActive": to_date(zaak_source["document_date"]),
             "status": "Ontvangen",
             "decision": None,
             "dateDecision": None,
