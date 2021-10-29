@@ -372,8 +372,8 @@ class EvenementMelding(Zaak):
 
     decision_translations = [
         ["Ingetrokken", "Ingetrokken"],
-        ["Niet verleend", "Geweigerd"],
-        ["Verleend", "Gemeld"],
+        ["Niet verleend", "Niet toegestaan"],
+        ["Verleend", "Toegestaan"],
         ["Nog niet  bekend", "", False],
         ["Nog niet bekend", "", False],
         ["Verleend", "Verleend"],
