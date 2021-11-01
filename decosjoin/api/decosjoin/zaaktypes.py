@@ -280,7 +280,7 @@ class BBVergunning(Zaak):
 class GPP(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "GPP"
@@ -303,7 +303,7 @@ class GPP(Zaak):
 class GPK(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "GPK"
@@ -448,7 +448,7 @@ class Omzettingsvergunning(Zaak):
 class ERVV_TVM(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "E-RVV - TVM"
