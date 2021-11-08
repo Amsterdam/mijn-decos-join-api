@@ -347,7 +347,7 @@ class GPK(Zaak):
     ]
 
     parse_fields = [
-        {"name": "cardNumber", "from": "num3", "parser": to_string},  # kaartnummer
+        {"name": "cardNumber", "from": "num3", "parser": to_int},  # kaartnummer
         {"name": "cardtype", "from": "text7", "parser": to_string},
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # vervaldatum
     ]
