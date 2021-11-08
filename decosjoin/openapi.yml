@@ -277,7 +277,7 @@ components:
             dateEnd:
               $ref: "#/components/schemas/Date"
             cardNumber:
-              type: string
+              type: number
               nullable: true
             cardType:
               type: string
