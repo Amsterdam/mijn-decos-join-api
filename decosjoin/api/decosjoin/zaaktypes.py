@@ -356,7 +356,7 @@ class GPK(Zaak):
 class EvenementMelding(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Evenement melding"
@@ -385,7 +385,7 @@ class EvenementMelding(Zaak):
 class EvenementVergunning(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Evenement vergunning"
@@ -414,7 +414,7 @@ class EvenementVergunning(Zaak):
 class Omzettingsvergunning(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Omzettingsvergunning"
