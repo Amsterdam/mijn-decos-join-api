@@ -38,7 +38,7 @@ if (BRANCH != "test-acc") {
     }
 }
 
-if (BRANCH == "test-acc" || BRANCH == "master") {
+if (BRANCH == "test-acc" || BRANCH == "main") {
     node {
         stage("Push acceptance image") {
             docker.withRegistry(DOCKER_REGISTRY_HOST, "docker_registry_auth") {
@@ -60,7 +60,7 @@ if (BRANCH == "test-acc" || BRANCH == "master") {
     }
 }
 
-if (BRANCH == "master") {
+if (BRANCH == "production-release") {
     stage("Waiting for approval") {
         input "Deploy to Production?"
     }
