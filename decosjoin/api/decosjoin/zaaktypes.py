@@ -65,25 +65,22 @@ class Zaak:
         """Returns the title we want to give to the particular case"""
         return self.title
 
-    def to_identifier(self):
+    def to_identifier(self):  # Zaak kenmerk
         return to_string_if_exists(self.zaak_source, "mark")
 
-    def to_date_request(self):
+    def to_date_request(self):  # Startdatum zaak
         return to_date(to_string_if_exists(self.zaak_source, "document_date"))
 
     def to_status(self) -> str:
         status_source = to_string_if_exists(self.zaak_source, "title")
         return get_translation(status_source, self.status_translations, True)
 
-    def to_decision(self) -> str:
+    def to_decision(self) -> str:  # Resultaat (besluit)
         decision_source = to_string_if_exists(self.zaak_source, "dfunction")
         return get_translation(decision_source, self.decision_translations, True)
 
-    def to_date_decision(self) -> str:
+    def to_date_decision(self) -> str:  # Datum afhandeling
         return to_date(to_string_if_exists(self.zaak_source, "date5"))
-
-    def to_date_start(self) -> str:
-        return to_date(to_string_if_exists(self.zaak_source, "date6"))
 
     def to_description(self) -> str:
         return to_string_if_exists(self.zaak_source, "subject1")
@@ -511,7 +508,7 @@ class BZB(Zaak):
         {"name": "companyName", "from": "text8", "parser": to_string},
     ]
 
-    translations = [
+    decision_translations = [
         ["Ingetrokken", "Ingetrokken"],
         ["Niet verleend", "Niet verleend"],
         ["Verleend", "Verleend"],
