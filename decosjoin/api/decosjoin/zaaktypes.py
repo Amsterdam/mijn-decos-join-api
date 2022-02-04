@@ -516,7 +516,7 @@ class BZB(Zaak):
 
 
 class Flyeren(Zaak):
-    
+
     # !!!!!!!!!!!!!
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
@@ -528,8 +528,8 @@ class Flyeren(Zaak):
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
-        {"name": "timeStart", "from": "text7", "parser": to_string}, # Start tijd
-        {"name": "timeEnd", "from": "text8", "parser": to_string}, # Eind tijd
+        {"name": "timeStart", "from": "text7", "parser": to_string},  # Start tijd
+        {"name": "timeEnd", "from": "text8", "parser": to_string},  # Eind tijd
     ]
 
     decision_translations = [
