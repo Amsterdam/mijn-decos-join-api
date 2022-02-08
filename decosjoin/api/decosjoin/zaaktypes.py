@@ -539,6 +539,28 @@ class Flyeren(Zaak):
     ]
 
 
+class AanbiedenDiensten(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Aanbieden van diensten"
+    title = "Aanbieden van diensten"
+
+    parse_fields = [
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
+    ]
+
+    decision_translations = [
+        ["Ingetrokken", "Ingetrokken"],
+        ["Niet verleend", "Niet verleend"],
+        ["Verleend", "Verleend"],
+    ]
+
+
 # A dict with all enabled Zaken
 zaken_index = {
     getattr(cls, "zaak_type"): cls for cls in Zaak.__subclasses__() if cls.enabled
