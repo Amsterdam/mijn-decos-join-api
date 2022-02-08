@@ -317,7 +317,7 @@ class ZaaktypesTest(TestCase):
             "dfunction": "Verleend",
             "id": "zaak-1",
         }
-        zaak_transformed = Flyeren(zaak_source).result()
+        zaak_transformed = AanbiedenDiensten(zaak_source).result()
         self.assertEqual(
             zaak_transformed["caseType"], "Aanbieden van diensten"
         )
