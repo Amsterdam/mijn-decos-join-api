@@ -15,6 +15,7 @@ from decosjoin.api.decosjoin.zaaktypes import (
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
     Flyeren,
+    AanbiedenDiensten,
 )
 
 
