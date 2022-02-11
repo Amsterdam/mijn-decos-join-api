@@ -551,7 +551,7 @@ class AanbiedenDiensten(Zaak):
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
-        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot
     ]
 
     decision_translations = [
