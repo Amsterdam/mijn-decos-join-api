@@ -323,5 +323,5 @@ class ZaaktypesTest(TestCase):
             zaak_transformed["caseType"], "Aanbieden van diensten"
         )
         self.assertEqual(zaak_transformed["location"], "Amstel 12 1012AK AMSTERDAM")
-        self.assertEqual(zaak_transformed["dateStart"], to_date("2022-05-21"))
-        self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-05-26"))
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2022-04-21"))
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-04-26"))
