@@ -15,6 +15,7 @@ from decosjoin.api.decosjoin.zaaktypes import (
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
     Flyeren,
+    AanbiedenDiensten,
 )
 
 
@@ -304,3 +305,23 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["timeEnd"], "17:00")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-05-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-05-26"))
+
+    def test_Diensten(self):
+        zaak_source = {
+            "mark": "Z/21/99012451",
+            "document_date": "2021-05-18T00:00:00",
+            "date5": "2022-02-01T00:00:00",
+            "text6": "Amstel 12 1012AK AMSTERDAM",
+            "date6": "2022-04-21T00:00:00",
+            "date7": "2022-04-26T00:00:00",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-1",
+        }
+        zaak_transformed = AanbiedenDiensten(zaak_source).result()
+        self.assertEqual(
+            zaak_transformed["caseType"], "Aanbieden van diensten"
+        )
+        self.assertEqual(zaak_transformed["location"], "Amstel 12 1012AK AMSTERDAM")
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2022-04-21"))
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-04-26"))
