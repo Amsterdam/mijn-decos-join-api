@@ -206,7 +206,7 @@ class VakantieVerhuur(Zaak):
                 and zaak_deferred["dateStart"] >= new_zaak["dateStart"]
                 and zaak_deferred["dateEnd"] <= new_zaak["dateEnd"]
             ):
-                zaak_deferred["vergunningId"] = new_zaak["id"]
+                zaak_deferred["vergunningId"] = new_zaak["identifier"]
 
         zaken_all.append(zaak_deferred)
 
