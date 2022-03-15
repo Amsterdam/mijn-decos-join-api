@@ -197,6 +197,7 @@ class VakantieVerhuur(Zaak):
             self.zaak["title"] = "Afgelopen verhuur"
 
     # Find the corresponding verhuur vergunning (new_zaak) for this verhuur instance (zaak_deferred).
+    # This is done to show verhuur instances given a vergunning in the UI.
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
         for new_zaak in zaken_all:
