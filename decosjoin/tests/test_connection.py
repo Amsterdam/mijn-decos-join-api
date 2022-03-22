@@ -107,7 +107,7 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken_from_fixtures, zaken_expected)
 
         # The vakantieverhuur should be matched to the right vakantieverhuurvergunning.
-        self.assertEqual(zaken[9].get("vergunningId"), "Z/21/7865356778")
+        self.assertEqual(zaken[9].get("vergunningId"), "zaak-1")
 
         # Z/21/90123456 "vakantieverhuur" is filtered out because it is replaced by Z/21/89012345 "vakantieverhuur afmelding"
         self.assert_unknown_identifier(zaken, "Z/21/90123456")
