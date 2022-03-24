@@ -196,6 +196,21 @@ class VakantieVerhuur(Zaak):
         if self.zaak["dateEnd"] and self.zaak["dateEnd"] <= date.today():
             self.zaak["title"] = "Afgelopen verhuur"
 
+    # Find the corresponding verhuur vergunning (new_zaak) for this verhuur instance (zaak_deferred).
+    # This is done to show verhuur instances given a vergunning in the UI.
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
+        for new_zaak in zaken_all:
+            if(
+                new_zaak["caseType"] == VakantieVerhuurVergunning.zaak_type
+                and new_zaak["location"] == zaak_deferred["location"]
+                and zaak_deferred["dateStart"] >= new_zaak["dateStart"]
+                and zaak_deferred["dateEnd"] <= new_zaak["dateEnd"]
+            ):
+                zaak_deferred["vergunningId"] = new_zaak["id"]
+
+        zaken_all.append(zaak_deferred)
+
 
 class VakantieVerhuurAfmelding(Zaak):
     zaak_type = "Vakantieverhuur afmelding"
