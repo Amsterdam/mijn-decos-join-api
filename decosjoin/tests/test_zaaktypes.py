@@ -23,7 +23,7 @@ class ZaaktypesTest(TestCase):
     def test_next_april_first(self):
         self.assertEqual(
             VakantieVerhuurVergunning.next_april_first(date(2021, 3, 1)),
-            date(2021, 4, 1),
+            date(2022, 4, 1),
         )
         self.assertEqual(
             VakantieVerhuurVergunning.next_april_first(date(2021, 4, 1)),
@@ -32,6 +32,10 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(
             VakantieVerhuurVergunning.next_april_first(date(2021, 6, 1)),
             date(2022, 4, 1),
+        )
+        self.assertEqual(
+            VakantieVerhuurVergunning.next_april_first(date(2022, 3, 17)),
+            date(2023, 4, 1),
         )
 
     def test_to_transition_agreement(self):
@@ -319,9 +323,7 @@ class ZaaktypesTest(TestCase):
             "id": "zaak-1",
         }
         zaak_transformed = AanbiedenDiensten(zaak_source).result()
-        self.assertEqual(
-            zaak_transformed["caseType"], "Aanbieden van diensten"
-        )
+        self.assertEqual(zaak_transformed["caseType"], "Aanbieden van diensten")
         self.assertEqual(zaak_transformed["location"], "Amstel 12 1012AK AMSTERDAM")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-04-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-04-26"))

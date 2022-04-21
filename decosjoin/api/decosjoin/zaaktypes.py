@@ -152,10 +152,7 @@ class VakantieVerhuurVergunning(Zaak):
 
     @staticmethod
     def next_april_first(case_date: date) -> date:
-        if case_date < date(case_date.year, 4, 1):
-            return date(case_date.year, 4, 1)
-        else:
-            return date(case_date.year + 1, 4, 1)
+        return date(case_date.year + 1, 4, 1)
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},
@@ -201,7 +198,7 @@ class VakantieVerhuur(Zaak):
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
         for new_zaak in zaken_all:
-            if(
+            if (
                 new_zaak["caseType"] == VakantieVerhuurVergunning.zaak_type
                 and new_zaak["location"] == zaak_deferred["location"]
                 and zaak_deferred["dateStart"] >= new_zaak["dateStart"]
