@@ -2,17 +2,16 @@ import time
 from unittest.mock import patch
 
 from cryptography.fernet import Fernet, InvalidToken
+
 from app.auth import PROFILE_TYPE_COMMERCIAL, PROFILE_TYPE_PRIVATE, FlaskServerTestCase
-
 from app.crypto import encrypt
-from app.server import app
-from tests.fixtures.data import get_document_blob
-
-from tests.fixtures.response_mock import (
+from app.fixtures.data import get_document_blob
+from app.fixtures.response_mock import (
     get_response_mock,
     post_response_mock,
     post_response_mock_unauthorized,
 )
+from app.server import app
 
 TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 

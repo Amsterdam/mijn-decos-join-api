@@ -6,7 +6,7 @@ from freezegun import freeze_time
 from app.decosjoin_service import DecosJoinConnection
 from app.field_parsers import to_date
 from app.zaaktypes import BBVergunning
-from tests.fixtures.response_mock import get_response_mock, post_response_mock
+from app.fixtures.response_mock import get_response_mock, post_response_mock
 
 
 @patch(
@@ -14,7 +14,7 @@ from tests.fixtures.response_mock import get_response_mock, post_response_mock
     lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=",
 )
 @patch(
-    "tests.test_connection.DecosJoinConnection.get_response",
+    "app.test_connection.DecosJoinConnection.get_response",
     get_response_mock,
 )
 @patch("app.helpers.DecosJoinConnection.post_response", post_response_mock)

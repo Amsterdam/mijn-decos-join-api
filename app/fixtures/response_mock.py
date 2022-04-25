@@ -1,5 +1,5 @@
 import json
-from tests.fixtures.data import (
+from app.fixtures.data import (
     get_blob_response,
     get_blob_response_no_pdf,
     get_blobs_response,

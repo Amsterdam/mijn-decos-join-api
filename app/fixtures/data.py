@@ -4,7 +4,7 @@ import os.path
 from app.config import BASE_PATH
 
 
-FIXTURE_PATH = os.path.join(BASE_PATH, "../", "tests", "fixtures")
+FIXTURE_PATH = os.path.join(BASE_PATH, "fixtures")
 
 
 def load_fixture(json_file_name):
