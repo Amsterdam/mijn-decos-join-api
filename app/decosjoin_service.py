@@ -110,11 +110,11 @@ class DecosJoinConnection:
             },
         }
 
-    def get_user_keys(self, kind, user_identifier):
+    def get_user_keys(self, profile_type, user_identifier):
         """Retrieve the internal ids used for a user."""
         keys = []
 
-        adres_boeken = self.adres_boeken[kind]
+        adres_boeken = self.adres_boeken[profile_type]
 
         for boek in adres_boeken:
             url = f"{self.api_url}search/books?properties=false"
@@ -235,11 +235,9 @@ class DecosJoinConnection:
 
         return items
 
-    def get_zaken(self, kind, user_identifier):
-        """Get all zaken for a kind [UserType.BURGER or UserType.BEDRIJF]."""
-
+    def get_zaken(self, profile_type, user_identifier):
         zaken_source = []
-        user_keys = self.get_user_keys(kind, user_identifier)
+        user_keys = self.get_user_keys(profile_type, user_identifier)
 
         for key in user_keys:
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"

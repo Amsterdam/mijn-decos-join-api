@@ -1,21 +1,19 @@
-import json
+import logging
 
 import sentry_sdk
 from flask import Flask, make_response
 from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
-from werkzeug.exceptions import NotFound
 
+from app import auth
+from app.config import IS_DEV, CustomJSONEncoder, get_sentry_dsn
+from app.crypto import decrypt
 from app.helpers import (
     error_response_json,
     get_connection,
-    get_tma_user,
     success_response_json,
     validate_openapi,
-    verify_tma_user,
 )
-from app.config import CustomJSONEncoder, TMAException, get_sentry_dsn, logger
-from app.crypto import decrypt
 
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
@@ -28,30 +26,31 @@ if sentry_dsn:
 
 
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
-@verify_tma_user
+@auth.login_required
 @validate_openapi
 def get_vergunningen():
-    user = get_tma_user()
+    user = auth.get_current_user()
     zaken = get_connection().get_zaken(user["type"], user["id"])
+
     return success_response_json(zaken)
 
 
 @app.route("/decosjoin/listdocuments/<string:encrypted_zaak_id>", methods=["GET"])
-@verify_tma_user
+@auth.login_required
 @validate_openapi
 def get_documents(encrypted_zaak_id):
-    user = get_tma_user()
+    user = auth.get_current_user()
     zaak_id = decrypt(encrypted_zaak_id, user["id"])
-
     documents = get_connection().get_documents(zaak_id, user["id"])
+
     return success_response_json(documents)
 
 
 @app.route("/decosjoin/document/<string:encrypted_doc_id>", methods=["GET"])
-@verify_tma_user
+@auth.login_required
 @validate_openapi
 def get_document_blob(encrypted_doc_id):
-    user = get_tma_user()
+    user = auth.get_current_user()
 
     doc_id = decrypt(encrypted_doc_id, user["id"])
     document = get_connection().get_document_blob(doc_id)
@@ -63,31 +62,33 @@ def get_document_blob(encrypted_doc_id):
 
 
 @app.route("/status/health")
-@validate_openapi
 def health_check():
-    response = make_response(json.dumps("OK"))
-    response.headers["Content-type"] = "application/json"
-    return response
+    return success_response_json("OK")
 
 
 @app.errorhandler(Exception)
 def handle_error(error):
-    msg_tma_exception = "TMA error occurred"
+
+    error_message_original = f"{type(error)}:{str(error)}"
+
+    msg_auth_exception = "Auth error occurred"
     msg_request_http_error = "Request error occurred"
     msg_server_error = "Server error occurred"
-    msg_404_error = "Not found"
 
-    logger.exception(error)
+    logging.exception(error, extra={"error_message_original": error_message_original})
 
-    if isinstance(error, NotFound):
-        return error_response_json(msg_404_error, 404)
-    elif isinstance(error, HTTPError):
+    if IS_DEV:  # pragma: no cover
+        msg_auth_exception = error_message_original
+        msg_request_http_error = error_message_original
+        msg_server_error = error_message_original
+
+    if isinstance(error, HTTPError):
         return error_response_json(
             msg_request_http_error,
             error.response.status_code,
         )
-    elif isinstance(error, TMAException):
-        return error_response_json(msg_tma_exception, 400)
+    elif auth.is_auth_exception(error):
+        return error_response_json(msg_auth_exception, 401)
 
     return error_response_json(msg_server_error, 500)
 

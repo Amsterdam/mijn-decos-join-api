@@ -1,16 +1,14 @@
-# flask and plugins
+black
+coverage
+cryptography
+flake8
 flask
+flask_httpauth
 Flask-Testing
 openapi-core
-
-requests
+pycryptodome
+pyjwt
 python-dateutil
-
-# testing tools
-flake8
-coverage
-
-# error reporting
+requests
 sentry-sdk[flask]
-
-tma-saml>=0.4.2
+freezegun

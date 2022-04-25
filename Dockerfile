@@ -2,16 +2,17 @@ FROM amsterdam/python:3.9.6-buster
 
 RUN pip install uwsgi
 
-WORKDIR /app
+WORKDIR /api
 
-COPY /requirements.txt /app/
-COPY uwsgi.ini /app/
-RUN pip install --no-cache-dir -r /app/requirements.txt
+COPY app /api/app
+COPY scripts /api/scripts
+COPY requirements.txt /api
+COPY uwsgi.ini /api
 
-COPY test.sh /app/
-COPY .flake8 /app/
+COPY /test.sh /api
+COPY .flake8 /api
 
-COPY decosjoin /app/decosjoin
+RUN pip install --no-cache-dir -r /api/requirements.txt
 
 USER datapunt
-CMD uwsgi --ini /app/uwsgi.ini
+CMD uwsgi --ini /api/uwsgi.ini

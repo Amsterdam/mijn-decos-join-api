@@ -6,9 +6,9 @@ info:
 paths:
   /decosjoin/getvergunningen:
     parameters:
-      - name: x-saml-attribute-token1
+      - name: Authorization
         in: header
-        description: TMA encoded BSN
+        description: Bearer token
         required: true
         schema:
           type: string
@@ -37,9 +37,9 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
   /decosjoin/listdocuments/{encrypted_zaak_id}:
     parameters:
-      - name: x-saml-attribute-token1
+      - name: Authorization
         in: header
-        description: TMA encoded BSN
+        description: Bearer token
         required: true
         schema:
           type: string
@@ -75,9 +75,9 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
   /decosjoin/document/{encrypted_doc_id}:
     parameters:
-      - name: x-saml-attribute-token1
+      - name: Authorization
         in: header
-        description: TMA encoded BSN
+        description: Bearer token
         required: true
         schema:
           type: string
@@ -157,8 +157,10 @@ components:
           nullable: true
         dateDecision:
           $ref: "#/components/schemas/Date"
+          nullable: true
         dateWorkflowActive:
           $ref: "#/components/schemas/Date"
+          nullable: true
         documentsUrl:
           type: string
           example: "/api/decos/listdocuments/<fernetstring>"
@@ -174,16 +176,22 @@ components:
                 - TVM - RVV - Object
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
             kenteken:
               $ref: "#/components/schemas/Kenteken"
+              nullable: true
             location:
               $ref: "#/components/schemas/Location"
+              nullable: true
             timeEnd:
               $ref: "#/components/schemas/Time"
+              nullable: true
             timeStart:
               $ref: "#/components/schemas/Time"
+              nullable: true
     Zaak_VakantieVerhuurVergunning:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -196,8 +204,10 @@ components:
                 - Vakantieverhuur vergunningsaanvraag
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
     Zaak_VakantieVerhuur:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -210,10 +220,13 @@ components:
                 - Vakantieverhuur
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
             location:
               $ref: "#/components/schemas/Location"
+              nullable: true
     Zaak_VakantieVerhuurAfmelding:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -226,8 +239,10 @@ components:
                 - Vakantieverhuur afmelding
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
     Zaak_BBVergunning:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -240,8 +255,10 @@ components:
                 - B&B - vergunning
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
             requester:
               type: string
               nullable: true
@@ -262,8 +279,10 @@ components:
                 - GPP
             kenteken:
               $ref: "#/components/schemas/Kenteken"
+              nullable: true
             location:
               $ref: "#/components/schemas/Location"
+              nullable: true
     Zaak_GPK:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -276,6 +295,7 @@ components:
                 - GPK
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             cardNumber:
               type: number
               nullable: true
@@ -294,14 +314,19 @@ components:
                 - Evenement melding
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
             location:
               $ref: "#/components/schemas/Location"
+              nullable: true
             timeEnd:
               $ref: "#/components/schemas/Time"
+              nullable: true
             timeStart:
               $ref: "#/components/schemas/Time"
+              nullable: true
     Zaak_EvenementVergunning:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -314,14 +339,19 @@ components:
                 - Evenement vergunning
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
             location:
               $ref: "#/components/schemas/Location"
+              nullable: true
             timeEnd:
               $ref: "#/components/schemas/Time"
+              nullable: true
             timeStart:
               $ref: "#/components/schemas/Time"
+              nullable: true
     Zaak_Omzettingsvergunning:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -334,6 +364,7 @@ components:
                 - Omzettingsvergunning
             location:
               $ref: "#/components/schemas/Location"
+              nullable: true
     Zaak_ERVV_TVM:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -346,14 +377,19 @@ components:
                 - E-RVV - TVM
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
             location:
               $ref: "#/components/schemas/Location"
+              nullable: true
             timeEnd:
               $ref: "#/components/schemas/Time"
+              nullable: true
             timeStart:
               $ref: "#/components/schemas/Time"
+              nullable: true
     Zaak_BZP:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -366,10 +402,13 @@ components:
                 - Parkeerontheffingen Blauwe zone particulieren
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
             kenteken:
               $ref: "#/components/schemas/Kenteken"
+              nullable: true
     Zaak_BZB:
       allOf:
         - $ref: "#/components/schemas/Zaak"
@@ -382,10 +421,13 @@ components:
                 - Parkeerontheffingen Blauwe zone bedrijven
             dateEnd:
               $ref: "#/components/schemas/Date"
+              nullable: true
             dateStart:
               $ref: "#/components/schemas/Date"
+              nullable: true
             kenteken:
               $ref: "#/components/schemas/Kenteken"
+              nullable: true
     Document:
       type: object
       properties:

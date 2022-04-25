@@ -1,7 +1,6 @@
 from pprint import pprint
 from sys import argv
-
-from tma_saml.user_type import UserType
+from app.auth import PROFILE_TYPE_PRIVATE
 
 from app.decosjoin_service import DecosJoinConnection
 from app.config import (
@@ -23,5 +22,5 @@ connection = DecosJoinConnection(
     get_decosjoin_adres_boeken(),
 )
 
-zaken = connection.get_zaken(UserType.BURGER, bsn)
+zaken = connection.get_zaken(PROFILE_TYPE_PRIVATE, bsn)
 pprint(zaken)
