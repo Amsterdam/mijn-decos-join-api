@@ -93,5 +93,5 @@ def handle_error(error):
     return error_response_json(msg_server_error, 500)
 
 
-# if __name__ == "__main__":  # pragma: no cover
-#     app.run()
+if __name__ == "__main__":  # pragma: no cover
+    app.run()
