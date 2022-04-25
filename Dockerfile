@@ -1,7 +1,5 @@
 FROM amsterdam/python:3.9.6-buster
 
-RUN pip install uwsgi
-
 WORKDIR /api
 
 COPY app /api/app
