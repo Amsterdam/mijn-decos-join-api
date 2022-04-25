@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from freezegun import freeze_time
 
-from app.decosjoin_connection import DecosJoinConnection
+from app.decosjoin_service import DecosJoinConnection
 from app.field_parsers import to_date
 from app.zaaktypes import BBVergunning
 from tests.fixtures.response_mock import get_response_mock, post_response_mock
@@ -50,7 +50,7 @@ class ConnectionTests(TestCase):
             [],
         )
 
-    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_service.PAGE_SIZE", 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
 
@@ -122,7 +122,7 @@ class ConnectionTests(TestCase):
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
         self.assert_unknown_identifier(zaken, "Z/20/2")
 
-    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_service.PAGE_SIZE", 10)
     def test_get_documents(self):
         documents = self.connection.get_documents("ZAAKKEY1", "111222333")
         self.assertEqual(len(documents), 2)

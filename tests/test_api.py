@@ -81,7 +81,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch("app.helpers.DecosJoinConnection.post_response", post_response_mock)
-    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_service.PAGE_SIZE", 10)
     def test_getvergunningen(self):
         response = self.client_get("/decosjoin/getvergunningen")
 
@@ -101,7 +101,7 @@ class ApiTests(FlaskServerTMATestCase):
         "app.helpers.DecosJoinConnection.post_response",
         post_response_mock_unauthorized,
     )
-    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_service.PAGE_SIZE", 10)
     def test_getvergunningen_unauthorized(self):
         response = self.client_get("/decosjoin/getvergunningen")
 
@@ -122,7 +122,7 @@ class ApiTests(FlaskServerTMATestCase):
         )
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
-    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_service.PAGE_SIZE", 10)
     def test_listdocuments(self):
         response = self.client_get(
             f"/decosjoin/listdocuments/{encrypt('ZAAKKEY1', self.TEST_BSN)}"
@@ -132,7 +132,7 @@ class ApiTests(FlaskServerTMATestCase):
         self.assertTrue(data[0]["url"].startswith("/api/decosjoin/document/"))
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
-    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_service.PAGE_SIZE", 10)
     def test_listdocuments_kvk(self):
         response = self.client_get_kvk(
             f"/decosjoin/listdocuments/{encrypt('ZAAKKEY2', self.TEST_KVK)}"
@@ -181,7 +181,7 @@ class ApiTests(FlaskServerTMATestCase):
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch("app.helpers.DecosJoinConnection.post_response", post_response_mock)
-    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_service.PAGE_SIZE", 10)
     def test_get_with_openapi(self):
         response = self.client_get("/decosjoin/getvergunningen")
         self.assertEqual(response.status_code, 200)

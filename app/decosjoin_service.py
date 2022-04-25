@@ -198,7 +198,7 @@ class DecosJoinConnection:
             Zaak_cls.defer_transform(
                 zaak_deferred=deferred_zaak,
                 zaken_all=new_zaken,
-                decosjoin_connection=self,
+                decosjoin_service=self,
             )
 
         return new_zaken

@@ -1,14 +1,14 @@
 from pprint import pprint
 from sys import argv
 
-from app.decosjoin_connection import DecosJoinConnection
+from app.decosjoin_service import DecosJoinConnection
 from app.config import (
     get_decosjoin_username,
     get_decosjoin_password,
     get_decosjoin_api_host,
     get_decosjoin_adres_boeken,
 )
-import app.decosjoin_connection
+import app.decosjoin_service
 from app.crypto import decrypt
 
 bsn = argv[1]
@@ -19,7 +19,7 @@ else:
     zaak_id = argv[2]
 
 
-app.decosjoin_connection.LOG_RAW = True
+app.decosjoin_service.LOG_RAW = True
 
 connection = DecosJoinConnection(
     get_decosjoin_username(),

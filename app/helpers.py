@@ -18,7 +18,7 @@ from tma_saml.tma_saml import get_user_type
 from tma_saml.user_type import UserType
 from yaml import load
 
-from app.decosjoin_connection import DecosJoinConnection
+from app.decosjoin_service import DecosJoinConnection
 from app.config import (
     BASE_PATH,
     ENABLE_OPENAPI_VALIDATION,
@@ -134,15 +134,15 @@ def get_connection():
     """Creates a DecosJoin connection instance if there is none yet for the
     current application context.
     """
-    decosjoin_connection = g.get("decosjoin_connection", None)
-    if not decosjoin_connection:
-        decosjoin_connection = g.decosjoin_connection = DecosJoinConnection(
+    decosjoin_service = g.get("decosjoin_service", None)
+    if not decosjoin_service:
+        decosjoin_service = g.decosjoin_service = DecosJoinConnection(
             get_decosjoin_username(),
             get_decosjoin_password(),
             get_decosjoin_api_host(),
             get_decosjoin_adres_boeken(),
         )
-    return decosjoin_connection
+    return decosjoin_service
 
 
 def success_response_json(response_content):

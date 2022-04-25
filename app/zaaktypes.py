@@ -58,7 +58,7 @@ class Zaak:
 
     defer_transform = None  # Should be @staticmethod if defined
     # @staticmethod
-    # def defer_transform(self, zaak_deferred, zaken_all, decosjoin_connection):
+    # def defer_transform(self, zaak_deferred, zaken_all, decosjoin_service):
     #     zaken_all.append(zaak_deferred)
 
     def to_title(self):
@@ -196,7 +196,7 @@ class VakantieVerhuur(Zaak):
     # Find the corresponding verhuur vergunning (new_zaak) for this verhuur instance (zaak_deferred).
     # This is done to show verhuur instances given a vergunning in the UI.
     @staticmethod
-    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
         for new_zaak in zaken_all:
             if (
                 new_zaak["caseType"] == VakantieVerhuurVergunning.zaak_type
@@ -214,7 +214,7 @@ class VakantieVerhuurAfmelding(Zaak):
     title = "Geannuleerde verhuur"
 
     @staticmethod
-    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
         # update the existing registration
         for new_zaak in zaken_all:
             if (
@@ -245,8 +245,8 @@ class BBVergunning(Zaak):
         return False
 
     @staticmethod
-    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
-        date_workflow_active = decosjoin_connection.get_workflow(
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
             zaak_deferred["id"], BBVergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -431,8 +431,8 @@ class Omzettingsvergunning(Zaak):
     date_workflow_active_step_title = "Omzettingsvergunning - Behandelen"
 
     @staticmethod
-    def defer_transform(zaak_deferred, zaken_all, decosjoin_connection):
-        date_workflow_active = decosjoin_connection.get_workflow(
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
             zaak_deferred["id"], Omzettingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
