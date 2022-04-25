@@ -1,10 +1,10 @@
 import json
 import os.path
 
-from decosjoin.config import BASE_PATH
+from app.config import BASE_PATH
 
 
-FIXTURE_PATH = os.path.join(BASE_PATH, "tests", "fixtures")
+FIXTURE_PATH = os.path.join(BASE_PATH, "../", "tests", "fixtures")
 
 
 def load_fixture(json_file_name):

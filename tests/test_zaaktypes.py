@@ -4,8 +4,8 @@ from unittest.mock import MagicMock
 
 from freezegun import freeze_time
 
-from decosjoin.api.decosjoin.field_parsers import to_date
-from decosjoin.api.decosjoin.zaaktypes import (
+from app.field_parsers import to_date
+from app.zaaktypes import (
     BZB,
     BZP,
     BBVergunning,

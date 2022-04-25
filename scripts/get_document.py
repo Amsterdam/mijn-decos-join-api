@@ -1,14 +1,14 @@
 from sys import argv
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
-from decosjoin.config import (
+from app.decosjoin_connection import DecosJoinConnection
+from app.config import (
     get_decosjoin_username,
     get_decosjoin_password,
     get_decosjoin_api_host,
     get_decosjoin_adres_boeken,
 )
-import decosjoin.api.decosjoin.decosjoin_connection
-from decosjoin.crypto import decrypt
+import app.decosjoin_connection
+from app.crypto import decrypt
 
 if argv[1] == "-d":
     document_id = decrypt(argv[2])
@@ -16,7 +16,7 @@ else:
     document_id = argv[1]
 
 
-decosjoin.api.decosjoin.decosjoin_connection.LOG_RAW = True
+app.decosjoin_connection.LOG_RAW = True
 
 connection = DecosJoinConnection(
     get_decosjoin_username(),

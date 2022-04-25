@@ -1,12 +1,12 @@
 from flask import Flask, g
 from tma_saml.user_type import UserType
-from decosjoin.api.helpers import get_tma_certificate
+from app.helpers import get_tma_certificate
 import os
 from unittest import TestCase
 
 from unittest.mock import patch
 
-from decosjoin.config import (
+from app.config import (
     get_sentry_dsn,
     get_decosjoin_adres_boeken,
     get_decosjoin_api_host,

@@ -5,16 +5,16 @@ import requests
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
 
-from decosjoin.api.decosjoin.field_parsers import (
+from app.field_parsers import (
     get_fields,
     to_date,
     to_int,
     to_string,
     to_string_or_empty_string,
 )
-from decosjoin.api.decosjoin.zaaktypes import zaken_index
-from decosjoin.config import DECOS_API_REQUEST_TIMEOUT
-from decosjoin.crypto import encrypt
+from app.zaaktypes import zaken_index
+from app.config import DECOS_API_REQUEST_TIMEOUT
+from app.crypto import encrypt
 
 LOG_RAW = False
 PAGE_SIZE = 30

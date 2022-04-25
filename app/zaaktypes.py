@@ -1,7 +1,7 @@
 from datetime import date
-from decosjoin.config import IS_PRODUCTION
+from app.config import IS_PRODUCTION
 
-from decosjoin.api.decosjoin.field_parsers import (
+from app.field_parsers import (
     get_fields,
     get_translation,
     to_date,

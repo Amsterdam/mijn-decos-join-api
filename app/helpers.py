@@ -18,8 +18,8 @@ from tma_saml.tma_saml import get_user_type
 from tma_saml.user_type import UserType
 from yaml import load
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
-from decosjoin.config import (
+from app.decosjoin_connection import DecosJoinConnection
+from app.config import (
     BASE_PATH,
     ENABLE_OPENAPI_VALIDATION,
     get_decosjoin_adres_boeken,

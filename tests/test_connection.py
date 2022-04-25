@@ -1,22 +1,23 @@
-from decosjoin.api.decosjoin.field_parsers import to_date
 from unittest import TestCase
 from unittest.mock import patch
 
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
-from decosjoin.api.decosjoin.zaaktypes import BBVergunning
-from decosjoin.tests.fixtures.response_mock import get_response_mock, post_response_mock
 from freezegun import freeze_time
+
+from app.decosjoin_connection import DecosJoinConnection
+from app.field_parsers import to_date
+from app.zaaktypes import BBVergunning
+from tests.fixtures.response_mock import get_response_mock, post_response_mock
 
 
 @patch(
-    "decosjoin.crypto.get_encrytion_key",
+    "app.crypto.get_encrytion_key",
     lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=",
 )
 @patch(
-    "decosjoin.tests.test_connection.DecosJoinConnection.get_response",
+    "tests.test_connection.DecosJoinConnection.get_response",
     get_response_mock,
 )
-@patch("decosjoin.api.helpers.DecosJoinConnection.post_response", post_response_mock)
+@patch("app.helpers.DecosJoinConnection.post_response", post_response_mock)
 @freeze_time("2021-07-05")
 class ConnectionTests(TestCase):
     def setUp(self) -> None:
@@ -49,7 +50,7 @@ class ConnectionTests(TestCase):
             [],
         )
 
-    @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
 
@@ -121,7 +122,7 @@ class ConnectionTests(TestCase):
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
         self.assert_unknown_identifier(zaken, "Z/20/2")
 
-    @patch("decosjoin.api.decosjoin.decosjoin_connection.PAGE_SIZE", 10)
+    @patch("app.decosjoin_connection.PAGE_SIZE", 10)
     def test_get_documents(self):
         documents = self.connection.get_documents("ZAAKKEY1", "111222333")
         self.assertEqual(len(documents), 2)

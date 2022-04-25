@@ -1,20 +1,25 @@
 from pprint import pprint
 from sys import argv
 
-from tma_saml.user_type import UserType
-
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
-from decosjoin.config import (
+from app.decosjoin_connection import DecosJoinConnection
+from app.config import (
     get_decosjoin_username,
     get_decosjoin_password,
     get_decosjoin_api_host,
     get_decosjoin_adres_boeken,
 )
-import decosjoin.api.decosjoin.decosjoin_connection
+import app.decosjoin_connection
+from app.crypto import decrypt
 
 bsn = argv[1]
 
-decosjoin.api.decosjoin.decosjoin_connection.LOG_RAW = True
+if argv[2] == "-d":
+    zaak_id = decrypt(argv[3])
+else:
+    zaak_id = argv[2]
+
+
+app.decosjoin_connection.LOG_RAW = True
 
 connection = DecosJoinConnection(
     get_decosjoin_username(),
@@ -23,5 +28,5 @@ connection = DecosJoinConnection(
     get_decosjoin_adres_boeken(),
 )
 
-zaken = connection.get_zaken(UserType.BURGER, bsn)
-pprint(zaken)
+documents = connection.get_documents(zaak_id, bsn)
+pprint(documents)
