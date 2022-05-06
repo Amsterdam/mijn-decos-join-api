@@ -49,7 +49,6 @@ class ApiTests(FlaskServerTestCase):
             "timeEnd": "16:00",
             "timeStart": "10:00",
             "title": "Tijdelijke verkeersmaatregel (TVM-RVV-Object)",
-            # 'documentsUrl': '/api/decos/listdocuments/...'
         }
 
     def client_get(self, location):
@@ -113,7 +112,7 @@ class ApiTests(FlaskServerTestCase):
         )
         data = response.json["content"]
         self.assertEqual(len(data), 2)
-        self.assertTrue(data[0]["url"].startswith("/api/decosjoin/document/"))
+        self.assertTrue(data[0]["url"].startswith("/decosjoin/document/"))
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch("app.decosjoin_service.PAGE_SIZE", 10)
@@ -123,7 +122,7 @@ class ApiTests(FlaskServerTestCase):
         )
         data = response.json["content"]
         self.assertEqual(len(data), 2)
-        self.assertTrue(data[0]["url"].startswith("/api/decosjoin/document/"))
+        self.assertTrue(data[0]["url"].startswith("/decosjoin/document/"))
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
     def test_listdocuments_unencrypted(self):

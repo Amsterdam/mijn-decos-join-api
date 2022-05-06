@@ -181,7 +181,7 @@ class DecosJoinConnection:
             # This url can be used to retrieve matching document attachments for this particular zaak
             new_zaak[
                 "documentsUrl"
-            ] = f"/api/decosjoin/listdocuments/{encrypt(zaak_source['key'], user_identifier)}"
+            ] = f"/decosjoin/listdocuments/{encrypt(zaak_source['key'], user_identifier)}"
 
             if Zaak.defer_transform:
                 deferred_zaken.append([new_zaak, Zaak])
@@ -297,7 +297,7 @@ class DecosJoinConnection:
                     if doc_data["is_pdf"]:
                         document_meta_data[
                             "url"
-                        ] = f"/api/decosjoin/document/{encrypt(doc_data['doc_key'], identifier)}"
+                        ] = f"/decosjoin/document/{encrypt(doc_data['doc_key'], identifier)}"
 
                         del document_meta_data["text39"]
                         del document_meta_data["text40"]

@@ -163,7 +163,7 @@ components:
           nullable: true
         documentsUrl:
           type: string
-          example: "/api/decos/listdocuments/<fernetstring>"
+          example: "/decos/listdocuments/<fernetstring>"
     Zaak_TVM_RVV_Object:
       allOf:
         - $ref: "#/components/schemas/Zaak"
