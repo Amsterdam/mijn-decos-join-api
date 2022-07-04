@@ -309,6 +309,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["timeEnd"], "17:00")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-05-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-05-26"))
+        self.assertEqual(zaak_transformed["decision"], "Toegestaan")
 
     def test_Diensten(self):
         zaak_source = {
@@ -327,3 +328,4 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["location"], "Amstel 12 1012AK AMSTERDAM")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-04-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-04-26"))
+        self.assertEqual(zaak_transformed["decision"], "Toegestaan")

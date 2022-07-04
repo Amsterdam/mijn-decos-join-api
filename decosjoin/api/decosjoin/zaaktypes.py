@@ -533,7 +533,7 @@ class Flyeren(Zaak):
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
-    zaak_type = "Flyeren-Sampling"
+    zaak_type = "Verspreiden reclamemateriaal (sampling)"
     title = "Verspreiden reclamemateriaal (sampling)"
 
     parse_fields = [
@@ -546,8 +546,8 @@ class Flyeren(Zaak):
 
     decision_translations = [
         ["Ingetrokken", "Ingetrokken"],
-        ["Niet verleend", "Niet verleend"],
-        ["Verleend", "Verleend"],
+        ["Niet verleend", "Niet toegestaan"],
+        ["Verleend", "Toegestaan"],
     ]
 
 
@@ -568,8 +568,8 @@ class AanbiedenDiensten(Zaak):
 
     decision_translations = [
         ["Ingetrokken", "Ingetrokken"],
-        ["Niet verleend", "Niet verleend"],
-        ["Verleend", "Verleend"],
+        ["Niet verleend", "Niet toegestaan"],
+        ["Verleend", "Toegestaan"],
     ]
 
 
