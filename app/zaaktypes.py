@@ -533,7 +533,7 @@ class Flyeren(Zaak):
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
-    zaak_type = "Verspreiden reclamemateriaal (sampling)"
+    zaak_type = "Flyeren-Sampling"
     title = "Verspreiden reclamemateriaal (sampling)"
 
     parse_fields = [

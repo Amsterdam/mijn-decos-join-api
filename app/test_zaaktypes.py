@@ -302,9 +302,7 @@ class ZaaktypesTest(TestCase):
             "id": "zaak-1",
         }
         zaak_transformed = Flyeren(zaak_source).result()
-        self.assertEqual(
-            zaak_transformed["caseType"], "Verspreiden reclamemateriaal (sampling)"
-        )
+        self.assertEqual(zaak_transformed["caseType"], "Flyeren-Sampling")
         self.assertEqual(zaak_transformed["timeStart"], "10:00")
         self.assertEqual(zaak_transformed["timeEnd"], "17:00")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-05-21"))
