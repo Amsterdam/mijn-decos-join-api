@@ -579,7 +579,7 @@ class NachtwerkOntheffing(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "Nachtwerkontheffing"
-    title = "Nachtwerkontheffing"
+    title = "Geluidsontheffing werken in de openbare ruimte (nachtwerkontheffing)"
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie

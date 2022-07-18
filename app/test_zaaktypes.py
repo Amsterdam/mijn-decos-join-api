@@ -344,7 +344,7 @@ class ZaaktypesTest(TestCase):
             "id": "zaak-1",
         }
         zaak_transformed = NachtwerkOntheffing(zaak_source).result()
-        self.assertEqual(zaak_transformed["caseType"], "Nachtwerkontheffing")
+        self.assertEqual(zaak_transformed["title"], "Geluidsontheffing werken in de openbare ruimte (nachtwerkontheffing)")
         self.assertEqual(zaak_transformed["location"], "Amstel 1 1012AK AMSTERDAM")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-07-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-07-26"))
