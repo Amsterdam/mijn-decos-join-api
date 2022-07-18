@@ -572,6 +572,29 @@ class AanbiedenDiensten(Zaak):
         ["Verleend", "Toegestaan"],
     ]
 
+class NachtwerkOntheffing(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Nachtwerkontheffing"
+    title = "Nachtwerkontheffing"
+
+    parse_fields = [
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot
+        {"name": "timeStart", "from": "text7", "parser": to_string},  # Start tijd
+        {"name": "timeEnd", "from": "text10", "parser": to_string},  # Eind tijd
+    ]
+
+    decision_translations = [
+        ["Ingetrokken", "Ingetrokken"],
+        ["Niet verleend", "Niet verleend"],
+        ["Verleend met borden", "Verleend"],
+        ["Verleend zonder borden", "Verleend"],
+    ]
 
 # A dict with all enabled Zaken
 zaken_index = {
