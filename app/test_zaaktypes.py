@@ -9,6 +9,7 @@ from app.zaaktypes import (
     BZB,
     BZP,
     BBVergunning,
+    NachtwerkOntheffing,
     Omzettingsvergunning,
     TVM_RVV_Object,
     VakantieVerhuur,
@@ -327,3 +328,26 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-04-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-04-26"))
         self.assertEqual(zaak_transformed["decision"], "Toegestaan")
+
+    def test_Nachtwerk(self):
+        zaak_source = {
+            "mark": "Z/22/9901425151",
+            "document_date": "2022-05-18T00:00:00",
+            "date5": "2022-02-01T00:00:00",
+            "text6": "Amstel 1 1012AK AMSTERDAM",
+            "date6": "2022-07-21T00:00:00",
+            "date7": "2022-07-26T00:00:00",
+            "text7": "10:00",
+            "text10": "17:00",
+            "title": "Ontvangen",
+            "dfunction": "Verleend met borden",
+            "id": "zaak-1",
+        }
+        zaak_transformed = NachtwerkOntheffing(zaak_source).result()
+        self.assertEqual(zaak_transformed["title"], "Geluidsontheffing werken in de openbare ruimte (nachtwerkontheffing)")
+        self.assertEqual(zaak_transformed["location"], "Amstel 1 1012AK AMSTERDAM")
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2022-07-21"))
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-07-26"))
+        self.assertEqual(zaak_transformed["timeStart"], "10:00")
+        self.assertEqual(zaak_transformed["timeEnd"], "17:00")
+        self.assertEqual(zaak_transformed["decision"], "Verleend")
