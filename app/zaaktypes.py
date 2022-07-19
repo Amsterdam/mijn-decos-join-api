@@ -572,6 +572,7 @@ class AanbiedenDiensten(Zaak):
         ["Verleend", "Toegestaan"],
     ]
 
+
 class NachtwerkOntheffing(Zaak):
 
     # !!!!!!!!!!!!!
@@ -595,6 +596,7 @@ class NachtwerkOntheffing(Zaak):
         ["Verleend met borden", "Verleend"],
         ["Verleend zonder borden", "Verleend"],
     ]
+
 
 # A dict with all enabled Zaken
 zaken_index = {
