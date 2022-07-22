@@ -1,20 +1,19 @@
 from pprint import pprint
 from sys import argv
+from app.auth import PROFILE_TYPE_PRIVATE
 
-from tma_saml.user_type import UserType
-
-from decosjoin.api.decosjoin.decosjoin_connection import DecosJoinConnection
-from decosjoin.config import (
+from app.decosjoin_service import DecosJoinConnection
+from app.config import (
     get_decosjoin_username,
     get_decosjoin_password,
     get_decosjoin_api_host,
     get_decosjoin_adres_boeken,
 )
-import decosjoin.api.decosjoin.decosjoin_connection
+import app.decosjoin_service
 
-kvk = argv[1]
+bsn = argv[1]
 
-decosjoin.api.decosjoin.decosjoin_connection.LOG_RAW = True
+app.decosjoin_service.LOG_RAW = True
 
 connection = DecosJoinConnection(
     get_decosjoin_username(),
@@ -23,5 +22,5 @@ connection = DecosJoinConnection(
     get_decosjoin_adres_boeken(),
 )
 
-zaken = connection.get_zaken(UserType.BEDRIJF, kvk)
+zaken = connection.get_zaken(PROFILE_TYPE_PRIVATE, bsn)
 pprint(zaken)

@@ -1,7 +1,7 @@
 from datetime import date, datetime, time
 from unittest.case import TestCase
 
-from decosjoin.api.decosjoin.field_parsers import (
+from app.field_parsers import (
     get_translation,
     to_date,
     to_datetime,

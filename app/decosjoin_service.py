@@ -5,16 +5,16 @@ import requests
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
 
-from decosjoin.api.decosjoin.field_parsers import (
+from app.field_parsers import (
     get_fields,
     to_date,
     to_int,
     to_string,
     to_string_or_empty_string,
 )
-from decosjoin.api.decosjoin.zaaktypes import zaken_index
-from decosjoin.config import DECOS_API_REQUEST_TIMEOUT
-from decosjoin.crypto import encrypt
+from app.zaaktypes import zaken_index
+from app.config import DECOS_API_REQUEST_TIMEOUT
+from app.crypto import encrypt
 
 LOG_RAW = False
 PAGE_SIZE = 30
@@ -110,11 +110,11 @@ class DecosJoinConnection:
             },
         }
 
-    def get_user_keys(self, kind, user_identifier):
+    def get_user_keys(self, profile_type, user_identifier):
         """Retrieve the internal ids used for a user."""
         keys = []
 
-        adres_boeken = self.adres_boeken[kind]
+        adres_boeken = self.adres_boeken[profile_type]
 
         for boek in adres_boeken:
             url = f"{self.api_url}search/books?properties=false"
@@ -181,7 +181,7 @@ class DecosJoinConnection:
             # This url can be used to retrieve matching document attachments for this particular zaak
             new_zaak[
                 "documentsUrl"
-            ] = f"/api/decosjoin/listdocuments/{encrypt(zaak_source['key'], user_identifier)}"
+            ] = f"/decosjoin/listdocuments/{encrypt(zaak_source['key'], user_identifier)}"
 
             if Zaak.defer_transform:
                 deferred_zaken.append([new_zaak, Zaak])
@@ -198,7 +198,7 @@ class DecosJoinConnection:
             Zaak_cls.defer_transform(
                 zaak_deferred=deferred_zaak,
                 zaken_all=new_zaken,
-                decosjoin_connection=self,
+                decosjoin_service=self,
             )
 
         return new_zaken
@@ -235,11 +235,9 @@ class DecosJoinConnection:
 
         return items
 
-    def get_zaken(self, kind, user_identifier):
-        """Get all zaken for a kind [UserType.BURGER or UserType.BEDRIJF]."""
-
+    def get_zaken(self, profile_type, user_identifier):
         zaken_source = []
-        user_keys = self.get_user_keys(kind, user_identifier)
+        user_keys = self.get_user_keys(profile_type, user_identifier)
 
         for key in user_keys:
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
@@ -299,7 +297,7 @@ class DecosJoinConnection:
                     if doc_data["is_pdf"]:
                         document_meta_data[
                             "url"
-                        ] = f"/api/decosjoin/document/{encrypt(doc_data['doc_key'], identifier)}"
+                        ] = f"/decosjoin/document/{encrypt(doc_data['doc_key'], identifier)}"
 
                         del document_meta_data["text39"]
                         del document_meta_data["text40"]

@@ -32,7 +32,7 @@ if (BRANCH != "test-acc") {
         stage("Test") {
             docker.withRegistry(DOCKER_REGISTRY_HOST, "docker_registry_auth") {
                 docker.image(IMAGE_TAG).pull()
-                sh "docker run --rm ${IMAGE_TAG} /app/test.sh"
+                sh "docker run --rm ${IMAGE_TAG} /api/test.sh"
             }
         }
     }
