@@ -308,7 +308,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["timeEnd"], "17:00")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-05-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-05-26"))
-        self.assertEqual(zaak_transformed["decision"], "Toegestaan")
+        self.assertEqual(zaak_transformed["decision"], "Verleend")
 
     def test_Diensten(self):
         zaak_source = {
