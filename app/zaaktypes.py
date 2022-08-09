@@ -546,8 +546,8 @@ class Flyeren(Zaak):
 
     decision_translations = [
         ["Ingetrokken", "Ingetrokken"],
-        ["Niet verleend", "Niet toegestaan"],
-        ["Verleend", "Toegestaan"],
+        ["Niet verleend", "Niet verleend"],
+        ["Verleend", "Verleend"],
     ]
 
 
