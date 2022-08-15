@@ -86,7 +86,7 @@ class Zaak:
 
     def to_description(self) -> str:
         return to_string_if_exists(self.zaak_source, "subject1")
-    
+
     def to_payment_status(self) -> str:
         return to_string_if_exists(self.zaak_source, "text11")
 
