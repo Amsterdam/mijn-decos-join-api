@@ -170,6 +170,9 @@ class DecosJoinConnection:
             ):
                 continue
 
+            if self.is_list_match(new_zaak, "paymentStatus", ["nogniet"]) and self.is_list_match(new_zaak, "paymentMethod", ["wacht op online betaling"]):
+                continue
+
             if self.is_list_match(new_zaak, "decision", ["buiten behandeling"]):
                 continue
 
