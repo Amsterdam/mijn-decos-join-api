@@ -80,6 +80,8 @@ class ZaaktypesTest(TestCase):
             "description": "Test beschrijving",
             "kenteken": None,
             "location": "Amstel 1 1000AB",
+            "paymentStatus": "Nogniet",
+            "paymentMethod": "Er is iets misgegaan, controleer online betaling!",
             "timeEnd": "16:00",
             "timeStart": "10:00",
             "dateStart": to_date(zaak_source["date6"]),
