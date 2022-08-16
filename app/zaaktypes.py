@@ -32,6 +32,8 @@ class Zaak:
     def __init__(self, zaak_source: dict):
         self.zaak_source = zaak_source
 
+        if not self.has_valid_source_data():
+            return
         self.transform()
         self.after_transform()
 
@@ -47,9 +49,7 @@ class Zaak:
             "status": self.to_status(),
             "decision": self.to_decision(),
             "dateDecision": self.to_date_decision(),
-            "description": self.to_description(),
-            "paymentStatus": self.to_payment_status(),
-            "paymentMethod": self.to_payment_method()
+            "description": self.to_description()
         }
 
         # Arbitrary data for individual Zaken
@@ -87,17 +87,14 @@ class Zaak:
     def to_description(self) -> str:
         return to_string_if_exists(self.zaak_source, "subject1")
 
-    def to_payment_status(self) -> str:
-        return to_string_if_exists(self.zaak_source, "text11")
-
-    def to_payment_method(self) -> str:
-        return to_string_if_exists(self.zaak_source, "text12")
-
     def result(self):
         return self.zaak
 
     def type(self):
         return self.zaak_type
+    
+    def has_valid_source_data(self):
+        return True
 
 
 #######################
@@ -558,6 +555,14 @@ class Flyeren(Zaak):
         ["Verleend", "Verleend"],
     ]
 
+    def has_valid_source_data(self):
+        payment_status = to_string_if_exists(self.zaak_source, "text11")
+        payment_method = to_string_if_exists(self.zaak_source, "text12")
+
+        if payment_status == "Nogniet" and payment_method == "Wacht op online betaling":
+            return False
+
+        return True
 
 class AanbiedenDiensten(Zaak):
 

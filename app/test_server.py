@@ -42,8 +42,6 @@ class ApiTests(FlaskServerTestCase):
             "identifier": "Z/20/1234567",
             "kenteken": None,
             "location": "Amstel 1 1000AB",
-            'paymentMethod': 'Er is iets misgegaan, controleer online betaling!',
-            'paymentStatus': 'Nogniet',
             "decision": None,
             "dateDecision": None,
             "status": "Ontvangen",
