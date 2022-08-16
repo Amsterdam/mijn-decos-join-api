@@ -135,6 +135,15 @@ class TVM_RVV_Object(Zaak):
 
         return value
 
+    def has_valid_source_data(self):
+        payment_status = to_string_if_exists(self.zaak_source, "text11")
+        payment_method = to_string_if_exists(self.zaak_source, "text12")
+
+        if payment_status == "Nogniet" and payment_method == "Wacht op online betaling":
+            return False
+
+        return True
+
 
 class VakantieVerhuurVergunning(Zaak):
     zaak_type = "Vakantieverhuur vergunningsaanvraag"
