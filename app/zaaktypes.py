@@ -92,7 +92,7 @@ class Zaak:
 
     def type(self):
         return self.zaak_type
-    
+
     def has_valid_source_data(self):
         return True
 
