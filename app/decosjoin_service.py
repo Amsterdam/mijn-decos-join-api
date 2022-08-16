@@ -162,6 +162,9 @@ class DecosJoinConnection:
             Zaak = zaken_index[zaak_type]
             new_zaak = Zaak(source_fields).result()
 
+            if new_zaak is None:
+                continue
+
             # These matching conditions are used to prevent these items from being included in the returned list of zaken
             if self.is_list_match(
                 new_zaak,

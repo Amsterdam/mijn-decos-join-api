@@ -32,6 +32,8 @@ class Zaak:
     def __init__(self, zaak_source: dict):
         self.zaak_source = zaak_source
 
+        if not self.has_valid_source_data():
+            return
         self.transform()
         self.after_transform()
 
@@ -47,7 +49,7 @@ class Zaak:
             "status": self.to_status(),
             "decision": self.to_decision(),
             "dateDecision": self.to_date_decision(),
-            "description": self.to_description(),
+            "description": self.to_description()
         }
 
         # Arbitrary data for individual Zaken
@@ -91,6 +93,9 @@ class Zaak:
     def type(self):
         return self.zaak_type
 
+    def has_valid_source_data(self):
+        return True
+
 
 #######################
 # Zaak configurations #
@@ -129,6 +134,15 @@ class TVM_RVV_Object(Zaak):
             return "Verleend"
 
         return value
+
+    def has_valid_source_data(self):
+        payment_status = to_string_if_exists(self.zaak_source, "text11")
+        payment_method = to_string_if_exists(self.zaak_source, "text12")
+
+        if payment_status == "Nogniet" and payment_method == "Wacht op online betaling":
+            return False
+
+        return True
 
 
 class VakantieVerhuurVergunning(Zaak):
@@ -550,6 +564,14 @@ class Flyeren(Zaak):
         ["Verleend", "Verleend"],
     ]
 
+    def has_valid_source_data(self):
+        payment_status = to_string_if_exists(self.zaak_source, "text11")
+        payment_method = to_string_if_exists(self.zaak_source, "text12")
+
+        if payment_status == "Nogniet" and payment_method == "Wacht op online betaling":
+            return False
+
+        return True
 
 class AanbiedenDiensten(Zaak):
 

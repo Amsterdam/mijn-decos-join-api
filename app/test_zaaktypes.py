@@ -310,6 +310,26 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-05-26"))
         self.assertEqual(zaak_transformed["decision"], "Verleend")
 
+    def test_FlyerenNietBetaald(self):
+        zaak_source = {
+            "mark": "Z/21/99012350",
+            "document_date": "2021-05-18T00:00:00",
+            "date5": "2022-02-01T00:00:00",
+            "text6": "Amstel 1 1012AK AMSTERDAM",
+            "date6": "2022-05-21T00:00:00",
+            "date7": "2022-05-26T00:00:00",
+            "text7": "10:00",
+            "text8": "17:00",
+            "text11": "Nogniet",
+            "text12": "Wacht op online betaling",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-1",
+        }
+        zaak_transformed = Flyeren(zaak_source).result()
+        # should not transform because payment is not completed
+        self.assertEqual(zaak_transformed, None)
+
     def test_Diensten(self):
         zaak_source = {
             "mark": "Z/21/99012451",
