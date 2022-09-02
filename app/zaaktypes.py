@@ -544,7 +544,7 @@ class BZB(Zaak):
 class Flyeren(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Flyeren-Sampling"
