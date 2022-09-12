@@ -512,7 +512,7 @@ class BZP(Zaak):
         if not value:
             return None
 
-        value = re.sub("[^0-9a-zA-Z\-]+", " ", value)
+        value = re.sub("[^0-9a-zA-Z-]+", " ", value)
         value = re.sub(" +", " ", value.strip())
         value = re.sub(" ", " | ", value.upper())
 
