@@ -1,5 +1,6 @@
 from datetime import date
 from app.config import IS_PRODUCTION
+import re
 
 from app.field_parsers import (
     get_fields,
@@ -49,7 +50,7 @@ class Zaak:
             "status": self.to_status(),
             "decision": self.to_decision(),
             "dateDecision": self.to_date_decision(),
-            "description": self.to_description()
+            "description": self.to_description(),
         }
 
         # Arbitrary data for individual Zaken
@@ -506,10 +507,21 @@ class BZP(Zaak):
     zaak_type = "Parkeerontheffingen Blauwe zone particulieren"
     title = "Parkeerontheffingen Blauwe zone particulieren"
 
+    @staticmethod
+    def to_kenteken(value) -> bool:
+        if not value:
+            return None
+
+        value = re.sub("[^0-9a-zA-Z\-]+", " ", value)
+        value = re.sub(" +", " ", value.strip())
+        value = re.sub(" ", " | ", value.upper())
+
+        return value
+
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
-        {"name": "kenteken", "from": "text8", "parser": to_string},
+        {"name": "kenteken", "from": "text8", "parser": static(to_kenteken)},
     ]
 
     decision_translations = [
@@ -572,6 +584,7 @@ class Flyeren(Zaak):
             return False
 
         return True
+
 
 class AanbiedenDiensten(Zaak):
 

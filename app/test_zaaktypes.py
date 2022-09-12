@@ -254,7 +254,7 @@ class ZaaktypesTest(TestCase):
             "date7": "2022-06-26T00:00:00",
             "document_date": "2021-05-18T00:00:00",
             "mark": "Z/21/99012350",
-            "text8": "KN-UW-TS",
+            "text8": ";KN-UW-TS;AAZZ88",
             "text45": "Parkeerontheffingen Blauwe zone particulieren",
             "title": "Ontvangen",
             "dfunction": "Verleend",
@@ -265,7 +265,7 @@ class ZaaktypesTest(TestCase):
             zaak_transformed["caseType"],
             "Parkeerontheffingen Blauwe zone particulieren",
         )
-        self.assertEqual(zaak_transformed["kenteken"], "KN-UW-TS")
+        self.assertEqual(zaak_transformed["kenteken"], "KN-UW-TS | AAZZ88")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2021-06-26"))
 
     def test_BZB(self):
@@ -364,7 +364,10 @@ class ZaaktypesTest(TestCase):
             "id": "zaak-1",
         }
         zaak_transformed = NachtwerkOntheffing(zaak_source).result()
-        self.assertEqual(zaak_transformed["title"], "Geluidsontheffing werken in de openbare ruimte (nachtwerkontheffing)")
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Geluidsontheffing werken in de openbare ruimte (nachtwerkontheffing)",
+        )
         self.assertEqual(zaak_transformed["location"], "Amstel 1 1012AK AMSTERDAM")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-07-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2022-07-26"))
