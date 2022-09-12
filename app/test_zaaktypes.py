@@ -249,7 +249,6 @@ class ZaaktypesTest(TestCase):
 
     def test_BZP(self):
         zaak_source = {
-            "company": "Achternaam",
             "date6": "2021-06-26T00:00:00",
             "date7": "2022-06-26T00:00:00",
             "document_date": "2021-05-18T00:00:00",
@@ -270,7 +269,6 @@ class ZaaktypesTest(TestCase):
 
     def test_BZB(self):
         zaak_source = {
-            "company": "Achternaam",
             "date6": "2021-05-26T00:00:00",
             "date7": "2022-05-26T00:00:00",
             "document_date": "2021-05-18T00:00:00",
