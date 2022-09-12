@@ -6,7 +6,6 @@ from app.field_parsers import (
     get_fields,
     get_translation,
     to_date,
-    to_datetime,
     to_string,
     to_int,
     to_string_if_exists,
@@ -97,6 +96,15 @@ class Zaak:
     def has_valid_source_data(self):
         return True
 
+    def has_valid_payment_status(self):
+        payment_status = to_string_if_exists(self.zaak_source, "text11")
+        payment_method = to_string_if_exists(self.zaak_source, "text12")
+
+        if payment_status == "Nogniet" and payment_method == "Wacht op online betaling":
+            return False
+
+        return True
+
 
 #######################
 # Zaak configurations #
@@ -137,13 +145,7 @@ class TVM_RVV_Object(Zaak):
         return value
 
     def has_valid_source_data(self):
-        payment_status = to_string_if_exists(self.zaak_source, "text11")
-        payment_method = to_string_if_exists(self.zaak_source, "text12")
-
-        if payment_status == "Nogniet" and payment_method == "Wacht op online betaling":
-            return False
-
-        return True
+        return super().has_valid_payment_status()
 
 
 class VakantieVerhuurVergunning(Zaak):
@@ -530,6 +532,9 @@ class BZP(Zaak):
         ["Verleend", "Verleend"],
     ]
 
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
 
 class BZB(Zaak):
 
@@ -577,13 +582,7 @@ class Flyeren(Zaak):
     ]
 
     def has_valid_source_data(self):
-        payment_status = to_string_if_exists(self.zaak_source, "text11")
-        payment_method = to_string_if_exists(self.zaak_source, "text12")
-
-        if payment_status == "Nogniet" and payment_method == "Wacht op online betaling":
-            return False
-
-        return True
+        return super().has_valid_payment_status()
 
 
 class AanbiedenDiensten(Zaak):
