@@ -543,7 +543,7 @@ class BZB(Zaak):
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
-        {"name": "companyName", "from": "text8", "parser": to_string},
+        {"name": "companyName", "from": "company", "parser": to_string},
     ]
 
     decision_translations = [

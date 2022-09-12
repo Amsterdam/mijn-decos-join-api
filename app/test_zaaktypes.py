@@ -275,7 +275,7 @@ class ZaaktypesTest(TestCase):
             "date7": "2022-05-26T00:00:00",
             "document_date": "2021-05-18T00:00:00",
             "mark": "Z/21/99012349",
-            "text8": "Uw bedrijfje",
+            "company": "Uw bedrijfje",
             "text45": "Parkeerontheffingen Blauwe zone bedrijven",
             "title": "Ontvangen",
             "dfunction": "Verleend",
