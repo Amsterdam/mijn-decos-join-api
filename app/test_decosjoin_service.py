@@ -54,7 +54,7 @@ class ConnectionTests(TestCase):
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
 
-        self.assertEqual(len(zaken), 20)
+        self.assertEqual(len(zaken), 19)
         zaken_from_fixtures = []
 
         for z in zaken:
@@ -102,7 +102,6 @@ class ConnectionTests(TestCase):
             ["Z/20/2345678.2", "Ontvangen", None, "TVM - RVV - Object"],
             ["Z/20/2345678.1", "Ontvangen", None, "TVM - RVV - Object"],
             ["Z/20/2345678.0", "Ontvangen", None, "TVM - RVV - Object"],
-            ["Z/20/1234567", "Ontvangen", None, "TVM - RVV - Object"],
         ]
 
         self.assertEqual(zaken_from_fixtures, zaken_expected)

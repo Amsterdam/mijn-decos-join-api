@@ -33,21 +33,21 @@ class ApiTests(FlaskServerTestCase):
 
     def expected_zaak(self):
         return {
-            "id": "HEXSTRING01",
             "caseType": "TVM - RVV - Object",
-            "dateEnd": "2021-04-28",
-            "dateStart": "2021-04-27",
-            "dateRequest": "2021-04-16",
-            "dateWorkflowActive": "2021-04-16",
-            "identifier": "Z/20/1234567",
-            "kenteken": None,
-            "location": "Amstel 1 1000AB",
-            "decision": None,
             "dateDecision": None,
+            "dateEnd": "2020-06-16",
+            "dateRequest": "2020-06-08",
+            "dateStart": "2020-06-16",
+            "dateWorkflowActive": "2020-06-08",
+            "decision": None,
+            "description": "SB RVV ontheffing hele stad",
+            "id": "HEXSTRING12",
+            "identifier": "Z/20/2345678.0",
+            "kenteken": None,
+            "location": None,
             "status": "Ontvangen",
-            "description": "Test MA MIJN-3031",
-            "timeEnd": "16:00",
-            "timeStart": "10:00",
+            "timeEnd": None,
+            "timeStart": None,
             "title": "Tijdelijke verkeersmaatregel (TVM-RVV-Object)",
         }
 
@@ -72,7 +72,7 @@ class ApiTests(FlaskServerTestCase):
         data = response.get_json()
 
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(len(data["content"]), 20)
+        self.assertEqual(len(data["content"]), 19)
 
         # remove the encrypted url, it is time based
         del data["content"][-1]["documentsUrl"]
