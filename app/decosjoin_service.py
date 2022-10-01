@@ -33,6 +33,7 @@ SELECT_FIELDS = ",".join(
         "dfunction",
         "document_date",
         "num3",
+        "num6",
         "text6",
         "text7",
         "text8",
