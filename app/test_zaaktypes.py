@@ -282,7 +282,7 @@ class ZaaktypesTest(TestCase):
             "text45": "Parkeerontheffingen Blauwe zone bedrijven",
             "title": "Ontvangen",
             "dfunction": "Verleend",
-            "num6": "4",
+            "num6": "4.0",
             "id": "zaak-1",
         }
         zaak_transformed = BZB(zaak_source).result()
@@ -291,7 +291,7 @@ class ZaaktypesTest(TestCase):
         )
         self.assertEqual(zaak_transformed["companyName"], "Uw bedrijfje")
         self.assertEqual(zaak_transformed["dateStart"], to_date("2021-05-26"))
-        self.assertEqual(zaak_transformed["numberOfPermits"], "4")
+        self.assertEqual(zaak_transformed["numberOfPermits"], 4)
 
     def test_Flyeren(self):
         zaak_source = {
