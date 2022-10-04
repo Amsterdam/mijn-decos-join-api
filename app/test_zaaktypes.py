@@ -282,7 +282,7 @@ class ZaaktypesTest(TestCase):
             "text45": "Parkeerontheffingen Blauwe zone bedrijven",
             "title": "Ontvangen",
             "dfunction": "Verleend",
-            "num6": "4.0",
+            "num6": "4",
             "id": "zaak-1",
         }
         zaak_transformed = BZB(zaak_source).result()
