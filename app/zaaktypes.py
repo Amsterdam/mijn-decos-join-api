@@ -555,7 +555,7 @@ class BZB(Zaak):
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Datum van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Datum tot en met
         {"name": "companyName", "from": "company", "parser": to_string},
-        {"name": "numberOfPermits", "from": "num6", "parser": to_string},
+        {"name": "numberOfPermits", "from": "num6", "parser": to_int},
     ]
 
     decision_translations = [
