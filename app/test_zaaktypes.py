@@ -1,4 +1,5 @@
 from datetime import date
+import json
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 
@@ -173,6 +174,170 @@ class ZaaktypesTest(TestCase):
         zaak_transformed = VakantieVerhuurAfmelding(zaak_source).result()
         self.assertEqual(zaak_transformed["title"], "Geannuleerde verhuur")
         self.assertEqual(zaak_transformed["caseType"], "Vakantieverhuur afmelding")
+
+    def test_AfmeldingTransformations1(self):
+        zaken_all = [
+            {
+                "caseType": "Vakantieverhuur",
+                "title": "Geplande verhuur",
+                "identifier": "Z/X1",
+                "dateStart": "2029-07-10",
+                "dateEnd": "2029-07-14",
+                "location": "Amstel 1 1017AB Amsterdam",
+                "dateRequest": "2021-05-10",
+            },
+            {
+                "caseType": "Vakantieverhuur",
+                "title": "Geplande verhuur",
+                "identifier": "Z/X3",
+                "dateStart": "2029-07-10",
+                "dateEnd": "2029-07-14",
+                "location": "Amstel 1 1017AB Amsterdam",
+                "dateRequest": "2021-05-10",
+            },
+        ]
+
+        zaak_afmelding_deferred = {
+            "caseType": "Vakantieverhuur",
+            "title": "Geannuleerde verhuur",
+            "identifier": "Z/X2",
+            "dateStart": "2029-07-10",
+            "dateEnd": "2029-07-14",
+            "location": "Amstel 1 1017AB Amsterdam",
+            "dateRequest": "2021-05-10",
+        }
+
+        VakantieVerhuurAfmelding.defer_transform(
+            zaak_afmelding_deferred, zaken_all, None
+        )
+
+        self.assertEqual(len(zaken_all), 2)
+        self.assertEqual(zaken_all[0]["isCancelled"], True)
+        self.assertEqual(
+            zaken_all[0]["dateDecision"], zaak_afmelding_deferred["dateRequest"]
+        )
+        self.assertEqual(zaken_all[0]["title"], zaak_afmelding_deferred["title"])
+        self.assertEqual(
+            zaken_all[0]["identifier"], zaak_afmelding_deferred["identifier"]
+        )
+
+    def test_AfmeldingTransformations2(self):
+        zaken_all = [
+            {
+                "caseType": "Vakantieverhuur",
+                "title": "Geplande verhuur",
+                "identifier": "Z/X1",
+                "dateStart": "2029-07-10",
+                "dateEnd": "2029-07-14",
+                "location": "Amstel 1 1017AB Amsterdam",
+                "dateRequest": "2021-05-10",
+            },
+            {
+                "caseType": "Vakantieverhuur",
+                "title": "Geplande verhuur",
+                "identifier": "Z/X3",
+                "dateStart": "2029-07-10",
+                "dateEnd": "2029-07-14",
+                "location": "Amstel 1 1017AB Amsterdam",
+                "dateRequest": "2021-05-10",
+            },
+        ]
+
+        zaak_afmelding_deferred = {
+            "caseType": "Vakantieverhuur",
+            "title": "Geannuleerde verhuur",
+            "identifier": "Z/X2",
+            "dateStart": "2029-07-10",
+            "dateEnd": "2029-07-14",
+            "location": "Amstel 1 1017AB Amsterdam",
+            "dateRequest": "2021-05-10",
+        }
+
+        zaak_afmelding_deferred2 = {
+            "caseType": "Vakantieverhuur",
+            "title": "Geannuleerde verhuur",
+            "identifier": "Z/X4",
+            "dateStart": "2029-07-10",
+            "dateEnd": "2029-07-14",
+            "location": "Amstel 1 1017AB Amsterdam",
+            "dateRequest": "2021-05-10",
+        }
+
+        VakantieVerhuurAfmelding.defer_transform(
+            zaak_afmelding_deferred, zaken_all, None
+        )
+        VakantieVerhuurAfmelding.defer_transform(
+            zaak_afmelding_deferred2, zaken_all, None
+        )
+
+        self.assertEqual(len(zaken_all), 2)
+        self.assertEqual(zaken_all[0]["isCancelled"], True)
+        self.assertEqual(zaken_all[1]["isCancelled"], True)
+
+    def test_AfmeldingTransformations3(self):
+        zaken_all = [
+            {
+                "caseType": "Vakantieverhuur",
+                "title": "Geplande verhuur",
+                "identifier": "Z/X1",
+                "dateStart": "2029-07-10",
+                "dateEnd": "2029-07-14",
+                "location": "Amstel 1 1017AB Amsterdam",
+                "dateRequest": "2021-05-10",
+            },
+            {
+                "caseType": "Vakantieverhuur",
+                "title": "Geplande verhuur",
+                "identifier": "Z/X2",
+                "dateStart": "2029-07-10",
+                "dateEnd": "2029-07-14",
+                "location": "Amstel 1 1017AB Amsterdam",
+                "dateRequest": "2021-05-10",
+            },
+            {
+                "caseType": "Vakantieverhuur",
+                "title": "Geplande verhuur",
+                "identifier": "Z/X3",
+                "dateStart": "2029-07-10",
+                "dateEnd": "2029-07-14",
+                "location": "Amstel 1 1017AB Amsterdam",
+                "dateRequest": "2021-05-10",
+            },
+        ]
+
+        zaak_afmelding_deferred = {
+            "caseType": "Vakantieverhuur",
+            "title": "Geannuleerde verhuur",
+            "identifier": "Z/X4",
+            "dateStart": "2029-07-10",
+            "dateEnd": "2029-07-14",
+            "location": "Amstel 1 1017AB Amsterdam",
+            "dateRequest": "2021-05-10",
+        }
+
+        zaak_afmelding_deferred2 = {
+            "caseType": "Vakantieverhuur",
+            "title": "Geannuleerde verhuur",
+            "identifier": "Z/X5",
+            "dateStart": "2029-07-10",
+            "dateEnd": "2029-07-14",
+            "location": "Amstel 1 1017AB Amsterdam",
+            "dateRequest": "2021-05-10",
+        }
+
+        VakantieVerhuurAfmelding.defer_transform(
+            zaak_afmelding_deferred, zaken_all, None
+        )
+        VakantieVerhuurAfmelding.defer_transform(
+            zaak_afmelding_deferred2, zaken_all, None
+        )
+
+        self.assertEqual(len(zaken_all), 3)
+        self.assertEqual(zaken_all[0]["isCancelled"], True)
+        self.assertEqual(zaken_all[1]["isCancelled"], True)
+
+        with self.assertRaises(KeyError):
+            zaken_all[2]["isCancelled"]
 
     def test_BBVergunning(self):
         zaak_source = {
