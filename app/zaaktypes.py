@@ -220,14 +220,14 @@ class VakantieVerhuur(Zaak):
     # This is done to show verhuur instances given a vergunning in the UI.
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
-        for new_zaak in zaken_all:
+        for zaak in zaken_all:
             if (
-                new_zaak["caseType"] == VakantieVerhuurVergunning.zaak_type
-                and new_zaak["location"] == zaak_deferred["location"]
-                and zaak_deferred["dateStart"] >= new_zaak["dateStart"]
-                and zaak_deferred["dateEnd"] <= new_zaak["dateEnd"]
+                zaak["caseType"] == VakantieVerhuurVergunning.zaak_type
+                and zaak["location"] == zaak_deferred["location"]
+                and zaak_deferred["dateStart"] >= zaak["dateStart"]
+                and zaak_deferred["dateEnd"] <= zaak["dateEnd"]
             ):
-                zaak_deferred["vergunningId"] = new_zaak["id"]
+                zaak_deferred["vergunningId"] = zaak["id"]
 
         zaken_all.append(zaak_deferred)
 
@@ -239,15 +239,22 @@ class VakantieVerhuurAfmelding(Zaak):
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
         # update the existing registration
-        for new_zaak in zaken_all:
+        # This function checks if there is Vakantieverhuur:gepland present with the same dates.
+        # If there are this zaak is updated with properties from this Zaak which is a Vakantieverhuur:afgemeld.
+        # We do this so the updated Zaak appears to be afgemeld.
+        for zaak in zaken_all:
+            # Check if the Deferred afmelding has properties for an already submitted verhuur melding
             if (
-                new_zaak["caseType"] == VakantieVerhuur.zaak_type
-                and new_zaak["dateStart"] == zaak_deferred["dateStart"]
-                and new_zaak["dateEnd"] == zaak_deferred["dateEnd"]
+                zaak["caseType"] == VakantieVerhuur.zaak_type
+                and zaak["dateStart"] == zaak_deferred["dateStart"]
+                and zaak["dateEnd"] == zaak_deferred["dateEnd"]
+                and not zaak.get("isCancelled", False)
             ):
-                new_zaak["dateDescision"] = zaak_deferred["dateRequest"]
-                new_zaak["title"] = zaak_deferred["title"]
-                new_zaak["identifier"] = zaak_deferred["identifier"]
+                zaak["dateDecision"] = zaak_deferred["dateRequest"]
+                zaak["title"] = zaak_deferred["title"]
+                zaak["identifier"] = zaak_deferred["identifier"]
+                zaak["isCancelled"] = True
+                break
 
     parse_fields = [
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Start verhuur
