@@ -1,3 +1,4 @@
+from pprint import pprint
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -5,8 +6,8 @@ from freezegun import freeze_time
 
 from app.decosjoin_service import DecosJoinConnection
 from app.field_parsers import to_date
-from app.zaaktypes import BBVergunning
 from app.fixtures.response_mock import get_response_mock, post_response_mock
+from app.zaaktypes import BBVergunning
 
 
 @patch(
@@ -104,10 +105,15 @@ class ConnectionTests(TestCase):
             ["Z/20/2345678.0", "Ontvangen", None, "TVM - RVV - Object"],
         ]
 
-        self.assertEqual(zaken_from_fixtures, zaken_expected)
+        self.assertEqual(
+            sorted(zaken_from_fixtures, key=lambda zaak: zaak[0]),
+            sorted(zaken_expected, key=lambda zaak: zaak[0]),
+        )
+
+        self.assertEqual(zaken[9].get("identifier"), "Z/21/7865356778")
 
         # The vakantieverhuur should be matched to the right vakantieverhuurvergunning.
-        self.assertEqual(zaken[9].get("vergunningId"), "HEXSTRING17b")
+        self.assertEqual(zaken[17].get("vergunningId"), "HEXSTRING17b")
 
         # Z/21/90123456 "vakantieverhuur" is filtered out because it is replaced by Z/21/89012345 "vakantieverhuur afmelding"
         self.assert_unknown_identifier(zaken, "Z/21/90123456")

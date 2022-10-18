@@ -1,23 +1,24 @@
-from datetime import date
 import json
+from datetime import date
 from unittest.case import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from freezegun import freeze_time
 
+from app.decosjoin_service import DecosJoinConnection
 from app.field_parsers import to_date
 from app.zaaktypes import (
     BZB,
     BZP,
+    AanbiedenDiensten,
     BBVergunning,
+    Flyeren,
     NachtwerkOntheffing,
     Omzettingsvergunning,
     TVM_RVV_Object,
     VakantieVerhuur,
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
-    Flyeren,
-    AanbiedenDiensten,
 )
 
 
@@ -338,6 +339,99 @@ class ZaaktypesTest(TestCase):
 
         with self.assertRaises(KeyError):
             zaken_all[2]["isCancelled"]
+
+    @patch(
+        "app.crypto.get_encrytion_key",
+        lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=",
+    )
+    def test_afmeldingen(self):
+        zaken = [
+            {
+                "company": "Saloua",
+                "date6": "2022-10-15T00:00:00",
+                "date7": "2022-10-17T00:00:00",
+                "document_date": "2022-10-15T00:00:00",
+                "mark": "Z/22/1979759",
+                "subject1": "Melding Amstel 1  -   Grupstal",
+                "text11": "Nvt",
+                "text12": "Geen kosten",
+                "text45": "Vakantieverhuur",
+                "text6": "Amstel 1 1011PN Amsterdam",
+                "text7": "Z/22/1973558",
+                "title": "Ontvangen",
+            },
+            {
+                "company": "Saloua",
+                "date6": "2022-10-15T00:00:00",
+                "date7": "2022-10-17T00:00:00",
+                "document_date": "2022-10-15T00:00:00",
+                "mark": "Z/22/1979760",
+                "subject1": "Melding Amstel 1  -   Grupstal",
+                "text11": "Nvt",
+                "text45": "Vakantieverhuur afmelding",
+                "text6": "Amstel 1 1011PN",
+                "title": "Ontvangen",
+            },
+            {
+                "company": "Saloua",
+                "date6": "2022-10-15T00:00:00",
+                "date7": "2022-10-17T00:00:00",
+                "document_date": "2022-10-15T00:00:00",
+                "mark": "Z/22/1979763",
+                "subject1": "Melding Amstel 1  -   Grupstal",
+                "text11": "Nvt",
+                "text12": "Geen kosten",
+                "text45": "Vakantieverhuur",
+                "text6": "Amstel 1 1011PN Amsterdam",
+                "text7": "Z/22/1973558",
+                "title": "Ontvangen",
+            },
+            {
+                "company": "Saloua",
+                "date6": "2022-10-15T00:00:00",
+                "date7": "2022-10-17T00:00:00",
+                "document_date": "2022-10-15T00:00:00",
+                "mark": "Z/22/1979762",
+                "subject1": "Melding Amstel 1  -   Grupstal",
+                "text11": "Nvt",
+                "text45": "Vakantieverhuur afmelding",
+                "text6": "Amstel 1 1011PN",
+                "title": "Ontvangen",
+            },
+            {
+                "company": "Saloua",
+                "date6": "2022-10-15T00:00:00",
+                "date7": "2022-10-17T00:00:00",
+                "document_date": "2022-10-15T00:00:00",
+                "mark": "Z/22/1979761",
+                "subject1": "Melding Amstel 1  -   Grupstal",
+                "text11": "Nvt",
+                "text12": "Geen kosten",
+                "text45": "Vakantieverhuur",
+                "text6": "Amstel 1 1011PN Amsterdam",
+                "text7": "Z/22/1973558",
+                "title": "Ontvangen",
+            },
+        ]
+
+        zaken_all = []
+
+        for zaak in zaken:
+            zaken_all.append({"fields": zaak, "key": zaak["mark"]})
+
+        conn = DecosJoinConnection(
+            "username",
+            "password",
+            "http://localhost",
+            None,
+        )
+
+        zaken_transformed = conn.transform(zaken_all, "123123123")
+        ids = []
+        for zaak in zaken_transformed:
+            ids.append(zaak["id"])
+
+        self.assertEqual(ids, ["Z/22/1979759", "Z/22/1979761", "Z/22/1979763"])
 
     def test_BBVergunning(self):
         zaak_source = {
