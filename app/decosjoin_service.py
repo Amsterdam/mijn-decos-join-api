@@ -5,6 +5,8 @@ import requests
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
 
+from app.config import DECOS_API_REQUEST_TIMEOUT
+from app.crypto import encrypt
 from app.field_parsers import (
     get_fields,
     to_date,
@@ -13,8 +15,6 @@ from app.field_parsers import (
     to_string_or_empty_string,
 )
 from app.zaaktypes import zaken_index
-from app.config import DECOS_API_REQUEST_TIMEOUT
-from app.crypto import encrypt
 
 LOG_RAW = False
 PAGE_SIZE = 30
@@ -141,11 +141,15 @@ class DecosJoinConnection:
         value = value.lower()
         return value in test_list
 
-    def transform(self, zaken, user_identifier):  # noqa: C901
+    def transform(self, zaken_source, user_identifier):  # noqa: C901
         new_zaken = []
         deferred_zaken = []
 
-        for zaak_source in zaken:
+        zaken_source_sorted = sorted(
+            zaken_source, key=lambda zaak: zaak["fields"]["mark"]
+        )
+
+        for zaak_source in zaken_source_sorted:
             source_fields = zaak_source["fields"]
 
             # Cannot reliably determine the zaaktype of this zaak
@@ -249,7 +253,7 @@ class DecosJoinConnection:
             zaken_source.extend(zaken)
 
         zaken = self.transform(zaken_source, user_identifier)
-        return sorted(zaken, key=lambda x: x["identifier"], reverse=True)
+        return zaken
 
     def get_document_data(self, document_id: str):
         res_json = self.request(f"{self.api_url}items/{document_id}/blob?select=bol10")
