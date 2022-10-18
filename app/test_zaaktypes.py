@@ -19,6 +19,9 @@ from app.zaaktypes import (
     VakantieVerhuur,
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
+    Flyeren,
+    AanbiedenDiensten,
+    ZwaarVerkeer,
 )
 
 
@@ -638,7 +641,6 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["timeStart"], "10:00")
         self.assertEqual(zaak_transformed["timeEnd"], "17:00")
         self.assertEqual(zaak_transformed["decision"], "Verleend")
-
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-06-15"))
 
@@ -653,4 +655,42 @@ class ZaaktypesTest(TestCase):
         connection_mock.get_workflow.assert_called_once_with(
             "zaak-1",
             NachtwerkOntheffing.date_workflow_active_step_title,
+        )
+
+    def test_ZwaarVerkeer(self):
+        zaak_source = {
+            "mark": "Z/22/9901425152",
+            "document_date": "2022-05-18T00:00:00",
+            "date5": "2022-02-01T00:00:00",
+            "date6": "2022-10-21T00:00:00",
+            "date7": "2023-10-26T00:00:00",
+            "text17": "Routeontheffing brede wegen tm 30 ton",
+            "date49": "KN-UW-TS,AAZZ88",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-99",
+        }
+
+        zaak_transformed = ZwaarVerkeer(zaak_source).result()
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Ontheffing zwaar verkeer",
+        )
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2022-10-21"))
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2023-10-26"))
+        self.assertEqual(zaak_transformed["kind"], "Routeontheffing breed opgezette wegen tot en met 30 ton")
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2022-10-15"))
+
+        zaken_all = []
+
+        ZwaarVerkeer.defer_transform(
+            zaak_transformed, zaken_all, connection_mock()
+        )
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-15"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-99",
+            ZwaarVerkeer.date_workflow_active_step_title,
         )
