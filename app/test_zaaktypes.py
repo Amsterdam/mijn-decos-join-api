@@ -1,5 +1,5 @@
-import json
 from datetime import date
+import json
 from unittest.case import TestCase
 from unittest.mock import MagicMock, patch
 
@@ -19,6 +19,8 @@ from app.zaaktypes import (
     VakantieVerhuur,
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
+    Flyeren,
+    AanbiedenDiensten,
 )
 
 
