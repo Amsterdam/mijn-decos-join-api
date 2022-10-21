@@ -638,3 +638,18 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["timeStart"], "10:00")
         self.assertEqual(zaak_transformed["timeEnd"], "17:00")
         self.assertEqual(zaak_transformed["decision"], "Verleend")
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2022-06-15"))
+
+        zaken_all = []
+
+        NachtwerkOntheffing.defer_transform(
+            zaak_transformed, zaken_all, connection_mock()
+        )
+
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-06-15"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-1",
+            NachtwerkOntheffing.date_workflow_active_step_title,
+        )

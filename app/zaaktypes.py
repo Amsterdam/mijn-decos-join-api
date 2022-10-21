@@ -634,7 +634,7 @@ class NachtwerkOntheffing(Zaak):
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
         date_workflow_active = decosjoin_service.get_workflow(
-            zaak_deferred["id"], Omzettingsvergunning.date_workflow_active_step_title
+            zaak_deferred["id"], NachtwerkOntheffing.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
         zaken_all.append(zaak_deferred)
