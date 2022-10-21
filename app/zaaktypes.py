@@ -629,6 +629,15 @@ class NachtwerkOntheffing(Zaak):
 
     zaak_type = "Nachtwerkontheffing"
     title = "Geluidsontheffing werken in de openbare ruimte (nachtwerkontheffing)"
+    date_workflow_active_step_title = "Nachtwerkontheffing - Behandelen"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], Omzettingsvergunning.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
