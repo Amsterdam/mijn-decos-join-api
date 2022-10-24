@@ -55,7 +55,7 @@ class ConnectionTests(TestCase):
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
 
-        self.assertEqual(len(zaken), 19)
+        self.assertEqual(len(zaken), 18)
         zaken_from_fixtures = []
 
         for z in zaken:
@@ -101,7 +101,6 @@ class ConnectionTests(TestCase):
             ["Z/20/2345678.4", "Ontvangen", None, "TVM - RVV - Object"],
             ["Z/20/2345678.3", "Ontvangen", None, "TVM - RVV - Object"],
             ["Z/20/2345678.2", "Ontvangen", None, "TVM - RVV - Object"],
-            ["Z/20/2345678.1", "Ontvangen", None, "TVM - RVV - Object"],
             ["Z/20/2345678.0", "Ontvangen", None, "TVM - RVV - Object"],
         ]
 
@@ -110,10 +109,10 @@ class ConnectionTests(TestCase):
             sorted(zaken_expected, key=lambda zaak: zaak[0]),
         )
 
-        self.assertEqual(zaken[9].get("identifier"), "Z/21/7865356778")
+        self.assertEqual(zaken[8].get("identifier"), "Z/21/7865356778")
 
         # The vakantieverhuur should be matched to the right vakantieverhuurvergunning.
-        self.assertEqual(zaken[17].get("vergunningId"), "HEXSTRING17b")
+        self.assertEqual(zaken[16].get("vergunningId"), "HEXSTRING17b")
 
         # Z/21/90123456 "vakantieverhuur" is filtered out because it is replaced by Z/21/89012345 "vakantieverhuur afmelding"
         self.assert_unknown_identifier(zaken, "Z/21/90123456")
@@ -126,6 +125,9 @@ class ConnectionTests(TestCase):
 
         # Z/20/2 is filtered out because of decision "Buiten behandeling"
         self.assert_unknown_identifier(zaken, "Z/20/2")
+
+        # Z/20/2345678.1 is filtered out because of decision "Geannuleerd"
+        self.assert_unknown_identifier(zaken, "Z/20/2345678.1")
 
     @patch("app.decosjoin_service.PAGE_SIZE", 10)
     def test_get_documents(self):

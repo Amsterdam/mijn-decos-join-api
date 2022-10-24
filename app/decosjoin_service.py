@@ -178,7 +178,7 @@ class DecosJoinConnection:
             ):
                 continue
 
-            if self.is_list_match(new_zaak, "decision", ["buiten behandeling"]):
+            if self.is_list_match(new_zaak, "decision", ["buiten behandeling", "geannuleerd"]):
                 continue
 
             if new_zaak["description"] and new_zaak["description"].lower().startswith(
