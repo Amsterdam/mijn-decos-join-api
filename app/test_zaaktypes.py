@@ -19,8 +19,6 @@ from app.zaaktypes import (
     VakantieVerhuur,
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
-    Flyeren,
-    AanbiedenDiensten,
     ZwaarVerkeer,
 )
 
@@ -641,6 +639,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["timeStart"], "10:00")
         self.assertEqual(zaak_transformed["timeEnd"], "17:00")
         self.assertEqual(zaak_transformed["decision"], "Verleend")
+
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-06-15"))
 
@@ -678,7 +677,7 @@ class ZaaktypesTest(TestCase):
         )
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-10-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2023-10-26"))
-        self.assertEqual(zaak_transformed["kind"], "Routeontheffing breed opgezette wegen tot en met 30 ton")
+        self.assertEqual(zaak_transformed["exemptionKind"], "Routeontheffing breed opgezette wegen tot en met 30 ton")
 
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-10-15"))

@@ -679,7 +679,7 @@ class ZwaarVerkeer(Zaak):
         return get_translation(kind_source, ZwaarVerkeer.kind_translations, True)
 
     parse_fields = [
-        {"name": "kind", "from": "text17", "parser": to_kind},  # Soort ontheffing
+        {"name": "exemptionKind", "from": "text17", "parser": to_kind},  # Soort ontheffing
         {"name": "licencePlates", "from": "date49", "parser": to_string},  # Kentekens
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Van 
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
