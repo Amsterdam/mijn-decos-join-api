@@ -72,7 +72,7 @@ class ApiTests(FlaskServerTestCase):
         data = response.get_json()
 
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(len(data["content"]), 19)
+        self.assertEqual(len(data["content"]), 18)
 
         # remove the encrypted url, it is time based
         del data["content"][0]["documentsUrl"]
