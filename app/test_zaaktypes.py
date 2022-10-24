@@ -638,6 +638,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["timeStart"], "10:00")
         self.assertEqual(zaak_transformed["timeEnd"], "17:00")
         self.assertEqual(zaak_transformed["decision"], "Verleend")
+
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-06-15"))
 
