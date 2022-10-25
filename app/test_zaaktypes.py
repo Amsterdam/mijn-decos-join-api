@@ -659,7 +659,7 @@ class ZaaktypesTest(TestCase):
             "date6": "2022-10-21T00:00:00",
             "date7": "2023-10-26T00:00:00",
             "text17": "Routeontheffing brede wegen tm 30 ton",
-            "date49": "KN-UW-TS,AAZZ88",
+            "text49": "KN-UW-TS,AAZZ88",
             "title": "Ontvangen",
             "dfunction": "Verleend",
             "id": "zaak-99",
