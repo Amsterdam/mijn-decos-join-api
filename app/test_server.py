@@ -72,12 +72,12 @@ class ApiTests(FlaskServerTestCase):
         data = response.get_json()
 
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(len(data["content"]), 18)
+        self.assertEqual(len(data["content"]), 19)
 
         # remove the encrypted url, it is time based
-        del data["content"][0]["documentsUrl"]
+        del data["content"][1]["documentsUrl"]
 
-        self.assertEqual(data["content"][0], self.expected_zaak())
+        self.assertEqual(data["content"][1], self.expected_zaak())
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch(

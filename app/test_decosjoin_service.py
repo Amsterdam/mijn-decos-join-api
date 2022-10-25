@@ -55,7 +55,7 @@ class ConnectionTests(TestCase):
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
 
-        self.assertEqual(len(zaken), 18)
+        self.assertEqual(len(zaken), 19)
         zaken_from_fixtures = []
 
         for z in zaken:
@@ -64,6 +64,7 @@ class ConnectionTests(TestCase):
             )
 
         zaken_expected = [
+            ["Z/20/1234567", "Ontvangen", None, "TVM - RVV - Object"],
             [
                 "Z/21/99012350",
                 "Ontvangen",
@@ -109,10 +110,10 @@ class ConnectionTests(TestCase):
             sorted(zaken_expected, key=lambda zaak: zaak[0]),
         )
 
-        self.assertEqual(zaken[8].get("identifier"), "Z/21/7865356778")
+        self.assertEqual(zaken[8].get("identifier"), "Z/21/123123123")
 
         # The vakantieverhuur should be matched to the right vakantieverhuurvergunning.
-        self.assertEqual(zaken[16].get("vergunningId"), "HEXSTRING17b")
+        self.assertEqual(zaken[17].get("vergunningId"), "HEXSTRING17b")
 
         # Z/21/90123456 "vakantieverhuur" is filtered out because it is replaced by Z/21/89012345 "vakantieverhuur afmelding"
         self.assert_unknown_identifier(zaken, "Z/21/90123456")
