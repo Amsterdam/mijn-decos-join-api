@@ -88,11 +88,6 @@ class ZaaktypesTest(TestCase):
             "dateEnd": to_date(zaak_source["date7"]),
         }
 
-        self.assertEqual(TVM_RVV_Object(zaak_source).zaak, None)
-
-        zaak_source["text11"] = None
-        zaak_source["text12"] = None
-
         self.assertEqual(TVM_RVV_Object(zaak_source).zaak, zaak_transformed)
 
     def test_VakantieVerhuurVergunning(self):

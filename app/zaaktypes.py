@@ -100,13 +100,7 @@ class Zaak:
         payment_status = to_string_if_exists(self.zaak_source, "text11")
         payment_method = to_string_if_exists(self.zaak_source, "text12")
 
-        if payment_status == "Nogniet" and (
-            payment_method
-            in [
-                "Wacht op online betaling",
-                "Er is iets misgegaan, controleer online betaling!",
-            ]
-        ):
+        if payment_status == "Nogniet" and payment_method == "Wacht op online betaling":
             return False
 
         return True
@@ -653,6 +647,9 @@ class NachtwerkOntheffing(Zaak):
         ["Verleend met borden", "Verleend"],
         ["Verleend zonder borden", "Verleend"],
     ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
 
 
 # A dict with all enabled Zaken
