@@ -652,6 +652,62 @@ class NachtwerkOntheffing(Zaak):
         return super().has_valid_payment_status()
 
 
+class ZwaarVerkeer(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Zwaar verkeer"
+    title = "Ontheffing zwaar verkeer"
+    date_workflow_active_step_title = "zwaar verkeer - Behandelen"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], ZwaarVerkeer.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
+    def to_kind(kind_source) -> str:
+        if not kind_source:
+            return None
+        return get_translation(kind_source, ZwaarVerkeer.kind_translations, True)
+
+    parse_fields = [
+        {"name": "exemptionKind", "from": "text17", "parser": to_kind},  # Soort ontheffing
+        {"name": "licencePlates", "from": "date49", "parser": to_string},  # Kentekens
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Van
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
+    ]
+
+    kind_translations = [
+        ["Jaarontheffing bijzonder","Jaarontheffing hele zone voor bijzondere voertuigen"],
+        ["Jaarontheffing gewicht","Jaarontheffing hele zone met gewichtsverklaring"],
+        ["Jaarontheffing gewicht bijzonder","Jaarontheffing hele zone voor bijzondere voertuigen met gewichtsverklaring"],
+        ["Jaarontheffing gewicht en ondeelbaar","Jaarontheffing hele zone met gewichtsverklaring en verklaring ondeelbare lading"],
+        ["Jaarontheffing ondeelbaar","Jaarontheffing hele zone met verklaring ondeelbare lading"],
+        ["Routeontheffing bijzonder boven 30 ton","Routeontheffing bijzondere voertuig boven 30 ton"],
+        ["Routeontheffing brede wegen boven 30 ton","Routeontheffing breed opgezette wegen boven 30 ton"],
+        ["Routeontheffing brede wegen tm 30 ton","Routeontheffing breed opgezette wegen tot en met 30 ton"],
+        ["Routeontheffing culturele instelling","Routeontheffing pilot culturele instelling"],
+        ["Routeontheffing ondeelbaar boven 30 ton","Routeontheffing boven 30 ton met verklaring ondeelbare lading"],
+        ["Zwaar verkeer","Ontheffing zwaar verkeer"],
+        ["Dagontheffing","Dagontheffing hele zone"],
+        ["Jaarontheffing","Jaarontheffing hele zone"],
+    ]
+
+    decision_translations = [
+        ["Ingetrokken", "Ingetrokken"],
+        ["Niet verleend", "Afgewezen"],
+        ["Verleend", "Toegekend"],
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
 # A dict with all enabled Zaken
 zaken_index = {
     getattr(cls, "zaak_type"): cls for cls in Zaak.__subclasses__() if cls.enabled
