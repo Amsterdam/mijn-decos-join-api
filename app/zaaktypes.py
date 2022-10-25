@@ -510,7 +510,7 @@ class ERVV_TVM(Zaak):
 class BZP(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Parkeerontheffingen Blauwe zone particulieren"
@@ -546,7 +546,7 @@ class BZP(Zaak):
 class BZB(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Parkeerontheffingen Blauwe zone bedrijven"
