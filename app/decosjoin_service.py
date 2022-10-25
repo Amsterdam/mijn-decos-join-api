@@ -30,7 +30,6 @@ SELECT_FIELDS = ",".join(
         "date5",
         "date6",
         "date7",
-        "date49",
         "dfunction",
         "document_date",
         "num3",
@@ -46,6 +45,7 @@ SELECT_FIELDS = ",".join(
         "text17",
         "text20",
         "text25",
+        "text49",
     ]
 )
 
