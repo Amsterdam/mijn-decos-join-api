@@ -49,6 +49,7 @@ class ApiTests(FlaskServerTestCase):
             "timeEnd": None,
             "timeStart": None,
             "title": "Tijdelijke verkeersmaatregel (TVM-RVV-Object)",
+            'processed': False,
         }
 
     def client_get(self, location):
