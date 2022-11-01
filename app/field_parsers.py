@@ -120,3 +120,12 @@ def to_int(value):
     if not value:
         return None
     return int(value)
+
+
+def to_bool(value):
+    if not value:
+        return False
+    return True
+
+def to_bool_if_exists(zaak, key):
+    return to_bool(zaak[key]) if key in zaak else False
