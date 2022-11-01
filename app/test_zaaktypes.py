@@ -87,6 +87,7 @@ class ZaaktypesTest(TestCase):
             "timeStart": "10:00",
             "dateStart": to_date(zaak_source["date6"]),
             "dateEnd": to_date(zaak_source["date7"]),
+            'processed': False,
         }
 
         self.assertEqual(TVM_RVV_Object(zaak_source).zaak, zaak_transformed)

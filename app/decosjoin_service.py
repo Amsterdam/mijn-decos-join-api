@@ -46,6 +46,7 @@ SELECT_FIELDS = ",".join(
         "text20",
         "text25",
         "text49",
+        "processed",
     ]
 )
 

@@ -10,6 +10,7 @@ from app.field_parsers import (
     to_string,
     to_string_if_exists,
     to_time,
+    to_bool_if_exists,
 )
 
 
@@ -50,6 +51,7 @@ class Zaak:
             "decision": self.to_decision(),
             "dateDecision": self.to_date_decision(),
             "description": self.to_description(),
+            "processed": self.to_processed(),
         }
 
         # Arbitrary data for individual Zaken
@@ -86,6 +88,9 @@ class Zaak:
 
     def to_description(self) -> str:
         return to_string_if_exists(self.zaak_source, "subject1")
+
+    def to_processed(self):
+        return to_bool_if_exists(self.zaak_source, "processed")
 
     def result(self):
         return self.zaak
