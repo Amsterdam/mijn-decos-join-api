@@ -720,8 +720,8 @@ class Samenvoegingsvergunning(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "Samenvoegingsvergunning"
-    title = "Vergunning voor samenvoegen van woonruimte"
-    date_workflow_active_step_title = "Onttrekking- vorming en samenvoegingsvergunning - Beoordelen en besluiten"
+    title = "Vergunning voor samenvoegen van woonruimten"
+    date_workflow_active_step_title = "Samenvoegingsvergunning - Beoordelen en besluiten"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
@@ -747,7 +747,7 @@ class Onttrekkingsvergunning(Zaak):
 
     zaak_type = "Onttrekkingsvergunning"
     title = "Onttrekkingsvergunning voor ander gebruik"
-    date_workflow_active_step_title = "Onttrekking- vorming en samenvoegingsvergunning - Beoordelen en besluiten"
+    date_workflow_active_step_title = "Onttrekkingsvergunning voor ander gebruik - Beoordelen en besluiten"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
@@ -773,7 +773,7 @@ class OnttrekkingsvergunningSloop(Zaak):
 
     zaak_type = "Onttrekkingsvergunning voor sloop"
     title = "Onttrekkingsvergunning voor sloop"
-    date_workflow_active_step_title = "Onttrekking- vorming en samenvoegingsvergunning - Beoordelen en besluiten"
+    date_workflow_active_step_title = "Onttrekkingsvergunning voor sloop - Beoordelen en besluiten"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
@@ -798,8 +798,8 @@ class VormenVanWoonruimte(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "Vormen van Woonruimte"
-    title = "Vergunning voor vormen van woonruimte"
-    date_workflow_active_step_title = "Onttrekking- vorming en samenvoegingsvergunning - Beoordelen en besluiten"
+    title = "Vergunning voor woningvorming"
+    date_workflow_active_step_title = "Woningvormingsvergunning - Beoordelen en besluiten"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
