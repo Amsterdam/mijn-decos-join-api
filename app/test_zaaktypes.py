@@ -706,7 +706,7 @@ class ZaaktypesTest(TestCase):
         zaak_transformed = Samenvoegingsvergunning(zaak_source).result()
         self.assertEqual(
             zaak_transformed["title"],
-            "Vergunning voor samenvoegen van woonruimte",
+            "Vergunning voor samenvoegen van woonruimten",
         )
         self.assertEqual(zaak_transformed["location"], "Amstel 1 1000AB")
 
