@@ -745,7 +745,7 @@ class Onttrekkingsvergunning(Zaak):
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
-    zaak_type = "Onttrekkingsvergunning"
+    zaak_type = "Onttrekkingsvergunning voor ander gebruik"
     title = "Onttrekkingsvergunning voor ander gebruik"
     date_workflow_active_step_title = "Onttrekkingsvergunning voor ander gebruik - Beoordelen en besluiten"
 
@@ -797,7 +797,7 @@ class VormenVanWoonruimte(Zaak):
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
-    zaak_type = "Vormen van Woonruimte"
+    zaak_type = "Woningvormingsvergunning"
     title = "Vergunning voor woningvorming"
     date_workflow_active_step_title = "Woningvormingsvergunning - Beoordelen en besluiten"
 
