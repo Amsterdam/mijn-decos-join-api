@@ -825,7 +825,7 @@ class Splitsingsvergunning(Zaak):
 
     zaak_type = "Splitsingsvergunning"
     title = "Splitsingsvergunning"
-    date_workflow_active_step_title = "splitsingsvergunning - Behandelen"
+    date_workflow_active_step_title = "Splitsingsvergunning - Behandelen"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
@@ -837,6 +837,10 @@ class Splitsingsvergunning(Zaak):
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+    ]
+
+    decision_translations = [
+        ["Vergunningvrij", "Vergunningsvrij"],
     ]
 
     def has_valid_source_data(self):
