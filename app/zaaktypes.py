@@ -601,7 +601,7 @@ class Flyeren(Zaak):
 class AanbiedenDiensten(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Aanbieden van diensten"
@@ -623,7 +623,7 @@ class AanbiedenDiensten(Zaak):
 class NachtwerkOntheffing(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Nachtwerkontheffing"
