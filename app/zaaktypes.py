@@ -839,6 +839,7 @@ class Splitsingsvergunning(Zaak):
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
 
+    # Correct typo
     decision_translations = [
         ["Vergunningvrij", "Vergunningsvrij"],
     ]
