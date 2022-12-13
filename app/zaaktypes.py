@@ -713,6 +713,141 @@ class ZwaarVerkeer(Zaak):
         return super().has_valid_payment_status()
 
 
+class Samenvoegingsvergunning(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Samenvoegingsvergunning"
+    title = "Vergunning voor samenvoegen van woonruimten"
+    date_workflow_active_step_title = "Samenvoegingsvergunning - Beoordelen en besluiten"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], Samenvoegingsvergunning.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
+    parse_fields = [
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
+class Onttrekkingsvergunning(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Onttrekkingsvergunning voor ander gebruik"
+    title = "Onttrekkingsvergunning voor ander gebruik"
+    date_workflow_active_step_title = "Onttrekkingsvergunning voor ander gebruik - Beoordelen en besluiten"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], Onttrekkingsvergunning.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
+    parse_fields = [
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
+class OnttrekkingsvergunningSloop(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Onttrekkingsvergunning voor sloop"
+    title = "Onttrekkingsvergunning voor sloop"
+    date_workflow_active_step_title = "Onttrekkingsvergunning voor sloop - Beoordelen en besluiten"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], OnttrekkingsvergunningSloop.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
+    parse_fields = [
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
+class VormenVanWoonruimte(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Woningvormingsvergunning"
+    title = "Vergunning voor woningvorming"
+    date_workflow_active_step_title = "Woningvormingsvergunning - Beoordelen en besluiten"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], VormenVanWoonruimte.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
+    parse_fields = [
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
+class Splitsingsvergunning(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = True
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Splitsingsvergunning"
+    title = "Splitsingsvergunning"
+    date_workflow_active_step_title = "Splitsingsvergunning - Behandelen"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], Splitsingsvergunning.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
+    parse_fields = [
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+    ]
+
+    # Correct typo
+    decision_translations = [
+        ["Vergunningvrij", "Vergunningsvrij"],
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
 # A dict with all enabled Zaken
 zaken_index = {
     getattr(cls, "zaak_type"): cls for cls in Zaak.__subclasses__() if cls.enabled

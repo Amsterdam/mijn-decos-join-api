@@ -20,6 +20,8 @@ from app.zaaktypes import (
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
     ZwaarVerkeer,
+    Samenvoegingsvergunning,
+    Splitsingsvergunning,
 )
 
 
@@ -688,4 +690,70 @@ class ZaaktypesTest(TestCase):
         connection_mock.get_workflow.assert_called_once_with(
             "zaak-99",
             ZwaarVerkeer.date_workflow_active_step_title,
+        )
+
+    def test_Samenvoegingsvergunning(self):
+        zaak_source = {
+            "mark": "Z/22/9901425263",
+            "document_date": "2022-05-18T00:00:00",
+            "date5": "2022-02-01T00:00:00",
+            "text6": "Amstel 1 1000AB",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-100",
+        }
+
+        zaak_transformed = Samenvoegingsvergunning(zaak_source).result()
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Vergunning voor samenvoegen van woonruimten",
+        )
+        self.assertEqual(zaak_transformed["location"], "Amstel 1 1000AB")
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2022-10-15"))
+
+        zaken_all = []
+
+        Samenvoegingsvergunning.defer_transform(
+            zaak_transformed, zaken_all, connection_mock()
+        )
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-15"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-100",
+            Samenvoegingsvergunning.date_workflow_active_step_title,
+        )
+
+    def test_Splitsingsvergunning(self):
+        zaak_source = {
+            "mark": "Z/22/9901425263",
+            "document_date": "2022-05-18T00:00:00",
+            "date5": "2022-02-01T00:00:00",
+            "text6": "Amstel 10 1000AB",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-101",
+        }
+
+        zaak_transformed = Splitsingsvergunning(zaak_source).result()
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Splitsingsvergunning",
+        )
+        self.assertEqual(zaak_transformed["location"], "Amstel 10 1000AB")
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2022-10-20"))
+
+        zaken_all = []
+
+        Splitsingsvergunning.defer_transform(
+            zaak_transformed, zaken_all, connection_mock()
+        )
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-20"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-101",
+            Splitsingsvergunning.date_workflow_active_step_title,
         )
