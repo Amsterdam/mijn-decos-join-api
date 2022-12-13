@@ -660,7 +660,7 @@ class NachtwerkOntheffing(Zaak):
 class ZwaarVerkeer(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Zwaar verkeer"
