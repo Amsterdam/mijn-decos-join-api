@@ -820,7 +820,7 @@ class VormenVanWoonruimte(Zaak):
 class Splitsingsvergunning(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Splitsingsvergunning"
