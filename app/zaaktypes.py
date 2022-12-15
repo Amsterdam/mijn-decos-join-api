@@ -665,7 +665,7 @@ class ZwaarVerkeer(Zaak):
 
     zaak_type = "Zwaar verkeer"
     title = "Ontheffing zwaar verkeer"
-    date_workflow_active_step_title = "zwaar verkeer - Behandelen"
+    date_workflow_active_step_title = "Zwaar verkeer - Behandelen"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
