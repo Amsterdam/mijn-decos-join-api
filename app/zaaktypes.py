@@ -839,11 +839,6 @@ class Splitsingsvergunning(Zaak):
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
 
-    # Correct typo
-    decision_translations = [
-        ["Vergunningvrij", "Vergunningsvrij"],
-    ]
-
     def has_valid_source_data(self):
         return super().has_valid_payment_status()
 
@@ -862,11 +857,6 @@ class VOBvergunning(Zaak):
         {"name": "reason", "from": "text10", "parser": to_string},  # Reden
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
-    ]
-
-    # Correct typo
-    decision_translations = [
-        ["Vergunningvrij", "Vergunningsvrij"],
     ]
 
     def has_valid_source_data(self):
