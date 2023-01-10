@@ -839,9 +839,24 @@ class Splitsingsvergunning(Zaak):
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
 
-    # Correct typo
-    decision_translations = [
-        ["Vergunningvrij", "Vergunningsvrij"],
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
+class VOBvergunning(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "VOB"
+    title = "Ligplaatsvergunning (VOB)"
+
+    parse_fields = [
+        {"name": "requestKind", "from": "text9", "parser": to_string},  # Soort aanvraag
+        {"name": "reason", "from": "text10", "parser": to_string},  # Reden
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
     ]
 
     def has_valid_source_data(self):
