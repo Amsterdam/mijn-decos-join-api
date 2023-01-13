@@ -775,7 +775,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["caseType"], "VOB")
         self.assertEqual(
             zaak_transformed["title"],
-            "Ligplaatsvergunning (VOB)",
+            "Ligplaatsvergunning",
         )
         self.assertEqual(zaak_transformed["location"], "Amstel 12 1012AK AMSTERDAM")
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2024-01-26"))
