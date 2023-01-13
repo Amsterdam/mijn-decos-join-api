@@ -835,7 +835,7 @@ class VOBvergunning(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "VOB"
-    title = "Ligplaatsvergunning (VOB)"
+    title = "Ligplaatsvergunning"
 
     parse_fields = [
         {"name": "requestKind", "from": "text9", "parser": to_string},  # Soort aanvraag
