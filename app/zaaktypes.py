@@ -739,7 +739,7 @@ class Samenvoegingsvergunning(Zaak):
 class Onttrekkingsvergunning(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Onttrekkingsvergunning voor ander gebruik"
@@ -785,7 +785,7 @@ class OnttrekkingsvergunningSloop(Zaak):
 class VormenVanWoonruimte(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Woningvormingsvergunning"
