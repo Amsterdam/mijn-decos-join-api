@@ -20,6 +20,9 @@ from app.zaaktypes import (
     VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
     ZwaarVerkeer,
+    Samenvoegingsvergunning,
+    Splitsingsvergunning,
+    VOBvergunning
 )
 
 
@@ -689,3 +692,93 @@ class ZaaktypesTest(TestCase):
             "zaak-99",
             ZwaarVerkeer.date_workflow_active_step_title,
         )
+
+    def test_Samenvoegingsvergunning(self):
+        zaak_source = {
+            "mark": "Z/22/9901425263",
+            "document_date": "2022-05-18T00:00:00",
+            "date5": "2022-02-01T00:00:00",
+            "text6": "Amstel 1 1000AB",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-100",
+        }
+
+        zaak_transformed = Samenvoegingsvergunning(zaak_source).result()
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Vergunning voor samenvoegen van woonruimten",
+        )
+        self.assertEqual(zaak_transformed["location"], "Amstel 1 1000AB")
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2022-10-15"))
+
+        zaken_all = []
+
+        Samenvoegingsvergunning.defer_transform(
+            zaak_transformed, zaken_all, connection_mock()
+        )
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-15"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-100",
+            Samenvoegingsvergunning.date_workflow_active_step_title,
+        )
+
+    def test_Splitsingsvergunning(self):
+        zaak_source = {
+            "mark": "Z/22/9901425263",
+            "document_date": "2022-05-18T00:00:00",
+            "date5": "2022-02-01T00:00:00",
+            "text6": "Amstel 10 1000AB",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-101",
+        }
+
+        zaak_transformed = Splitsingsvergunning(zaak_source).result()
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Splitsingsvergunning",
+        )
+        self.assertEqual(zaak_transformed["location"], "Amstel 10 1000AB")
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2022-10-20"))
+
+        zaken_all = []
+
+        Splitsingsvergunning.defer_transform(
+            zaak_transformed, zaken_all, connection_mock()
+        )
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-20"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-101",
+            Splitsingsvergunning.date_workflow_active_step_title,
+        )
+
+    def test_VOB(self):
+        zaak_source = {
+            "mark": "Z/23/99012462",
+            "document_date": "2023-05-18T00:00:00",
+            "text6": "Amstel 12 1012AK AMSTERDAM",
+            "date7": "2024-01-26T00:00:00",
+            "text9": "Ligplaatsvergunning woonboot",
+            "text10": "Nieuwe ligplaats",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-145",
+        }
+        zaak_transformed = VOBvergunning(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "VOB")
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Ligplaatsvergunning",
+        )
+        self.assertEqual(zaak_transformed["location"], "Amstel 12 1012AK AMSTERDAM")
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2024-01-26"))
+        self.assertEqual(zaak_transformed["decision"], "Verleend")
+        self.assertEqual(zaak_transformed["requestKind"], "Ligplaatsvergunning woonboot")
+        self.assertEqual(zaak_transformed["reason"], "Nieuwe ligplaats")
