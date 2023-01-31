@@ -201,66 +201,6 @@ class VakantieVerhuurVergunning(Zaak):
         self.zaak["dateEnd"] = self.next_april_first(self.zaak["dateRequest"])
 
 
-class VakantieVerhuur(Zaak):
-    zaak_type = "Vakantieverhuur"
-    title = "Geplande verhuur"
-
-    parse_fields = [
-        {"name": "dateStart", "from": "date6", "parser": to_date},  # Start verhuur
-        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einde verhuur
-        {"name": "location", "from": "text6", "parser": to_string},
-    ]
-
-    def after_transform(self):
-        if self.zaak["dateEnd"] and self.zaak["dateEnd"] <= date.today():
-            self.zaak["title"] = "Afgelopen verhuur"
-
-    # Find the corresponding verhuur vergunning (new_zaak) for this verhuur instance (zaak_deferred).
-    # This is done to show verhuur instances given a vergunning in the UI.
-    @staticmethod
-    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
-        for zaak in zaken_all:
-            if (
-                zaak["caseType"] == VakantieVerhuurVergunning.zaak_type
-                and zaak["location"] == zaak_deferred["location"]
-                and zaak_deferred["dateStart"] >= zaak["dateStart"]
-                and zaak_deferred["dateEnd"] <= zaak["dateEnd"]
-            ):
-                zaak_deferred["vergunningId"] = zaak["id"]
-
-        zaken_all.append(zaak_deferred)
-
-
-class VakantieVerhuurAfmelding(Zaak):
-    zaak_type = "Vakantieverhuur afmelding"
-    title = "Geannuleerde verhuur"
-
-    @staticmethod
-    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
-        # update the existing registration
-        # This function checks if there is Vakantieverhuur:gepland present with the same dates.
-        # If there are this zaak is updated with properties from this Zaak which is a Vakantieverhuur:afgemeld.
-        # We do this so the updated Zaak appears to be afgemeld.
-        for zaak in zaken_all:
-            # Check if the Deferred afmelding has properties for an already submitted verhuur melding
-            if (
-                zaak["caseType"] == VakantieVerhuur.zaak_type
-                and zaak["dateStart"] == zaak_deferred["dateStart"]
-                and zaak["dateEnd"] == zaak_deferred["dateEnd"]
-                and not zaak.get("isCancelled", False)
-            ):
-                zaak["dateDecision"] = zaak_deferred["dateRequest"]
-                zaak["title"] = zaak_deferred["title"]
-                zaak["identifier"] = zaak_deferred["identifier"]
-                zaak["isCancelled"] = True
-                break
-
-    parse_fields = [
-        {"name": "dateStart", "from": "date6", "parser": to_date},  # Start verhuur
-        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einde verhuur
-    ]
-
-
 class BBVergunning(Zaak):
     zaak_type = "B&B - vergunning"
     title = "Vergunning bed & breakfast"
@@ -681,26 +621,57 @@ class ZwaarVerkeer(Zaak):
         return get_translation(kind_source, ZwaarVerkeer.kind_translations, True)
 
     parse_fields = [
-        {"name": "exemptionKind", "from": "text17", "parser": to_kind},  # Soort ontheffing
+        {
+            "name": "exemptionKind",
+            "from": "text17",
+            "parser": to_kind,
+        },  # Soort ontheffing
         {"name": "licencePlates", "from": "text49", "parser": to_string},  # Kentekens
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
     ]
 
     kind_translations = [
-        ["Jaarontheffing bijzonder","Jaarontheffing hele zone voor bijzondere voertuigen"],
-        ["Jaarontheffing gewicht","Jaarontheffing hele zone met gewichtsverklaring"],
-        ["Jaarontheffing gewicht bijzonder","Jaarontheffing hele zone voor bijzondere voertuigen met gewichtsverklaring"],
-        ["Jaarontheffing gewicht en ondeelbaar","Jaarontheffing hele zone met gewichtsverklaring en verklaring ondeelbare lading"],
-        ["Jaarontheffing ondeelbaar","Jaarontheffing hele zone met verklaring ondeelbare lading"],
-        ["Routeontheffing bijzonder boven 30 ton","Routeontheffing bijzondere voertuig boven 30 ton"],
-        ["Routeontheffing brede wegen boven 30 ton","Routeontheffing breed opgezette wegen boven 30 ton"],
-        ["Routeontheffing brede wegen tm 30 ton","Routeontheffing breed opgezette wegen tot en met 30 ton"],
-        ["Routeontheffing culturele instelling","Routeontheffing pilot culturele instelling"],
-        ["Routeontheffing ondeelbaar boven 30 ton","Routeontheffing boven 30 ton met verklaring ondeelbare lading"],
-        ["Zwaar verkeer","Ontheffing zwaar verkeer"],
-        ["Dagontheffing","Dagontheffing hele zone"],
-        ["Jaarontheffing","Jaarontheffing hele zone"],
+        [
+            "Jaarontheffing bijzonder",
+            "Jaarontheffing hele zone voor bijzondere voertuigen",
+        ],
+        ["Jaarontheffing gewicht", "Jaarontheffing hele zone met gewichtsverklaring"],
+        [
+            "Jaarontheffing gewicht bijzonder",
+            "Jaarontheffing hele zone voor bijzondere voertuigen met gewichtsverklaring",
+        ],
+        [
+            "Jaarontheffing gewicht en ondeelbaar",
+            "Jaarontheffing hele zone met gewichtsverklaring en verklaring ondeelbare lading",
+        ],
+        [
+            "Jaarontheffing ondeelbaar",
+            "Jaarontheffing hele zone met verklaring ondeelbare lading",
+        ],
+        [
+            "Routeontheffing bijzonder boven 30 ton",
+            "Routeontheffing bijzondere voertuig boven 30 ton",
+        ],
+        [
+            "Routeontheffing brede wegen boven 30 ton",
+            "Routeontheffing breed opgezette wegen boven 30 ton",
+        ],
+        [
+            "Routeontheffing brede wegen tm 30 ton",
+            "Routeontheffing breed opgezette wegen tot en met 30 ton",
+        ],
+        [
+            "Routeontheffing culturele instelling",
+            "Routeontheffing pilot culturele instelling",
+        ],
+        [
+            "Routeontheffing ondeelbaar boven 30 ton",
+            "Routeontheffing boven 30 ton met verklaring ondeelbare lading",
+        ],
+        ["Zwaar verkeer", "Ontheffing zwaar verkeer"],
+        ["Dagontheffing", "Dagontheffing hele zone"],
+        ["Jaarontheffing", "Jaarontheffing hele zone"],
     ]
 
     decision_translations = [
@@ -721,7 +692,9 @@ class Samenvoegingsvergunning(Zaak):
 
     zaak_type = "Samenvoegingsvergunning"
     title = "Vergunning voor samenvoegen van woonruimten"
-    date_workflow_active_step_title = "Samenvoegingsvergunning - Beoordelen en besluiten"
+    date_workflow_active_step_title = (
+        "Samenvoegingsvergunning - Beoordelen en besluiten"
+    )
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
@@ -747,7 +720,9 @@ class Onttrekkingsvergunning(Zaak):
 
     zaak_type = "Onttrekkingsvergunning voor ander gebruik"
     title = "Onttrekkingsvergunning voor ander gebruik"
-    date_workflow_active_step_title = "Onttrekkingsvergunning voor ander gebruik - Beoordelen en besluiten"
+    date_workflow_active_step_title = (
+        "Onttrekkingsvergunning voor ander gebruik - Beoordelen en besluiten"
+    )
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
@@ -773,12 +748,15 @@ class OnttrekkingsvergunningSloop(Zaak):
 
     zaak_type = "Onttrekkingsvergunning voor sloop"
     title = "Onttrekkingsvergunning voor sloop"
-    date_workflow_active_step_title = "Onttrekkingsvergunning voor sloop - Beoordelen en besluiten"
+    date_workflow_active_step_title = (
+        "Onttrekkingsvergunning voor sloop - Beoordelen en besluiten"
+    )
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
         date_workflow_active = decosjoin_service.get_workflow(
-            zaak_deferred["id"], OnttrekkingsvergunningSloop.date_workflow_active_step_title
+            zaak_deferred["id"],
+            OnttrekkingsvergunningSloop.date_workflow_active_step_title,
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
         zaken_all.append(zaak_deferred)
@@ -799,7 +777,9 @@ class VormenVanWoonruimte(Zaak):
 
     zaak_type = "Woningvormingsvergunning"
     title = "Vergunning voor woningvorming"
-    date_workflow_active_step_title = "Woningvormingsvergunning - Beoordelen en besluiten"
+    date_workflow_active_step_title = (
+        "Woningvormingsvergunning - Beoordelen en besluiten"
+    )
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):

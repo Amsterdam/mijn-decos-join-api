@@ -181,7 +181,11 @@ class DecosJoinConnection:
             ):
                 continue
 
-            if self.is_list_match(new_zaak, "decision", ["buiten behandeling", "geannuleerd", "geen aanvraag of dubbel"]):
+            if self.is_list_match(
+                new_zaak,
+                "decision",
+                ["buiten behandeling", "geannuleerd", "geen aanvraag of dubbel"],
+            ):
                 continue
 
             if new_zaak["description"] and new_zaak["description"].lower().startswith(
@@ -199,11 +203,9 @@ class DecosJoinConnection:
             else:
                 new_zaken.append(new_zaak)
 
-        # Sort the list of deferred_zaken based on caseType, we need vakantieverhuur vergunningen to come before vakantieverhuur afmeldingen.
         deferred_zaken.sort(key=lambda x: x[0].get("caseType"))
 
         # Makes it possible to defer adding the zaak to the zaken response for example to:
-        # - Match start/end dates for Vakantieverhuur afmelding and transforming the geplande verhuur to afgemelde verhuur
         # - Adding dateWorkflowActive by querying other Api's
         for [deferred_zaak, Zaak_cls] in deferred_zaken:
             Zaak_cls.defer_transform(
