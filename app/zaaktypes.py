@@ -708,14 +708,11 @@ class Samenvoegingsvergunning(Zaak):
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
 
-    def has_valid_source_data(self):
-        return super().has_valid_payment_status()
-
 
 class Onttrekkingsvergunning(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Onttrekkingsvergunning voor ander gebruik"
@@ -735,9 +732,6 @@ class Onttrekkingsvergunning(Zaak):
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
-
-    def has_valid_source_data(self):
-        return super().has_valid_payment_status()
 
 
 class OnttrekkingsvergunningSloop(Zaak):
@@ -765,14 +759,11 @@ class OnttrekkingsvergunningSloop(Zaak):
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
 
-    def has_valid_source_data(self):
-        return super().has_valid_payment_status()
-
 
 class VormenVanWoonruimte(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Woningvormingsvergunning"
@@ -792,9 +783,6 @@ class VormenVanWoonruimte(Zaak):
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
-
-    def has_valid_source_data(self):
-        return super().has_valid_payment_status()
 
 
 class Splitsingsvergunning(Zaak):
@@ -819,9 +807,6 @@ class Splitsingsvergunning(Zaak):
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
 
-    def has_valid_source_data(self):
-        return super().has_valid_payment_status()
-
 
 class VOBvergunning(Zaak):
 
@@ -830,7 +815,7 @@ class VOBvergunning(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "VOB"
-    title = "Ligplaatsvergunning (VOB)"
+    title = "Ligplaatsvergunning"
 
     parse_fields = [
         {"name": "requestKind", "from": "text9", "parser": to_string},  # Soort aanvraag
@@ -838,9 +823,6 @@ class VOBvergunning(Zaak):
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
     ]
-
-    def has_valid_source_data(self):
-        return super().has_valid_payment_status()
 
 
 # A dict with all enabled Zaken
