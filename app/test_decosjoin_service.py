@@ -55,7 +55,7 @@ class ConnectionTests(TestCase):
     def test_get_zaken(self):
         zaken = self.connection.get_zaken("bsn", "111222333")
 
-        self.assertEqual(len(zaken), 19)
+        self.assertEqual(len(zaken), 17)
         zaken_from_fixtures = []
 
         for z in zaken:
@@ -81,7 +81,6 @@ class ConnectionTests(TestCase):
             ["Z/21/99012347", "Ontvangen", None, "GPK"],
             ["Z/21/99012346", "Ontvangen", None, "GPP"],
             ["Z/21/99012345", "Ontvangen", None, "E-RVV - TVM"],
-            ["Z/21/89012345", "Ontvangen", None, "Vakantieverhuur"],
             ["Z/21/78901234", "Ontvangen", None, "B&B - vergunning"],
             [
                 "Z/21/7865356778",
@@ -89,7 +88,6 @@ class ConnectionTests(TestCase):
                 "Verleend",
                 "Vakantieverhuur vergunningsaanvraag",
             ],
-            ["Z/21/67890123", "Ontvangen", None, "Vakantieverhuur"],
             [
                 "Z/21/123123123",
                 "Afgehandeld",
@@ -112,12 +110,6 @@ class ConnectionTests(TestCase):
 
         self.assertEqual(zaken[8].get("identifier"), "Z/21/123123123")
 
-        # The vakantieverhuur should be matched to the right vakantieverhuurvergunning.
-        self.assertEqual(zaken[17].get("vergunningId"), "HEXSTRING17b")
-
-        # Z/21/90123456 "vakantieverhuur" is filtered out because it is replaced by Z/21/89012345 "vakantieverhuur afmelding"
-        self.assert_unknown_identifier(zaken, "Z/21/90123456")
-
         # Z/20/4567890 is filtered out because of subject1 contents
         self.assert_unknown_identifier(zaken, "Z/20/4567890")
 
@@ -138,60 +130,6 @@ class ConnectionTests(TestCase):
         doc0 = documents[0]
         self.assertEqual(doc0["id"], "D/2")
         self.assertTrue(doc0["url"].startswith("/decosjoin/document/"))
-
-    def test_transform_vakantieverhuur(self):
-        def wrap(zaak, key):
-            return {
-                "key": key,
-                "fields": zaak,
-                "links": [
-                    {
-                        "href": """https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/{key}""",
-                        "rel": "self",
-                    }
-                ],
-            }
-
-        zaak_vakantieverhuur = {
-            "date6": "2021-06-18T00:00:00",
-            "date7": "2021-06-21T00:00:00",
-            "document_date": "2021-04-28T00:00:00",
-            "mark": "Z/21/67890123",
-            "subject1": "Melding Amstel 1  - V Achternaam",
-            "text11": "Nvt",
-            "text12": "Geen kosten",
-            "text45": "Vakantieverhuur",
-            "text6": "Amstel 1 1012AA Amsterdam",
-            "text7": "Z/11/123456",
-            "title": "Ontvangen",
-        }
-
-        zaak_vakantieverhuur_afmelding = {
-            "company": "Moes",
-            "date6": "2021-06-18T00:00:00",
-            "date7": "2021-06-21T00:00:00",
-            "document_date": "2021-05-10T00:00:00",
-            "mark": "Z/21/89012345",
-            "subject1": "Melding Amstel 1  - V Achternaam",
-            "text11": "Nvt",
-            "text45": "Vakantieverhuur afmelding",
-            "text6": "Amstel 1 1012AA Amsterdam",
-            "title": "Ontvangen",
-        }
-
-        zaken_result = self.connection.transform(
-            [
-                wrap(zaak_vakantieverhuur, "zaak1"),
-                wrap(zaak_vakantieverhuur_afmelding, "zaak2"),
-            ],
-            "test-user-id",
-        )
-
-        self.assertEqual(len(zaken_result), 1)
-        self.assertEqual(zaken_result[0]["caseType"], "Vakantieverhuur")
-        self.assertEqual(zaken_result[0]["identifier"], "Z/21/89012345")
-        self.assert_unknown_identifier(zaken_result, "Z/21/67890123")
-        self.assertTrue("documentsUrl" in zaken_result[0])
 
     def test_transform_bb_vergunning(self):
         def wrap(zaak, key):

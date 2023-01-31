@@ -16,13 +16,11 @@ from app.zaaktypes import (
     NachtwerkOntheffing,
     Omzettingsvergunning,
     TVM_RVV_Object,
-    VakantieVerhuur,
-    VakantieVerhuurAfmelding,
     VakantieVerhuurVergunning,
     ZwaarVerkeer,
     Samenvoegingsvergunning,
     Splitsingsvergunning,
-    VOBvergunning
+    VOBvergunning,
 )
 
 
@@ -90,7 +88,7 @@ class ZaaktypesTest(TestCase):
             "timeStart": "10:00",
             "dateStart": to_date(zaak_source["date6"]),
             "dateEnd": to_date(zaak_source["date7"]),
-            'processed': False,
+            "processed": False,
         }
 
         self.assertEqual(TVM_RVV_Object(zaak_source).zaak, zaak_transformed)
@@ -123,315 +121,6 @@ class ZaaktypesTest(TestCase):
         zaak_transformed = VakantieVerhuurVergunning(zaak_source).result()
         self.assertEqual(zaak_transformed["status"], "Afgehandeld")
         self.assertEqual(zaak_transformed["decision"], "Ingetrokken")
-
-    @freeze_time("2021-07-15")
-    def test_VakantieVerhuur(self):
-        zaak_source = {
-            "date6": "2021-07-05T00:00:00",
-            "date7": "2021-07-06T00:00:00",
-            "document_date": "2021-04-28T00:00:00",
-            "mark": "Z/21/67890123",
-            "subject1": "Melding Amstel 1  - V Achternaam",
-            "text11": "Nvt",
-            "text12": "Geen kosten",
-            "text45": "Vakantieverhuur",
-            "text6": "Amstel 1 1012AA Amsterdam",
-            "text7": "Z/11/123456",
-            "title": "Ontvangen",
-            "id": "zaak-1",
-        }
-        zaak_transformed = VakantieVerhuur(zaak_source).result()
-
-        self.assertEqual(zaak_transformed["caseType"], "Vakantieverhuur")
-        self.assertEqual(zaak_transformed["title"], "Afgelopen verhuur")
-        self.assertEqual(zaak_transformed["decision"], None)
-        self.assertEqual(zaak_transformed["dateStart"], to_date("2021-07-05"))
-        self.assertEqual(zaak_transformed["dateEnd"], to_date("2021-07-06"))
-        self.assertEqual(zaak_transformed["dateRequest"], to_date("2021-04-28"))
-
-        zaak_source["date6"] = "2021-07-25T00:00:00"
-        zaak_source["date7"] = "2021-07-30T00:00:00"
-
-        zaak_transformed = VakantieVerhuur(zaak_source).result()
-
-        self.assertEqual(zaak_transformed["title"], "Geplande verhuur")
-        self.assertEqual(zaak_transformed["dateStart"], to_date("2021-07-25"))
-        self.assertEqual(zaak_transformed["dateEnd"], to_date("2021-07-30"))
-
-    def test_VakantieVerhuurAfmelding(self):
-        zaak_source = {
-            "company": "Moes",
-            "date6": "2021-06-18T00:00:00",
-            "date7": "2021-06-21T00:00:00",
-            "document_date": "2021-06-04T00:00:00",
-            "mark": "Z/21/89012345",
-            "subject1": "Melding Amstel 1  - R  Moes",
-            "text11": "Nvt",
-            "text45": "Vakantieverhuur afmelding",
-            "text6": "Amstel 1 1012AK",
-            "title": "Ontvangen",
-            "id": "zaak-1",
-        }
-        zaak_transformed = VakantieVerhuurAfmelding(zaak_source).result()
-        self.assertEqual(zaak_transformed["title"], "Geannuleerde verhuur")
-        self.assertEqual(zaak_transformed["caseType"], "Vakantieverhuur afmelding")
-
-    def test_AfmeldingTransformations1(self):
-        zaken_all = [
-            {
-                "caseType": "Vakantieverhuur",
-                "title": "Geplande verhuur",
-                "identifier": "Z/X1",
-                "dateStart": "2029-07-10",
-                "dateEnd": "2029-07-14",
-                "location": "Amstel 1 1017AB Amsterdam",
-                "dateRequest": "2021-05-10",
-            },
-            {
-                "caseType": "Vakantieverhuur",
-                "title": "Geplande verhuur",
-                "identifier": "Z/X3",
-                "dateStart": "2029-07-10",
-                "dateEnd": "2029-07-14",
-                "location": "Amstel 1 1017AB Amsterdam",
-                "dateRequest": "2021-05-10",
-            },
-        ]
-
-        zaak_afmelding_deferred = {
-            "caseType": "Vakantieverhuur",
-            "title": "Geannuleerde verhuur",
-            "identifier": "Z/X2",
-            "dateStart": "2029-07-10",
-            "dateEnd": "2029-07-14",
-            "location": "Amstel 1 1017AB Amsterdam",
-            "dateRequest": "2021-05-10",
-        }
-
-        VakantieVerhuurAfmelding.defer_transform(
-            zaak_afmelding_deferred, zaken_all, None
-        )
-
-        self.assertEqual(len(zaken_all), 2)
-        self.assertEqual(zaken_all[0]["isCancelled"], True)
-        self.assertEqual(
-            zaken_all[0]["dateDecision"], zaak_afmelding_deferred["dateRequest"]
-        )
-        self.assertEqual(zaken_all[0]["title"], zaak_afmelding_deferred["title"])
-        self.assertEqual(
-            zaken_all[0]["identifier"], zaak_afmelding_deferred["identifier"]
-        )
-
-    def test_AfmeldingTransformations2(self):
-        zaken_all = [
-            {
-                "caseType": "Vakantieverhuur",
-                "title": "Geplande verhuur",
-                "identifier": "Z/X1",
-                "dateStart": "2029-07-10",
-                "dateEnd": "2029-07-14",
-                "location": "Amstel 1 1017AB Amsterdam",
-                "dateRequest": "2021-05-10",
-            },
-            {
-                "caseType": "Vakantieverhuur",
-                "title": "Geplande verhuur",
-                "identifier": "Z/X3",
-                "dateStart": "2029-07-10",
-                "dateEnd": "2029-07-14",
-                "location": "Amstel 1 1017AB Amsterdam",
-                "dateRequest": "2021-05-10",
-            },
-        ]
-
-        zaak_afmelding_deferred = {
-            "caseType": "Vakantieverhuur",
-            "title": "Geannuleerde verhuur",
-            "identifier": "Z/X2",
-            "dateStart": "2029-07-10",
-            "dateEnd": "2029-07-14",
-            "location": "Amstel 1 1017AB Amsterdam",
-            "dateRequest": "2021-05-10",
-        }
-
-        zaak_afmelding_deferred2 = {
-            "caseType": "Vakantieverhuur",
-            "title": "Geannuleerde verhuur",
-            "identifier": "Z/X4",
-            "dateStart": "2029-07-10",
-            "dateEnd": "2029-07-14",
-            "location": "Amstel 1 1017AB Amsterdam",
-            "dateRequest": "2021-05-10",
-        }
-
-        VakantieVerhuurAfmelding.defer_transform(
-            zaak_afmelding_deferred, zaken_all, None
-        )
-        VakantieVerhuurAfmelding.defer_transform(
-            zaak_afmelding_deferred2, zaken_all, None
-        )
-
-        self.assertEqual(len(zaken_all), 2)
-        self.assertEqual(zaken_all[0]["isCancelled"], True)
-        self.assertEqual(zaken_all[1]["isCancelled"], True)
-
-    def test_AfmeldingTransformations3(self):
-        zaken_all = [
-            {
-                "caseType": "Vakantieverhuur",
-                "title": "Geplande verhuur",
-                "identifier": "Z/X1",
-                "dateStart": "2029-07-10",
-                "dateEnd": "2029-07-14",
-                "location": "Amstel 1 1017AB Amsterdam",
-                "dateRequest": "2021-05-10",
-            },
-            {
-                "caseType": "Vakantieverhuur",
-                "title": "Geplande verhuur",
-                "identifier": "Z/X2",
-                "dateStart": "2029-07-10",
-                "dateEnd": "2029-07-14",
-                "location": "Amstel 1 1017AB Amsterdam",
-                "dateRequest": "2021-05-10",
-            },
-            {
-                "caseType": "Vakantieverhuur",
-                "title": "Geplande verhuur",
-                "identifier": "Z/X3",
-                "dateStart": "2029-07-10",
-                "dateEnd": "2029-07-14",
-                "location": "Amstel 1 1017AB Amsterdam",
-                "dateRequest": "2021-05-10",
-            },
-        ]
-
-        zaak_afmelding_deferred = {
-            "caseType": "Vakantieverhuur",
-            "title": "Geannuleerde verhuur",
-            "identifier": "Z/X4",
-            "dateStart": "2029-07-10",
-            "dateEnd": "2029-07-14",
-            "location": "Amstel 1 1017AB Amsterdam",
-            "dateRequest": "2021-05-10",
-        }
-
-        zaak_afmelding_deferred2 = {
-            "caseType": "Vakantieverhuur",
-            "title": "Geannuleerde verhuur",
-            "identifier": "Z/X5",
-            "dateStart": "2029-07-10",
-            "dateEnd": "2029-07-14",
-            "location": "Amstel 1 1017AB Amsterdam",
-            "dateRequest": "2021-05-10",
-        }
-
-        VakantieVerhuurAfmelding.defer_transform(
-            zaak_afmelding_deferred, zaken_all, None
-        )
-        VakantieVerhuurAfmelding.defer_transform(
-            zaak_afmelding_deferred2, zaken_all, None
-        )
-
-        self.assertEqual(len(zaken_all), 3)
-        self.assertEqual(zaken_all[0]["isCancelled"], True)
-        self.assertEqual(zaken_all[1]["isCancelled"], True)
-
-        with self.assertRaises(KeyError):
-            zaken_all[2]["isCancelled"]
-
-    @patch(
-        "app.crypto.get_encrytion_key",
-        lambda: "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=",
-    )
-    def test_afmeldingen(self):
-        zaken = [
-            {
-                "company": "Saloua",
-                "date6": "2022-10-15T00:00:00",
-                "date7": "2022-10-17T00:00:00",
-                "document_date": "2022-10-15T00:00:00",
-                "mark": "Z/22/1979759",
-                "subject1": "Melding Amstel 1  -   Grupstal",
-                "text11": "Nvt",
-                "text12": "Geen kosten",
-                "text45": "Vakantieverhuur",
-                "text6": "Amstel 1 1011PN Amsterdam",
-                "text7": "Z/22/1973558",
-                "title": "Ontvangen",
-            },
-            {
-                "company": "Saloua",
-                "date6": "2022-10-15T00:00:00",
-                "date7": "2022-10-17T00:00:00",
-                "document_date": "2022-10-15T00:00:00",
-                "mark": "Z/22/1979760",
-                "subject1": "Melding Amstel 1  -   Grupstal",
-                "text11": "Nvt",
-                "text45": "Vakantieverhuur afmelding",
-                "text6": "Amstel 1 1011PN",
-                "title": "Ontvangen",
-            },
-            {
-                "company": "Saloua",
-                "date6": "2022-10-15T00:00:00",
-                "date7": "2022-10-17T00:00:00",
-                "document_date": "2022-10-15T00:00:00",
-                "mark": "Z/22/1979763",
-                "subject1": "Melding Amstel 1  -   Grupstal",
-                "text11": "Nvt",
-                "text12": "Geen kosten",
-                "text45": "Vakantieverhuur",
-                "text6": "Amstel 1 1011PN Amsterdam",
-                "text7": "Z/22/1973558",
-                "title": "Ontvangen",
-            },
-            {
-                "company": "Saloua",
-                "date6": "2022-10-15T00:00:00",
-                "date7": "2022-10-17T00:00:00",
-                "document_date": "2022-10-15T00:00:00",
-                "mark": "Z/22/1979762",
-                "subject1": "Melding Amstel 1  -   Grupstal",
-                "text11": "Nvt",
-                "text45": "Vakantieverhuur afmelding",
-                "text6": "Amstel 1 1011PN",
-                "title": "Ontvangen",
-            },
-            {
-                "company": "Saloua",
-                "date6": "2022-10-15T00:00:00",
-                "date7": "2022-10-17T00:00:00",
-                "document_date": "2022-10-15T00:00:00",
-                "mark": "Z/22/1979761",
-                "subject1": "Melding Amstel 1  -   Grupstal",
-                "text11": "Nvt",
-                "text12": "Geen kosten",
-                "text45": "Vakantieverhuur",
-                "text6": "Amstel 1 1011PN Amsterdam",
-                "text7": "Z/22/1973558",
-                "title": "Ontvangen",
-            },
-        ]
-
-        zaken_all = []
-
-        for zaak in zaken:
-            zaken_all.append({"fields": zaak, "key": zaak["mark"]})
-
-        conn = DecosJoinConnection(
-            "username",
-            "password",
-            "http://localhost",
-            None,
-        )
-
-        zaken_transformed = conn.transform(zaken_all, "123123123")
-        ids = []
-        for zaak in zaken_transformed:
-            ids.append(zaak["id"])
-
-        self.assertEqual(ids, ["Z/22/1979759", "Z/22/1979761", "Z/22/1979763"])
 
     def test_BBVergunning(self):
         zaak_source = {
@@ -676,16 +365,17 @@ class ZaaktypesTest(TestCase):
         )
         self.assertEqual(zaak_transformed["dateStart"], to_date("2022-10-21"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2023-10-26"))
-        self.assertEqual(zaak_transformed["exemptionKind"], "Routeontheffing breed opgezette wegen tot en met 30 ton")
+        self.assertEqual(
+            zaak_transformed["exemptionKind"],
+            "Routeontheffing breed opgezette wegen tot en met 30 ton",
+        )
 
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-10-15"))
 
         zaken_all = []
 
-        ZwaarVerkeer.defer_transform(
-            zaak_transformed, zaken_all, connection_mock()
-        )
+        ZwaarVerkeer.defer_transform(zaak_transformed, zaken_all, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-15"))
 
         connection_mock.get_workflow.assert_called_once_with(
@@ -780,5 +470,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["location"], "Amstel 12 1012AK AMSTERDAM")
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2024-01-26"))
         self.assertEqual(zaak_transformed["decision"], "Verleend")
-        self.assertEqual(zaak_transformed["requestKind"], "Ligplaatsvergunning woonboot")
+        self.assertEqual(
+            zaak_transformed["requestKind"], "Ligplaatsvergunning woonboot"
+        )
         self.assertEqual(zaak_transformed["reason"], "Nieuwe ligplaats")

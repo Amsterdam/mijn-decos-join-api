@@ -123,8 +123,6 @@ components:
         anyOf:
           - $ref: "#/components/schemas/Zaak_TVM_RVV_Object"
           - $ref: "#/components/schemas/Zaak_VakantieVerhuurVergunning"
-          - $ref: "#/components/schemas/Zaak_VakantieVerhuur"
-          - $ref: "#/components/schemas/Zaak_VakantieVerhuurAfmelding"
           - $ref: "#/components/schemas/Zaak_BBVergunning"
           - $ref: "#/components/schemas/Zaak_GPP"
           - $ref: "#/components/schemas/Zaak_GPK"
@@ -202,41 +200,6 @@ components:
               example: Vakantieverhuur vergunningsaanvraag
               enum:
                 - Vakantieverhuur vergunningsaanvraag
-            dateEnd:
-              $ref: "#/components/schemas/Date"
-              nullable: true
-            dateStart:
-              $ref: "#/components/schemas/Date"
-              nullable: true
-    Zaak_VakantieVerhuur:
-      allOf:
-        - $ref: "#/components/schemas/Zaak"
-        - type: object
-          properties:
-            caseType:
-              type: string
-              example: Vakantieverhuur
-              enum:
-                - Vakantieverhuur
-            dateEnd:
-              $ref: "#/components/schemas/Date"
-              nullable: true
-            dateStart:
-              $ref: "#/components/schemas/Date"
-              nullable: true
-            location:
-              $ref: "#/components/schemas/Location"
-              nullable: true
-    Zaak_VakantieVerhuurAfmelding:
-      allOf:
-        - $ref: "#/components/schemas/Zaak"
-        - type: object
-          properties:
-            caseType:
-              type: string
-              example: Vakantieverhuur afmelding
-              enum:
-                - Vakantieverhuur afmelding
             dateEnd:
               $ref: "#/components/schemas/Date"
               nullable: true

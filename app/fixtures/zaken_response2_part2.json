@@ -80,28 +80,6 @@
       ]
     },
     {
-      "key": "HEXSTRING16",
-      "fields": {
-        "date6": "2021-07-05T00:00:00",
-        "date7": "2021-07-06T00:00:00",
-        "document_date": "2021-04-28T00:00:00",
-        "mark": "Z/21/67890123",
-        "subject1": "Melding Amstel 1  - V Achternaam",
-        "text11": "Nvt",
-        "text12": "Geen kosten",
-        "text45": "Vakantieverhuur",
-        "text6": "Amstel 1 1012AA Amsterdam",
-        "text7": "Z/11/123456",
-        "title": "Ontvangen"
-      },
-      "links": [
-        {
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING16",
-          "rel": "self"
-        }
-      ]
-    },
-    {
       "key": "HEXSTRING17",
       "fields": {
         "company": "Haarlem",
@@ -158,50 +136,6 @@
       "links": [
         {
           "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING17c",
-          "rel": "self"
-        }
-      ]
-    },
-    {
-      "key": "HEXSTRING18",
-      "fields": {
-        "company": "Moes",
-        "date6": "2021-06-18T00:00:00",
-        "date7": "2021-06-21T00:00:00",
-        "document_date": "2021-06-04T00:00:00",
-        "mark": "Z/21/89012345",
-        "subject1": "Melding Amstel 1  - R  Moes",
-        "text11": "Nvt",
-        "text45": "Vakantieverhuur afmelding",
-        "text6": "Amstel 1 1012AK",
-        "title": "Ontvangen"
-      },
-      "links": [
-        {
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING18",
-          "rel": "self"
-        }
-      ]
-    },
-    {
-      "key": "HEXSTRING19",
-      "fields": {
-        "company": "Moes",
-        "date6": "2021-06-18T00:00:00",
-        "date7": "2021-06-21T00:00:00",
-        "document_date": "2021-06-04T00:00:00",
-        "mark": "Z/21/90123456",
-        "subject1": "Melding Amstel 1  - R  Moes",
-        "text11": "Nvt",
-        "text12": "Geen kosten",
-        "text45": "Vakantieverhuur",
-        "text6": "Amstel 1 1012AK Amsterdam",
-        "text7": "Z/21/2046287",
-        "title": "Ontvangen"
-      },
-      "links": [
-        {
-          "href": "https://decosdvl.acc.amsterdam.nl/decosweb/aspx/api/v1/items/HEXSTRING19",
           "rel": "self"
         }
       ]

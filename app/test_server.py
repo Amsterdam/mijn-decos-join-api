@@ -49,7 +49,7 @@ class ApiTests(FlaskServerTestCase):
             "timeEnd": None,
             "timeStart": None,
             "title": "Tijdelijke verkeersmaatregel (TVM-RVV-Object)",
-            'processed': False,
+            "processed": False,
         }
 
     def client_get(self, location):
@@ -73,7 +73,7 @@ class ApiTests(FlaskServerTestCase):
         data = response.get_json()
 
         self.assertEqual(data["status"], "OK")
-        self.assertEqual(len(data["content"]), 19)
+        self.assertEqual(len(data["content"]), 17)
 
         # remove the encrypted url, it is time based
         del data["content"][1]["documentsUrl"]
