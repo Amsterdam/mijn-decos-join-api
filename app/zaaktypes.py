@@ -687,7 +687,7 @@ class ZwaarVerkeer(Zaak):
 class Samenvoegingsvergunning(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Samenvoegingsvergunning"
@@ -737,7 +737,7 @@ class Onttrekkingsvergunning(Zaak):
 class OnttrekkingsvergunningSloop(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Onttrekkingsvergunning voor sloop"
