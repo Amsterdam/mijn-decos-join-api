@@ -825,6 +825,25 @@ class VOBvergunning(Zaak):
     ]
 
 
+class ExploitatieHorecabedrijf(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Horeca vergunning exploitatie Horecabedrijf"
+    title = "Horeca vergunning exploitatie Horecabedrijf"
+
+    parse_fields = [
+        {"name": "dateStart", "from": "date1", "parser": to_date},  # Start datum
+        {"name": "dateEnd", "from": "date2", "parser": to_date},  # Eind datum
+        {"name": "dateStartPermit", "from": "date6", "parser": to_date},  # Begindatum vergunning
+        {"name": "dateProcessed", "from": "date5", "parser": to_date},  # Datum afhandeling
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+        {"name": "numberOfPermits", "from": "sequnce", "parser": to_int},  # Volgnummer
+    ]
+
+
 # A dict with all enabled Zaken
 zaken_index = {
     getattr(cls, "zaak_type"): cls for cls in Zaak.__subclasses__() if cls.enabled
