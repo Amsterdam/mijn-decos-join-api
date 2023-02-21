@@ -825,6 +825,35 @@ class VOBvergunning(Zaak):
     ]
 
 
+class ExploitatieHorecabedrijf(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Horeca vergunning exploitatie Horecabedrijf"
+    title = "Horeca vergunning exploitatie Horecabedrijf"
+
+    date_workflow_active_step_title = "Horeca vergunning exploitatie Horecabedrijf - In behandeling nemen"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], Splitsingsvergunning.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
+    parse_fields = [
+        {"name": "dateStart", "from": "date1", "parser": to_date},  # Start datum
+        {"name": "dateEnd", "from": "date2", "parser": to_date},  # Eind datum
+        {"name": "dateStartPermit", "from": "date6", "parser": to_date},  # Begindatum vergunning
+        {"name": "dateProcessed", "from": "date5", "parser": to_date},  # Datum afhandeling
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+        {"name": "numberOfPermits", "from": "sequnce", "parser": to_int},  # Volgnummer
+    ]
+
+
 # A dict with all enabled Zaken
 zaken_index = {
     getattr(cls, "zaak_type"): cls for cls in Zaak.__subclasses__() if cls.enabled
