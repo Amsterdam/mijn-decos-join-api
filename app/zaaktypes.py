@@ -834,6 +834,16 @@ class ExploitatieHorecabedrijf(Zaak):
     zaak_type = "Horeca vergunning exploitatie Horecabedrijf"
     title = "Horeca vergunning exploitatie Horecabedrijf"
 
+    date_workflow_active_step_title = "Horeca vergunning exploitatie Horecabedrijf - In behandeling nemen"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], Splitsingsvergunning.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
     parse_fields = [
         {"name": "dateStart", "from": "date1", "parser": to_date},  # Start datum
         {"name": "dateEnd", "from": "date2", "parser": to_date},  # Eind datum
