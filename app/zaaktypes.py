@@ -816,12 +816,22 @@ class VOBvergunning(Zaak):
 
     zaak_type = "VOB"
     title = "Ligplaatsvergunning"
+    date_workflow_active_step_title = "VOB – Beoordelen en besluiten"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], VOBvergunning.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
 
     parse_fields = [
         {"name": "requestKind", "from": "text9", "parser": to_string},  # Soort aanvraag
-        {"name": "reason", "from": "text10", "parser": to_string},  # Reden
+        {"name": "reason", "from": "text18", "parser": to_string},  # Reden
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
-        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
+        {"name": "vesselKind", "from": "text10", "parser": to_string},  # Soort vaartuig
+        {"name": "vesselName", "from": "text14", "parser": to_string},  # Naam vaartuig
     ]
 
 
