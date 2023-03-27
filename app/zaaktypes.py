@@ -811,7 +811,7 @@ class Splitsingsvergunning(Zaak):
 class VOBvergunning(Zaak):
 
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "VOB"
@@ -849,7 +849,7 @@ class ExploitatieHorecabedrijf(Zaak):
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
         date_workflow_active = decosjoin_service.get_workflow(
-            zaak_deferred["id"], Splitsingsvergunning.date_workflow_active_step_title
+            zaak_deferred["id"], ExploitatieHorecabedrijf.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
         zaken_all.append(zaak_deferred)
