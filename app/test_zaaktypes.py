@@ -454,9 +454,10 @@ class ZaaktypesTest(TestCase):
             "mark": "Z/23/99012462",
             "document_date": "2023-05-18T00:00:00",
             "text6": "Amstel 12 1012AK AMSTERDAM",
-            "date7": "2024-01-26T00:00:00",
             "text9": "Ligplaatsvergunning woonboot",
-            "text10": "Nieuwe ligplaats",
+            "text10": "Sloep",
+            "text14": "Sloepie IX",
+            "text18": "Nieuwe ligplaats",
             "title": "Ontvangen",
             "dfunction": "Verleend",
             "id": "zaak-145",
@@ -468,9 +469,25 @@ class ZaaktypesTest(TestCase):
             "Ligplaatsvergunning",
         )
         self.assertEqual(zaak_transformed["location"], "Amstel 12 1012AK AMSTERDAM")
-        self.assertEqual(zaak_transformed["dateEnd"], to_date("2024-01-26"))
         self.assertEqual(zaak_transformed["decision"], "Verleend")
         self.assertEqual(
             zaak_transformed["requestKind"], "Ligplaatsvergunning woonboot"
         )
         self.assertEqual(zaak_transformed["reason"], "Nieuwe ligplaats")
+        self.assertEqual(zaak_transformed["vesselKind"], "Sloep")
+        self.assertEqual(zaak_transformed["vesselName"], "Sloepie IX")
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2023-03-13"))
+
+        zaken_all = []
+
+        VOBvergunning.defer_transform(
+            zaak_transformed, zaken_all, connection_mock()
+        )
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-03-13"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-145",
+            VOBvergunning.date_workflow_active_step_title,
+        )
