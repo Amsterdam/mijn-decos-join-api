@@ -889,6 +889,9 @@ class RVVHeleStad(Zaak):
         {"name": "licencePlats", "from": "text49", "parser": to_string},  # Kentekens
     ]
 
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
 
 # A dict with all enabled Zaken
 zaken_index = {
