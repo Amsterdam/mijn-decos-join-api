@@ -872,7 +872,7 @@ class RVVHeleStad(Zaak):
     zaak_type = "RVV - Hele stad"
     title = "RVV-verkeersontheffing"
 
-    date_workflow_active_step_title = "RVV - Hele stad - In behandeling nemen"
+    date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
