@@ -886,7 +886,7 @@ class RVVHeleStad(Zaak):
         {"name": "dateProcessed", "from": "date5", "parser": to_date},  # Datum afhandeling
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Begindatum vergunning
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einddatum vergunning
-        {"name": "licencePlats", "from": "text49", "parser": to_string},  # Kentekens
+        {"name": "licencePlates", "from": "text49", "parser": to_string},  # Kentekens
     ]
 
     def has_valid_source_data(self):
