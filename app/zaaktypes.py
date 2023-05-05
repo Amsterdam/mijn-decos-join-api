@@ -863,6 +863,35 @@ class ExploitatieHorecabedrijf(Zaak):
         {"name": "numberOfPermits", "from": "sequnce", "parser": to_int},  # Volgnummer
     ]
 
+class RVVHeleStad(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "RVV - Hele stad"
+    title = "RVV-verkeersontheffing"
+
+    date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], RVVHeleStad.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        zaken_all.append(zaak_deferred)
+
+    parse_fields = [
+        {"name": "dateProcessed", "from": "date5", "parser": to_date},  # Datum afhandeling
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Begindatum vergunning
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einddatum vergunning
+        {"name": "licencePlates", "from": "text49", "parser": to_string},  # Kentekens
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
 
 # A dict with all enabled Zaken
 zaken_index = {
