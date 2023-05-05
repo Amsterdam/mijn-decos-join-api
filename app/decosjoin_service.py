@@ -27,6 +27,8 @@ SELECT_FIELDS = ",".join(
         "subject1",
         "bol10",
         "company",
+        "date1",
+        "date2",
         "date5",
         "date6",
         "date7",
@@ -49,6 +51,7 @@ SELECT_FIELDS = ",".join(
         "text25",
         "text49",
         "processed",
+        "sequence"
     ]
 )
 
