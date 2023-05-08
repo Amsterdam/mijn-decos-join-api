@@ -857,7 +857,7 @@ class ExploitatieHorecabedrijf(Zaak):
     parse_fields = [
         {"name": "dateEnd", "from": "date2", "parser": to_date},  # Eind datum
         {"name": "dateProcessed", "from": "date5", "parser": to_date},  # Datum afhandeling
-        {"name": "dateStartPermit", "from": "date6", "parser": to_date},  # Begindatum vergunning
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Begindatum vergunning
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
 
