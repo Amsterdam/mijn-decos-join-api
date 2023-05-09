@@ -6,7 +6,7 @@ from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from app import auth
-from app.config import IS_DEV, CustomJSONEncoder, get_sentry_dsn
+from app.config import IS_DEV, UpdatedJSONProvider, get_sentry_dsn
 from app.crypto import decrypt
 from app.helpers import (
     error_response_json,
@@ -16,7 +16,7 @@ from app.helpers import (
 )
 
 app = Flask(__name__)
-app.json_encoder = CustomJSONEncoder
+app.json = UpdatedJSONProvider(app)
 
 sentry_dsn = get_sentry_dsn()
 if sentry_dsn:
@@ -68,7 +68,6 @@ def health_check():
 
 @app.errorhandler(Exception)
 def handle_error(error):
-
     error_message_original = f"{type(error)}:{str(error)}"
 
     msg_auth_exception = "Auth error occurred"
