@@ -1,35 +1,66 @@
 import os
 import unittest
 from unittest.mock import patch
-
-import jwt
 from flask_httpauth import HTTPTokenAuth
+import jwt
 
 auth = HTTPTokenAuth(scheme="Bearer")
 
 PROFILE_TYPE_PRIVATE = "private"
 PROFILE_TYPE_COMMERCIAL = "commercial"
+PROFILE_TYPE_PRIVATE_ATTRIBUTES = "private-attributes"
 
 OIDC_CLIENT_ID_DIGID = os.getenv("OIDC_CLIENT_ID_DIGID", "digid")
 OIDC_CLIENT_ID_EHERKENNING = os.getenv("OIDC_CLIENT_ID_EHERKENNING", "eherkenning")
+OIDC_CLIENT_ID_YIVI = os.getenv("OIDC_CLIENT_ID_YIVI", "yivi")
 OIDC_JWKS_URL = os.getenv("OIDC_JWKS_URL", "")
 
 TOKEN_ID_ATTRIBUTE_EHERKENNING = "urn:etoegang:1.9:EntityConcernedID:KvKnr"
+
+# Op 1.13 met ketenmachtiging
+EH_ATTR_INTERMEDIATE_PRIMARY_ID = "urn:etoegang:core:LegalSubjectID"
+EH_ATTR_INTERMEDIATE_SECONDARY_ID = "urn:etoegang:1.9:IntermediateEntityID:KvKnr"
+
+# 1.13 inlog zonder ketenmachtiging:
+EH_ATTR_PRIMARY_ID = "urn:etoegang:core:LegalSubjectID"
+
+# < 1.13 id
+EH_ATTR_PRIMARY_ID_LEGACY = "urn:etoegang:1.9:EntityConcernedID:KvKnr"
+
 TOKEN_ID_ATTRIBUTE_DIGID = "sub"
+TOKEN_ID_ATTRIBUTE_YIVI = "sub"
 
 ProfileTypeByClientId = {
     OIDC_CLIENT_ID_DIGID: PROFILE_TYPE_PRIVATE,
     OIDC_CLIENT_ID_EHERKENNING: PROFILE_TYPE_COMMERCIAL,
+    OIDC_CLIENT_ID_YIVI: PROFILE_TYPE_PRIVATE_ATTRIBUTES,
 }
 
 ClientIdByProfileType = {
     PROFILE_TYPE_PRIVATE: OIDC_CLIENT_ID_DIGID,
     PROFILE_TYPE_COMMERCIAL: OIDC_CLIENT_ID_EHERKENNING,
+    PROFILE_TYPE_PRIVATE_ATTRIBUTES: OIDC_CLIENT_ID_YIVI,
 }
 
+
+def get_eherkenning_id_attribute(tokenData):
+    if (
+        EH_ATTR_INTERMEDIATE_PRIMARY_ID in tokenData
+        and EH_ATTR_INTERMEDIATE_SECONDARY_ID in tokenData
+    ):
+        return EH_ATTR_INTERMEDIATE_PRIMARY_ID
+
+    if EH_ATTR_PRIMARY_ID in tokenData:
+        return EH_ATTR_PRIMARY_ID
+
+    # Attr Prior to 1.13
+    return EH_ATTR_PRIMARY_ID_LEGACY
+
+
 TokenAttributeByProfileType = {
-    PROFILE_TYPE_PRIVATE: TOKEN_ID_ATTRIBUTE_DIGID,
-    PROFILE_TYPE_COMMERCIAL: TOKEN_ID_ATTRIBUTE_EHERKENNING,
+    PROFILE_TYPE_PRIVATE: lambda tokenData: TOKEN_ID_ATTRIBUTE_DIGID,
+    PROFILE_TYPE_COMMERCIAL: get_eherkenning_id_attribute,
+    PROFILE_TYPE_PRIVATE_ATTRIBUTES: lambda tokenData: TOKEN_ID_ATTRIBUTE_YIVI,
 }
 
 login_required = auth.login_required
@@ -57,13 +88,13 @@ def get_client_id(profile_type):
     return ClientIdByProfileType[profile_type]
 
 
-def get_id_token_attribute_by_profile_type(profile_type):
-    return TokenAttributeByProfileType[profile_type]
+def get_id_token_attribute_by_profile_type(token_data):
+    profile_type = get_profile_type(token_data)
+    return TokenAttributeByProfileType[profile_type](token_data)
 
 
 def get_profile_id(token_data):
-    profile_type = get_profile_type(token_data)
-    id_attribute = get_id_token_attribute_by_profile_type(profile_type)
+    id_attribute = get_id_token_attribute_by_profile_type(token_data)
     return token_data[id_attribute]
 
 
@@ -156,12 +187,14 @@ class FlaskServerTestCase(unittest.TestCase):
         return self.TEST_BSN
 
     def get_token_header_value(self, profile_type):
-        id_attribute = get_id_token_attribute_by_profile_type(profile_type)
-
         token_data = {
-            id_attribute: self.get_user_id(profile_type),
             "aud": get_client_id(profile_type),
         }
+
+        id_attribute = get_id_token_attribute_by_profile_type(token_data)
+
+        token_data[id_attribute] = self.get_user_id(profile_type)
+
         key = jwt.api_jwk.PyJWK.from_dict(
             self.rsa_private_key_test, algorithm="RS256"
         ).key
@@ -189,4 +222,16 @@ class FlaskServerTestCase(unittest.TestCase):
             return self.client.get(
                 location,
                 headers=self.add_authorization_headers(profile_type, headers=headers),
+            )
+
+    def post_secure(
+        self, location, profile_type=PROFILE_TYPE_PRIVATE, headers=None, json=None
+    ):
+        with patch.object(jwt.PyJWKClient, "fetch_data") as fetch_data_mock:
+            fetch_data_mock.return_value = self.rsa_public_key_test
+            headers = self.add_authorization_headers(profile_type, headers=headers)
+            return self.client.post(
+                location,
+                headers=headers,
+                json=json,
             )
