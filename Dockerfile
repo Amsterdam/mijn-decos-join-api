@@ -17,7 +17,8 @@ ENV PYTHONUNBUFFERED=1 \
 COPY ca/* /usr/local/share/ca-certificates/extras/
 
 RUN chmod -R 644 /usr/local/share/ca-certificates/extras/ \
-  && update-ca-certificates
+  && update-ca-certificates \
+  && useradd --user-group --system datapunt
 
 COPY requirements.txt /api
 
@@ -27,15 +28,11 @@ RUN pip install --upgrade pip \
 
 COPY ./scripts /api/scripts
 COPY ./app /api/app
-
 COPY uwsgi.ini /api
-
-COPY ./test.sh /api/
-COPY .flake8 /api/
+COPY ./test.sh /api
+COPY .flake8 /api
 
 RUN chmod u+x /api/test.sh
 
-COPY docker-entrypoint.sh /api/
-RUN chmod u+x /api/docker-entrypoint.sh
-
-ENTRYPOINT [ "/bin/sh", "/api/docker-entrypoint.sh"]
+USER datapunt
+CMD uwsgi --uid www-data --gid www-data --ini /api/uwsgi.ini
