@@ -816,7 +816,7 @@ class VOBvergunning(Zaak):
 
     zaak_type = "VOB"
     title = "Ligplaatsvergunning"
-    date_workflow_active_step_title = "VOB – Beoordelen en besluiten"
+    date_workflow_active_step_title = "VOB - Beoordelen en besluiten"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
