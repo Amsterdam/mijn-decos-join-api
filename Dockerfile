@@ -21,7 +21,7 @@ COPY ./app /api/app
 
 COPY uwsgi.ini /api
 
-COPY conf/test.sh /api/
+COPY ./test.sh /api/
 COPY .flake8 /api/
 
 RUN chmod u+x /api/test.sh
