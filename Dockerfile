@@ -10,6 +10,15 @@ ENV LANG nl_NL.UTF-8
 ENV LANGUAGE nl_NL:nl
 ENV LC_ALL nl_NL.UTF-8
 
+ENV PYTHONUNBUFFERED=1 \
+  PIP_NO_CACHE_DIR=off \
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+COPY ca/* /usr/local/share/ca-certificates/extras/
+
+RUN chmod -R 644 /usr/local/share/ca-certificates/extras/ \
+  && update-ca-certificates
+
 COPY requirements.txt /api
 
 RUN pip install --upgrade pip \
