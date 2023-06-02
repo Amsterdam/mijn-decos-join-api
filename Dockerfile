@@ -26,5 +26,7 @@ COPY .flake8 /api/
 
 RUN chmod u+x /api/test.sh
 
-USER datapunt
-CMD uwsgi --ini /api/uwsgi.ini
+COPY docker-entrypoint.sh /api/
+RUN chmod u+x /api/docker-entrypoint.sh
+
+ENTRYPOINT [ "/bin/sh", "/api/docker-entrypoint.sh"]
