@@ -61,6 +61,7 @@ def get_document_blob(encrypted_doc_id):
     return new_response
 
 
+@app.route("/")
 @app.route("/status/health")
 def health_check():
     return success_response_json("OK")

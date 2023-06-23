@@ -1,8 +1,10 @@
 FROM python:latest as base
 
+WORKDIR /api
+
+
 ENV PYTHONUNBUFFERED=1 \
-  PIP_NO_CACHE_DIR=off \
-  REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+  PIP_NO_CACHE_DIR=off
 
 WORKDIR /api
 
@@ -28,14 +30,45 @@ ENV LC_ALL nl_NL.UTF-8
 
 COPY requirements.txt /api
 
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip \
+  && pip install uwsgi \
+  && pip install -r requirements.txt
 
 COPY ./scripts /api/scripts
 COPY ./app /api/app
-COPY ./uwsgi.ini /api
-COPY ./test.sh /api
-COPY .flake8 /api
+
+FROM base as tests
+
+COPY conf/test.sh /api/
+COPY .flake8 /api/
 
 RUN chmod u+x /api/test.sh
 
-CMD uwsgi --uid www-data --gid www-data --ini /api/uwsgi.ini
+ENTRYPOINT [ "/bin/sh", "/api/test.sh"]
+
+
+FROM base as publish
+
+# ssh ( see also: https://github.com/Azure-Samples/docker-django-webapp-linux )
+ENV SSH_PASSWD "root:Docker!"
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends dialog \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends openssh-server \
+  && apt-get install -y --no-install-recommends nano \
+  && echo "$SSH_PASSWD" | chpasswd 
+
+EXPOSE 8000
+ENV PORT 8000
+
+COPY conf/uwsgi.ini /api/
+COPY conf/docker-entrypoint.sh /api/
+COPY conf/sshd_config /etc/ssh/
+
+RUN chmod u+x /api/docker-entrypoint.sh
+
+ENTRYPOINT [ "/bin/sh", "/api/docker-entrypoint.sh"]
+
+FROM publish as publish-final
+
+COPY /files /app/files
