@@ -27,12 +27,11 @@ test_app = Flask(__name__)
         "DECOS_JOIN_API_HOST": "host",
         "DECOS_JOIN_ADRES_BOEKEN_BSN": "address1,address2",
         "DECOS_JOIN_ADRES_BOEKEN_KVK": "address3,address4",
-        "FERNET_KEY": "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=",
+        "FERNET_ENCRYPTION_KEY": "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs=",
     },
 )
 class ConfigTests(TestCase):
     def test_config(self):
-
         self.assertEqual(get_decosjoin_username(), "username")
         self.assertEqual(get_decosjoin_password(), "password")
         self.assertEqual(get_decosjoin_api_host(), "host")

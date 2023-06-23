@@ -82,4 +82,4 @@ def get_decosjoin_adres_boeken():
 
 
 def get_encrytion_key():
-    return os.getenv("FERNET_KEY")
+    return os.getenv("FERNET_ENCRYPTION_KEY")
