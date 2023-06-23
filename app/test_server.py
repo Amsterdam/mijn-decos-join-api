@@ -19,7 +19,7 @@ TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 @patch("app.crypto.get_encrytion_key", lambda: TESTKEY)
 @patch("app.helpers.get_decosjoin_api_host", lambda: "http://localhost")
 @patch(
-    "app.helpers.get_decosjoin_adres_boeken",
+    "app.decosjoin_service.get_decosjoin_adres_boeken",
     lambda: {
         PROFILE_TYPE_PRIVATE: [
             "hexkey32chars000000000000000BSN1",

@@ -13,7 +13,6 @@ from yaml import load
 from app.config import (
     BASE_PATH,
     ENABLE_OPENAPI_VALIDATION,
-    get_decosjoin_adres_boeken,
     get_decosjoin_api_host,
     get_decosjoin_password,
     get_decosjoin_username,
@@ -36,7 +35,6 @@ def get_openapi_spec():
 def validate_openapi(function):
     @wraps(function)
     def validate(*args, **kwargs):
-
         if ENABLE_OPENAPI_VALIDATION:
             spec = get_openapi_spec()
             openapi_request = FlaskOpenAPIRequest(request)
@@ -67,7 +65,6 @@ def get_connection():
             get_decosjoin_username(),
             get_decosjoin_password(),
             get_decosjoin_api_host(),
-            get_decosjoin_adres_boeken(),
         )
     return decosjoin_service
 

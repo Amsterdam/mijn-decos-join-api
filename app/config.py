@@ -5,8 +5,6 @@ from datetime import date, time
 
 from flask.json.provider import DefaultJSONProvider
 
-from app.auth import PROFILE_TYPE_COMMERCIAL, PROFILE_TYPE_PRIVATE
-
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # Sentry configuration.
@@ -72,13 +70,6 @@ def get_decosjoin_adres_boeken_bsn():
 
 def get_decosjoin_adres_boeken_kvk():
     return os.getenv("DECOS_JOIN_ADRES_BOEKEN_KVK").split(",")
-
-
-def get_decosjoin_adres_boeken():
-    return {
-        PROFILE_TYPE_PRIVATE: get_decosjoin_adres_boeken_bsn(),
-        PROFILE_TYPE_COMMERCIAL: get_decosjoin_adres_boeken_kvk(),
-    }
 
 
 def get_encrytion_key():

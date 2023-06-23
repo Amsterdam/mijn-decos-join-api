@@ -7,12 +7,12 @@ from app.auth import PROFILE_TYPE_COMMERCIAL, PROFILE_TYPE_PRIVATE
 
 from app.config import (
     get_sentry_dsn,
-    get_decosjoin_adres_boeken,
     get_decosjoin_api_host,
     get_decosjoin_password,
     get_decosjoin_username,
     get_encrytion_key,
 )
+from app.decosjoin_service import get_decosjoin_adres_boeken
 
 
 test_app = Flask(__name__)

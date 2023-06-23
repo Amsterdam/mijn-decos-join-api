@@ -4,8 +4,13 @@ from pprint import pprint
 import requests
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
+from app.auth import PROFILE_TYPE_COMMERCIAL, PROFILE_TYPE_PRIVATE
 
-from app.config import DECOS_API_REQUEST_TIMEOUT
+from app.config import (
+    DECOS_API_REQUEST_TIMEOUT,
+    get_decosjoin_adres_boeken_bsn,
+    get_decosjoin_adres_boeken_kvk,
+)
 from app.crypto import encrypt
 from app.field_parsers import (
     get_fields,
@@ -52,16 +57,25 @@ SELECT_FIELDS = ",".join(
         "text25",
         "text49",
         "processed",
-        "sequence"
+        "sequence",
     ]
 )
 
 
+def get_decosjoin_adres_boeken():
+    return {
+        PROFILE_TYPE_PRIVATE: get_decosjoin_adres_boeken_bsn(),
+        PROFILE_TYPE_COMMERCIAL: get_decosjoin_adres_boeken_kvk(),
+    }
+
+
 class DecosJoinConnection:
-    def __init__(self, username, password, api_host, adres_boeken):
+    def __init__(self, username, password, api_host, adres_boeken=None):
         self.username = username
         self.password = password
-        self.adres_boeken = adres_boeken
+        self.adres_boeken = (
+            adres_boeken if adres_boeken else get_decosjoin_adres_boeken()
+        )
         self.api_host = api_host
         self.api_location = "/decosweb/aspx/api/v1/"
         self.api_url = f"{self.api_host}{self.api_location}"
@@ -310,7 +324,6 @@ class DecosJoinConnection:
                     in ["openbaar", "beperkt openbaar"]
                     and document_meta_data["text41"].lower() != "nvt"
                 ):
-
                     doc_data = self.get_document_data(item["key"])
 
                     if doc_data["is_pdf"]:
