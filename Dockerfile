@@ -4,6 +4,7 @@ WORKDIR /api
 
 
 ENV PYTHONUNBUFFERED=1 \
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
   PIP_NO_CACHE_DIR=off
 
 WORKDIR /api
