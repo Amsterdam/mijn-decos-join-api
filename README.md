@@ -4,10 +4,6 @@
 
 A REST API which discloses the decos-join data
 
-### Requirements
-
-- Access to Rattic
-
 ### Local development
 
 1. Clone repo and `cd` into
