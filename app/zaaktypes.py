@@ -613,7 +613,11 @@ class ZwaarVerkeer(Zaak):
             "from": "text17",
             "parser": to_kind,
         },  # Soort ontheffing
-        {"name": "licencePlates", "from": "text49", "parser": to_string},  # Kentekens
+        {
+            "name": "licensePlates",
+            "from": "text49",
+            "parser": BZP.to_kenteken,
+        },  # Kentekens
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
     ]
@@ -840,11 +844,6 @@ class ExploitatieHorecabedrijf(Zaak):
     parse_fields = [
         {"name": "dateEnd", "from": "date2", "parser": to_date},  # Eind datum
         {
-            "name": "dateProcessed",
-            "from": "date5",
-            "parser": to_date,
-        },  # Datum afhandeling
-        {
             "name": "dateStart",
             "from": "date6",
             "parser": to_date,
@@ -875,17 +874,16 @@ class RVVHeleStad(Zaak):
 
     parse_fields = [
         {
-            "name": "dateProcessed",
-            "from": "date5",
-            "parser": to_date,
-        },  # Datum afhandeling
-        {
             "name": "dateStart",
             "from": "date6",
             "parser": to_date,
         },  # Begindatum vergunning
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einddatum vergunning
-        {"name": "licencePlates", "from": "text49", "parser": to_string},  # Kentekens
+        {
+            "name": "licensePlates",
+            "from": "text49",
+            "parser": BZP.to_kenteken,
+        },  # Kentekens
     ]
 
     def has_valid_source_data(self):
@@ -897,10 +895,11 @@ class RVVSloterweg(Zaak):
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
-    zaak_type = "Sluipverkeer Sloterweg"
+    zaak_type = "Sluipverkeer Slooterweg"
     title = "RVV ontheffing Sloterweg"
 
     date_workflow_active_step_title = "Status - In behandeling"
+    date_workflow_verleend_step_title = "Status - Actief"
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
@@ -908,24 +907,25 @@ class RVVSloterweg(Zaak):
             zaak_deferred["id"], RVVSloterweg.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
+
+        date_workflow_verleend = decosjoin_service.get_workflow(
+            zaak_deferred["id"], RVVSloterweg.date_workflow_verleend_step_title
+        )
+        zaak_deferred["dateWorkflowVerleend"] = date_workflow_verleend
+
         zaken_all.append(zaak_deferred)
 
     parse_fields = [
         {
-            "name": "isFirstRequest",
+            "name": "requestType",
             "from": "text8",
-            "parser": lambda value: value == "Nieuw",
+            "parser": to_string,
         },  # Gebied
         {
             "name": "area",
             "from": "text7",
             "parser": to_string,
         },  # Gebied
-        {
-            "name": "dateProcessed",
-            "from": "date5",
-            "parser": to_date,
-        },  # Datum afhandeling
         {
             "name": "dateStart",
             "from": "date6",
