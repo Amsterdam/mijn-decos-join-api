@@ -901,6 +901,14 @@ class RVVSloterweg(Zaak):
     date_workflow_active_step_title = "Status - In behandeling"
     date_workflow_verleend_step_title = "Status - Actief"
 
+    # status_translations = []
+
+    decision_translations = [
+        ["Verleend", "Verleend"],
+        ["Ingetrokken door gemeente", "Ingetrokken"],
+        ["Verlopen", "Verlopen"],
+    ]
+
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
         date_workflow_active = decosjoin_service.get_workflow(
