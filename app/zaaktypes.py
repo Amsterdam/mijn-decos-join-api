@@ -890,6 +890,25 @@ class RVVHeleStad(Zaak):
     def has_valid_source_data(self):
         return super().has_valid_payment_status()
 
+class RvvSloterweg(Zaak):
+
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "RVV Sloterweg"
+    title = "RVV ontheffing Sloterweg"
+
+    parse_fields = [
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Eind datum
+        {"name": "dateProcessed", "from": "date5", "parser": to_date},  # Datum afhandeling
+        {"name": "dateStart", "from": "date6", "parser": to_date},  # Begindatum vergunning
+        {"name": "location", "from": "text6", "parser": to_string},  # Locatie
+        {"name": "requestType", "from": "text8", "parser" : to_string}, # Soort aanvraag
+        {"name": "area", "from": "text7", "parser" : to_string}, # Gebied
+        {"name": "licensePlates", "from": "text10", "parser" : to_string}, # Kenteken
+        {"name": "previousLicensePlates", "from": "text15", "parser" : to_string}, # Vorige kenteken
+    ]
 
 # A dict with all enabled Zaken
 zaken_index = {
