@@ -895,7 +895,7 @@ class RVVSloterweg(Zaak):
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
-    zaak_type = "Sluipverkeer Slooterweg"
+    zaak_type = "RVV Sloterweg"
     title = "RVV ontheffing Sloterweg"
 
     date_workflow_active_step_title = "Status - In behandeling"

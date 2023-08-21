@@ -527,7 +527,7 @@ class ZaaktypesTest(TestCase):
             RVVHeleStad.date_workflow_active_step_title,
         )
 
-    def test_RVVSlooterweg(self):
+    def test_RVVSloterweg(self):
         zaak_source = {
             "mark": "Z/23/123123123",
             "document_date": "2023-04-18T00:00:00",
@@ -541,7 +541,7 @@ class ZaaktypesTest(TestCase):
             "id": "zaak-147",
         }
         zaak_transformed = RVVSloterweg(zaak_source).result()
-        self.assertEqual(zaak_transformed["caseType"], "Sluipverkeer Slooterweg")
+        self.assertEqual(zaak_transformed["caseType"], "RVV Sloterweg")
         self.assertEqual(
             zaak_transformed["title"],
             "RVV ontheffing Sloterweg",
