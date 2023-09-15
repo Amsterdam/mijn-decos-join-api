@@ -17,7 +17,7 @@ from app.field_parsers import (
 from app.zaaktypes import zaken_index
 
 LOG_RAW = False
-PAGE_SIZE = 30
+PAGE_SIZE = 60
 
 SELECT_FIELDS = ",".join(
     [
