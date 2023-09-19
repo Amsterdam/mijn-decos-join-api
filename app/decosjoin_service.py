@@ -1,6 +1,7 @@
 import math
 import time
 import sentry_sdk
+import concurrent.futures
 from pprint import pprint
 
 import requests
@@ -213,7 +214,8 @@ class DecosJoinConnection:
 
         deferred_zaken.sort(key=lambda x: x[0].get("caseType"))
 
-        tic = time.perf_counter()
+        # In parallel   
+
         # Makes it possible to defer adding the zaak to the zaken response for example to:
         # - Adding dateWorkflowActive by querying other Api's
         for [deferred_zaak, Zaak_cls] in deferred_zaken:
@@ -222,9 +224,6 @@ class DecosJoinConnection:
                 zaken_all=new_zaken,
                 decosjoin_service=self,
             )
-
-        toc = time.perf_counter()
-        sentry_sdk.capture_message(f"Defered transform ({len(deferred_zaken)} zaken) uitgevoerd in {toc - tic:0.4f} seconden")
 
         return new_zaken
 
@@ -265,10 +264,22 @@ class DecosJoinConnection:
         tic = time.perf_counter()
         user_keys = self.get_user_keys(profile_type, user_identifier)
 
-        for key in user_keys:
+        def fetch_zaken(key):
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
             zaken = self.get_all_pages(url)
-            zaken_source.extend(zaken)
+            return zaken
+
+        # execute in parallel
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            results = executor.map(fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            zaken_source.extend(result)
+
+        # for key in user_keys:
+        #     url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
+        #     zaken = self.get_all_pages(url)
+        #     zaken_source.extend(zaken)
 
         toc = time.perf_counter()
         sentry_sdk.capture_message(f"Alle zaken opgehaald in {toc - tic:0.4f} seconden")
@@ -363,17 +374,12 @@ class DecosJoinConnection:
         }
 
     def get_workflow(self, zaak_id: str, step_title: str):
-        tic = time.perf_counter()
         all_workflows_response = self.request(
             f"{self.api_url}items/{zaak_id}/workflows"
         )
-        toc = time.perf_counter()
-        sentry_sdk.capture_message(f"Alle workflows opgehaald voor zaak {zaak_id} in {toc - tic:0.4f} seconden")
 
         if all_workflows_response and all_workflows_response["count"] > 0:
             # Take last workflow key
-
-            tic = time.perf_counter()
 
             if LOG_RAW:
                 print("\n\nAll workflows")
@@ -383,9 +389,6 @@ class DecosJoinConnection:
             worflow_key = all_workflows_response["content"][-1]["key"]
             single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
             single_workflow_response = self.request(single_workflow_url)
-
-            toc = time.perf_counter()
-            sentry_sdk.capture_message(f"Specieke workflow opgehaald voor zaak {zaak_id} in {toc - tic:0.4f} seconden")
 
             if not single_workflow_response["content"]:
                 return None
