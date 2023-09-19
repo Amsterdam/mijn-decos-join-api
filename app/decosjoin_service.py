@@ -161,8 +161,6 @@ class DecosJoinConnection:
         )
 
         for zaak_source in zaken_source_sorted:
-            tic = time.perf_counter()
-
             source_fields = zaak_source["fields"]
 
             # Cannot reliably determine the zaaktype of this zaak
@@ -212,12 +210,10 @@ class DecosJoinConnection:
                 deferred_zaken.append([new_zaak, Zaak])
             else:
                 new_zaken.append(new_zaak)
-            
-            toc = time.perf_counter()
-            sentry_sdk.capture_message(f"Zaak van type {zaak_type} getransformeerd in {toc - tic:0.4f} seconden")
 
         deferred_zaken.sort(key=lambda x: x[0].get("caseType"))
 
+        tic = time.perf_counter()
         # Makes it possible to defer adding the zaak to the zaken response for example to:
         # - Adding dateWorkflowActive by querying other Api's
         for [deferred_zaak, Zaak_cls] in deferred_zaken:
@@ -226,6 +222,9 @@ class DecosJoinConnection:
                 zaken_all=new_zaken,
                 decosjoin_service=self,
             )
+
+        toc = time.perf_counter()
+        sentry_sdk.capture_message(f"Defered transform ({deferred_zaken.__len__} zaken) uitgevoerd in {toc - tic:0.4f} seconden")
 
         return new_zaken
 
