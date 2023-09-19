@@ -1,4 +1,6 @@
 import math
+import time
+import sentry_sdk
 from pprint import pprint
 
 import requests
@@ -237,6 +239,7 @@ class DecosJoinConnection:
     def get_all_pages(self, url):
         """Get 'content' from all pages for the provided url"""
 
+        tic = time.perf_counter()
         req = PreparedRequest()
         req.prepare_url(url, {"top": PAGE_SIZE})  # append top get param
         url = req.url
@@ -251,6 +254,9 @@ class DecosJoinConnection:
         for offset in range(PAGE_SIZE, end, PAGE_SIZE):
             res = self.get_page(url, offset)
             items.extend(res["content"])
+
+        toc = time.perf_counter()
+        sentry_sdk.capture_message(f"Alle zaken ontvangen in {toc - tic:0.4f} seconden, aantal pagina's {end}")
 
         return items
 
