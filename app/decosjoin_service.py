@@ -258,12 +258,16 @@ class DecosJoinConnection:
 
     def get_zaken(self, profile_type, user_identifier):
         zaken_source = []
+        tic = time.perf_counter()
         user_keys = self.get_user_keys(profile_type, user_identifier)
 
         for key in user_keys:
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
             zaken = self.get_all_pages(url)
             zaken_source.extend(zaken)
+
+        toc = time.perf_counter()
+        sentry_sdk.capture_message(f"Alle zaken opgehaald in {toc - tic:0.4f} seconden")
 
         tic = time.perf_counter()
         zaken = self.transform(zaken_source, user_identifier)
