@@ -224,7 +224,7 @@ class DecosJoinConnection:
             )
 
         toc = time.perf_counter()
-        sentry_sdk.capture_message(f"Defered transform ({deferred_zaken.__len__} zaken) uitgevoerd in {toc - tic:0.4f} seconden")
+        sentry_sdk.capture_message(f"Defered transform ({len(deferred_zaken)} zaken) uitgevoerd in {toc - tic:0.4f} seconden")
 
         return new_zaken
 
@@ -363,12 +363,17 @@ class DecosJoinConnection:
         }
 
     def get_workflow(self, zaak_id: str, step_title: str):
+        tic = time.perf_counter()
         all_workflows_response = self.request(
             f"{self.api_url}items/{zaak_id}/workflows"
         )
+        toc = time.perf_counter()
+        sentry_sdk.capture_message(f"Alle workflows opgehaald voor zaak {zaak_id} in {toc - tic:0.4f} seconden")
 
         if all_workflows_response and all_workflows_response["count"] > 0:
             # Take last workflow key
+
+            tic = time.perf_counter()
 
             if LOG_RAW:
                 print("\n\nAll workflows")
@@ -378,6 +383,9 @@ class DecosJoinConnection:
             worflow_key = all_workflows_response["content"][-1]["key"]
             single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
             single_workflow_response = self.request(single_workflow_url)
+
+            toc = time.perf_counter()
+            sentry_sdk.capture_message(f"Specieke workflow opgehaald voor zaak {zaak_id} in {toc - tic:0.4f} seconden")
 
             if not single_workflow_response["content"]:
                 return None
