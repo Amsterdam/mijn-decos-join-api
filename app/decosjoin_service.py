@@ -161,6 +161,8 @@ class DecosJoinConnection:
         )
 
         for zaak_source in zaken_source_sorted:
+            tic = time.perf_counter()
+
             source_fields = zaak_source["fields"]
 
             # Cannot reliably determine the zaaktype of this zaak
@@ -210,6 +212,9 @@ class DecosJoinConnection:
                 deferred_zaken.append([new_zaak, Zaak])
             else:
                 new_zaken.append(new_zaak)
+            
+            toc = time.perf_counter()
+            sentry_sdk.capture_message(f"Zaak van type {zaak_type} getransformeerd in {toc - tic:0.4f} seconden")
 
         deferred_zaken.sort(key=lambda x: x[0].get("caseType"))
 
