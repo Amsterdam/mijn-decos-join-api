@@ -256,7 +256,7 @@ class DecosJoinConnection:
             items.extend(res["content"])
 
         toc = time.perf_counter()
-        sentry_sdk.capture_message(f"Alle zaken ontvangen in {toc - tic:0.4f} seconden, aantal pagina's {end}")
+        sentry_sdk.capture_message(f"Alle zaken ontvangen in {toc - tic:0.4f} seconden, aantal vergunningen {res['count']}")
 
         return items
 
@@ -269,7 +269,10 @@ class DecosJoinConnection:
             zaken = self.get_all_pages(url)
             zaken_source.extend(zaken)
 
+        tic = time.perf_counter()
         zaken = self.transform(zaken_source, user_identifier)
+        toc = time.perf_counter()
+        sentry_sdk.capture_message(f"Alle zaken getransformeerd in {toc - tic:0.4f} seconden")
         return zaken
 
     def get_document_data(self, document_id: str):
