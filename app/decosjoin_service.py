@@ -216,14 +216,29 @@ class DecosJoinConnection:
 
         # In parallel   
 
-        # Makes it possible to defer adding the zaak to the zaken response for example to:
-        # - Adding dateWorkflowActive by querying other Api's
-        for [deferred_zaak, Zaak_cls] in deferred_zaken:
-            Zaak_cls.defer_transform(
+        def perform_deferred_transform(zaak_tuple):
+            [deferred_zaak, Zaak_cls] = zaak_tuple
+            return Zaak_cls.defer_transform(
                 zaak_deferred=deferred_zaak,
-                zaken_all=new_zaken,
+                zaken_all=[],
                 decosjoin_service=self,
             )
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+            results = executor.map(perform_deferred_transform, deferred_zaken, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            new_zaken.append(result)
+
+        # Makes it possible to defer adding the zaak to the zaken response for example to:
+        # - Adding dateWorkflowActive by querying other Api's
+        # for [deferred_zaak, Zaak_cls] in deferred_zaken:
+        #     new_zaak = Zaak_cls.defer_transform(
+        #         zaak_deferred=deferred_zaak,
+        #         zaken_all=[],
+        #         decosjoin_service=self,
+        #     )
+        #     new_zaken.append(new_zaak)
 
         return new_zaken
 
@@ -270,7 +285,7 @@ class DecosJoinConnection:
             return zaken
 
         # execute in parallel
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
             results = executor.map(fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT)
 
         for result in results:
