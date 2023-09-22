@@ -291,7 +291,9 @@ class DecosJoinConnection:
         end = math.ceil(res["count"] / PAGE_SIZE) * PAGE_SIZE
         items.extend(res["content"])
 
+
         for offset in range(PAGE_SIZE, end, PAGE_SIZE):
+            sentry_sdk.capture_message(f"Offset {offset}")
             res = self.get_page(url, offset)
             items.extend(res["content"])
 
