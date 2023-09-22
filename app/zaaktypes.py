@@ -921,7 +921,7 @@ class RVVSloterweg(Zaak):
         )
         zaak_deferred["dateWorkflowVerleend"] = date_workflow_verleend
 
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {
