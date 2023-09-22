@@ -224,7 +224,7 @@ class DecosJoinConnection:
                 decosjoin_service=self,
             )
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
             results = executor.map(perform_deferred_transform, deferred_zaken, timeout=DECOS_API_REQUEST_TIMEOUT)
 
         for result in results:
@@ -285,7 +285,7 @@ class DecosJoinConnection:
             return zaken
 
         # execute in parallel
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
             results = executor.map(fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT)
 
         for result in results:
