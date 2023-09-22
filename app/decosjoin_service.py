@@ -130,7 +130,7 @@ class DecosJoinConnection:
         adres_boeken = self.adres_boeken[profile_type]
 
         def get_key(boek):
-            keys=[]
+            keys = []
             url = f"{self.api_url}search/books?properties=false"
 
             res_json = self.request(
@@ -223,7 +223,7 @@ class DecosJoinConnection:
 
         deferred_zaken.sort(key=lambda x: x[0].get("caseType"))
 
-        # In parallel   
+        # In parallel
         # Makes it possible to defer adding the zaak to the zaken response for example to:
         # - Adding dateWorkflowActive by querying other Api's
         def perform_deferred_transform(zaak_tuple):
