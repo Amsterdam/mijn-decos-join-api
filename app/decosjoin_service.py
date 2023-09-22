@@ -146,7 +146,7 @@ class DecosJoinConnection:
 
             return keys
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
             results = executor.map(get_key, adres_boeken, timeout=DECOS_API_REQUEST_TIMEOUT)
 
         for result in results:
@@ -247,7 +247,7 @@ class DecosJoinConnection:
                 decosjoin_service=self,
             )
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
             results = executor.map(perform_deferred_transform, deferred_zaken, timeout=DECOS_API_REQUEST_TIMEOUT)
 
         for result in results:
@@ -291,7 +291,6 @@ class DecosJoinConnection:
         end = math.ceil(res["count"] / PAGE_SIZE) * PAGE_SIZE
         items.extend(res["content"])
 
-
         for offset in range(PAGE_SIZE, end, PAGE_SIZE):
             sentry_sdk.capture_message(f"Offset {offset}")
             res = self.get_page(url, offset)
@@ -310,7 +309,7 @@ class DecosJoinConnection:
             return zaken
 
         # execute in parallel
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
             results = executor.map(fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT)
 
         for result in results:
