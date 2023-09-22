@@ -117,7 +117,6 @@ class Zaak:
 
 
 class TVM_RVV_Object(Zaak):
-
     zaak_type = "TVM - RVV - Object"
     title = "Tijdelijke verkeersmaatregel (TVM-RVV-Object)"
 
@@ -256,7 +255,6 @@ class BBVergunning(Zaak):
 
 
 class GPP(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -279,7 +277,6 @@ class GPP(Zaak):
 
 
 class GPK(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -332,7 +329,6 @@ class GPK(Zaak):
 
 
 class EvenementMelding(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -361,7 +357,6 @@ class EvenementMelding(Zaak):
 
 
 class EvenementVergunning(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -390,7 +385,6 @@ class EvenementVergunning(Zaak):
 
 
 class Omzettingsvergunning(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -424,7 +418,6 @@ class Omzettingsvergunning(Zaak):
 
 
 class ERVV_TVM(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -453,7 +446,6 @@ class ERVV_TVM(Zaak):
 
 
 class BZP(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -489,7 +481,6 @@ class BZP(Zaak):
 
 
 class BZB(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -512,7 +503,6 @@ class BZB(Zaak):
 
 
 class Flyeren(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -539,7 +529,6 @@ class Flyeren(Zaak):
 
 
 class AanbiedenDiensten(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -561,7 +550,6 @@ class AanbiedenDiensten(Zaak):
 
 
 class NachtwerkOntheffing(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -598,7 +586,6 @@ class NachtwerkOntheffing(Zaak):
 
 
 class ZwaarVerkeer(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -626,7 +613,11 @@ class ZwaarVerkeer(Zaak):
             "from": "text17",
             "parser": to_kind,
         },  # Soort ontheffing
-        {"name": "licencePlates", "from": "text49", "parser": to_string},  # Kentekens
+        {
+            "name": "licensePlates",
+            "from": "text49",
+            "parser": BZP.to_kenteken,
+        },  # Kentekens
         {"name": "dateStart", "from": "date6", "parser": to_date},  # Van
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Tot en met
     ]
@@ -685,7 +676,6 @@ class ZwaarVerkeer(Zaak):
 
 
 class Samenvoegingsvergunning(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -710,7 +700,6 @@ class Samenvoegingsvergunning(Zaak):
 
 
 class Onttrekkingsvergunning(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -735,7 +724,6 @@ class Onttrekkingsvergunning(Zaak):
 
 
 class OnttrekkingsvergunningSloop(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -761,7 +749,6 @@ class OnttrekkingsvergunningSloop(Zaak):
 
 
 class VormenVanWoonruimte(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -786,7 +773,6 @@ class VormenVanWoonruimte(Zaak):
 
 
 class Splitsingsvergunning(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -809,7 +795,6 @@ class Splitsingsvergunning(Zaak):
 
 
 class VOBvergunning(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
@@ -836,7 +821,6 @@ class VOBvergunning(Zaak):
 
 
 class ExploitatieHorecabedrijf(Zaak):
-
     # !!!!!!!!!!!!!
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
@@ -844,25 +828,31 @@ class ExploitatieHorecabedrijf(Zaak):
     zaak_type = "Horeca vergunning exploitatie Horecabedrijf"
     title = "Horeca vergunning exploitatie Horecabedrijf"
 
-    date_workflow_active_step_title = "Horeca vergunning exploitatie Horecabedrijf - In behandeling nemen"
+    date_workflow_active_step_title = (
+        "Horeca vergunning exploitatie Horecabedrijf - In behandeling nemen"
+    )
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
         date_workflow_active = decosjoin_service.get_workflow(
-            zaak_deferred["id"], ExploitatieHorecabedrijf.date_workflow_active_step_title
+            zaak_deferred["id"],
+            ExploitatieHorecabedrijf.date_workflow_active_step_title,
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
         zaken_all.append(zaak_deferred)
 
     parse_fields = [
         {"name": "dateEnd", "from": "date2", "parser": to_date},  # Eind datum
-        {"name": "dateProcessed", "from": "date5", "parser": to_date},  # Datum afhandeling
-        {"name": "dateStart", "from": "date6", "parser": to_date},  # Begindatum vergunning
+        {
+            "name": "dateStart",
+            "from": "date6",
+            "parser": to_date,
+        },  # Begindatum vergunning
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
     ]
 
-class RVVHeleStad(Zaak):
 
+class RVVHeleStad(Zaak):
     # !!!!!!!!!!!!!
     enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
@@ -870,7 +860,9 @@ class RVVHeleStad(Zaak):
     zaak_type = "RVV - Hele stad"
     title = "RVV-verkeersontheffing"
 
-    date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
+    date_workflow_active_step_title = (
+        "Status bijwerken en notificatie verzenden - In behandeling"
+    )
 
     @staticmethod
     def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
@@ -881,14 +873,84 @@ class RVVHeleStad(Zaak):
         zaken_all.append(zaak_deferred)
 
     parse_fields = [
-        {"name": "dateProcessed", "from": "date5", "parser": to_date},  # Datum afhandeling
-        {"name": "dateStart", "from": "date6", "parser": to_date},  # Begindatum vergunning
+        {
+            "name": "dateStart",
+            "from": "date6",
+            "parser": to_date,
+        },  # Begindatum vergunning
         {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einddatum vergunning
-        {"name": "licencePlates", "from": "text49", "parser": to_string},  # Kentekens
+        {
+            "name": "licensePlates",
+            "from": "text49",
+            "parser": BZP.to_kenteken,
+        },  # Kentekens
     ]
 
     def has_valid_source_data(self):
         return super().has_valid_payment_status()
+
+
+class RVVSloterweg(Zaak):
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "RVV Sloterweg"
+    title = "RVV ontheffing Sloterweg"
+
+    date_workflow_active_step_title = "Status - In behandeling"
+    date_workflow_verleend_step_title = "Status - Actief"
+
+    # status_translations = []
+
+    decision_translations = [
+        ["Verleend", "Verleend"],
+        ["Ingetrokken door gemeente", "Ingetrokken"],
+        ["Verlopen", "Verlopen"],
+    ]
+
+    @staticmethod
+    def defer_transform(zaak_deferred, zaken_all, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], RVVSloterweg.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+
+        date_workflow_verleend = decosjoin_service.get_workflow(
+            zaak_deferred["id"], RVVSloterweg.date_workflow_verleend_step_title
+        )
+        zaak_deferred["dateWorkflowVerleend"] = date_workflow_verleend
+
+        zaken_all.append(zaak_deferred)
+
+    parse_fields = [
+        {
+            "name": "requestType",
+            "from": "text8",
+            "parser": to_string,
+        },  # Gebied
+        {
+            "name": "area",
+            "from": "text7",
+            "parser": to_string,
+        },  # Gebied
+        {
+            "name": "dateStart",
+            "from": "date6",
+            "parser": to_date,
+        },  # Begindatum vergunning
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einddatum vergunning
+        {
+            "name": "licensePlates",
+            "from": "text10",
+            "parser": BZP.to_kenteken,
+        },  # Kentekens
+        {
+            "name": "previousLicensePlates",
+            "from": "text15",
+            "parser": BZP.to_kenteken,
+        },  # Vorige Kentekens
+    ]
 
 
 # A dict with all enabled Zaken

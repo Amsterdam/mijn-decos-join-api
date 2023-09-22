@@ -45,6 +45,7 @@ SELECT_FIELDS = ",".join(
         "text12",
         "text13",
         "text14",
+        "text15",
         "text17",
         "text18",
         "text20",
