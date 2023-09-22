@@ -129,7 +129,8 @@ class DecosJoinConnection:
 
         adres_boeken = self.adres_boeken[profile_type]
 
-        for boek in adres_boeken:
+        def get_key(boek):
+            keys=[]
             url = f"{self.api_url}search/books?properties=false"
 
             res_json = self.request(
@@ -142,6 +143,28 @@ class DecosJoinConnection:
                 for item in res_json["itemDataResultSet"]["content"]:
                     user_key = item["key"]
                     keys.append(user_key)
+
+            return keys
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+            results = executor.map(get_key, adres_boeken, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            keys.extend(result)
+
+        # for boek in adres_boeken:
+        #     url = f"{self.api_url}search/books?properties=false"
+
+        #     res_json = self.request(
+        #         url,
+        #         json=self.get_search_query_json(user_identifier, boek),
+        #         method="post",
+        #     )
+
+        #     if res_json["itemDataResultSet"]["count"] > 0:
+        #         for item in res_json["itemDataResultSet"]["content"]:
+        #             user_key = item["key"]
+        #             keys.append(user_key)
 
         return keys
 
