@@ -63,7 +63,7 @@ class Zaak:
     defer_transform = None  # Should be @staticmethod if defined
     # @staticmethod
     # def defer_transform(self, zaak_deferred, zaken_all, decosjoin_service):
-    #     zaken_all.append(zaak_deferred)
+    #     return zaak_deferred
 
     def to_title(self):
         """Returns the title we want to give to the particular case"""
@@ -218,7 +218,7 @@ class BBVergunning(Zaak):
             zaak_deferred["id"], BBVergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     status_translations = [
         ["Publicatie aanvraag", "Ontvangen"],
@@ -399,7 +399,7 @@ class Omzettingsvergunning(Zaak):
             zaak_deferred["id"], Omzettingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},
@@ -564,7 +564,7 @@ class NachtwerkOntheffing(Zaak):
             zaak_deferred["id"], NachtwerkOntheffing.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
@@ -600,7 +600,7 @@ class ZwaarVerkeer(Zaak):
             zaak_deferred["id"], ZwaarVerkeer.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     def to_kind(kind_source) -> str:
         if not kind_source:
@@ -692,7 +692,7 @@ class Samenvoegingsvergunning(Zaak):
             zaak_deferred["id"], Samenvoegingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
@@ -716,7 +716,7 @@ class Onttrekkingsvergunning(Zaak):
             zaak_deferred["id"], Onttrekkingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
@@ -741,7 +741,7 @@ class OnttrekkingsvergunningSloop(Zaak):
             OnttrekkingsvergunningSloop.date_workflow_active_step_title,
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
@@ -765,7 +765,7 @@ class VormenVanWoonruimte(Zaak):
             zaak_deferred["id"], VormenVanWoonruimte.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
@@ -787,7 +787,7 @@ class Splitsingsvergunning(Zaak):
             zaak_deferred["id"], Splitsingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "location", "from": "text6", "parser": to_string},  # Locatie
@@ -809,7 +809,7 @@ class VOBvergunning(Zaak):
             zaak_deferred["id"], VOBvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "requestKind", "from": "text9", "parser": to_string},  # Soort aanvraag
@@ -839,7 +839,7 @@ class ExploitatieHorecabedrijf(Zaak):
             ExploitatieHorecabedrijf.date_workflow_active_step_title,
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {"name": "dateEnd", "from": "date2", "parser": to_date},  # Eind datum
@@ -870,7 +870,7 @@ class RVVHeleStad(Zaak):
             zaak_deferred["id"], RVVHeleStad.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {
@@ -921,7 +921,7 @@ class RVVSloterweg(Zaak):
         )
         zaak_deferred["dateWorkflowVerleend"] = date_workflow_verleend
 
-        zaken_all.append(zaak_deferred)
+        return zaak_deferred
 
     parse_fields = [
         {

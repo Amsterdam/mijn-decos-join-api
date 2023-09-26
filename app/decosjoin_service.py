@@ -1,4 +1,7 @@
 import math
+import time
+import sentry_sdk
+import concurrent.futures
 from pprint import pprint
 
 import requests
@@ -22,7 +25,7 @@ from app.field_parsers import (
 from app.zaaktypes import zaken_index
 
 LOG_RAW = False
-PAGE_SIZE = 30
+PAGE_SIZE = 60
 
 SELECT_FIELDS = ",".join(
     [
@@ -140,7 +143,8 @@ class DecosJoinConnection:
 
         adres_boeken = self.adres_boeken[profile_type]
 
-        for boek in adres_boeken:
+        def get_key(boek):
+            keys=[]
             url = f"{self.api_url}search/books?properties=false"
 
             res_json = self.request(
@@ -153,6 +157,28 @@ class DecosJoinConnection:
                 for item in res_json["itemDataResultSet"]["content"]:
                     user_key = item["key"]
                     keys.append(user_key)
+
+            return keys
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+            results = executor.map(get_key, adres_boeken, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            keys.extend(result)
+
+        # for boek in adres_boeken:
+        #     url = f"{self.api_url}search/books?properties=false"
+
+        #     res_json = self.request(
+        #         url,
+        #         json=self.get_search_query_json(user_identifier, boek),
+        #         method="post",
+        #     )
+
+        #     if res_json["itemDataResultSet"]["count"] > 0:
+        #         for item in res_json["itemDataResultSet"]["content"]:
+        #             user_key = item["key"]
+        #             keys.append(user_key)
 
         return keys
 
@@ -225,14 +251,31 @@ class DecosJoinConnection:
 
         deferred_zaken.sort(key=lambda x: x[0].get("caseType"))
 
-        # Makes it possible to defer adding the zaak to the zaken response for example to:
-        # - Adding dateWorkflowActive by querying other Api's
-        for [deferred_zaak, Zaak_cls] in deferred_zaken:
-            Zaak_cls.defer_transform(
+        # In parallel   
+
+        def perform_deferred_transform(zaak_tuple):
+            [deferred_zaak, Zaak_cls] = zaak_tuple
+            return Zaak_cls.defer_transform(
                 zaak_deferred=deferred_zaak,
-                zaken_all=new_zaken,
+                zaken_all=[],
                 decosjoin_service=self,
             )
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+            results = executor.map(perform_deferred_transform, deferred_zaken, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            new_zaken.append(result)
+
+        # Makes it possible to defer adding the zaak to the zaken response for example to:
+        # - Adding dateWorkflowActive by querying other Api's
+        # for [deferred_zaak, Zaak_cls] in deferred_zaken:
+        #     new_zaak = Zaak_cls.defer_transform(
+        #         zaak_deferred=deferred_zaak,
+        #         zaken_all=[],
+        #         decosjoin_service=self,
+        #     )
+        #     new_zaken.append(new_zaak)
 
         return new_zaken
 
@@ -263,6 +306,7 @@ class DecosJoinConnection:
         items.extend(res["content"])
 
         for offset in range(PAGE_SIZE, end, PAGE_SIZE):
+            sentry_sdk.capture_message(f"Offset {offset}")
             res = self.get_page(url, offset)
             items.extend(res["content"])
 
@@ -270,14 +314,33 @@ class DecosJoinConnection:
 
     def get_zaken(self, profile_type, user_identifier):
         zaken_source = []
+        tic = time.perf_counter()
         user_keys = self.get_user_keys(profile_type, user_identifier)
 
-        for key in user_keys:
+        def fetch_zaken(key):
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
             zaken = self.get_all_pages(url)
-            zaken_source.extend(zaken)
+            return zaken
 
+        # execute in parallel
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+            results = executor.map(fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            zaken_source.extend(result)
+
+        # for key in user_keys:
+        #     url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
+        #     zaken = self.get_all_pages(url)
+        #     zaken_source.extend(zaken)
+
+        toc = time.perf_counter()
+        sentry_sdk.capture_message(f"Alle zaken opgehaald in {toc - tic:0.4f} seconden")
+
+        tic = time.perf_counter()
         zaken = self.transform(zaken_source, user_identifier)
+        toc = time.perf_counter()
+        sentry_sdk.capture_message(f"Alle zaken getransformeerd in {toc - tic:0.4f} seconden")
         return zaken
 
     def get_document_data(self, document_id: str):
