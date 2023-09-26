@@ -144,7 +144,7 @@ class DecosJoinConnection:
         adres_boeken = self.adres_boeken[profile_type]
 
         def get_key(boek):
-            keys=[]
+            keys = []
             url = f"{self.api_url}search/books?properties=false"
 
             res_json = self.request(
@@ -161,7 +161,9 @@ class DecosJoinConnection:
             return keys
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
-            results = executor.map(get_key, adres_boeken, timeout=DECOS_API_REQUEST_TIMEOUT)
+            results = executor.map(
+                get_key, adres_boeken, timeout=DECOS_API_REQUEST_TIMEOUT
+            )
 
         for result in results:
             keys.extend(result)
@@ -251,7 +253,7 @@ class DecosJoinConnection:
 
         deferred_zaken.sort(key=lambda x: x[0].get("caseType"))
 
-        # In parallel   
+        # In parallel
 
         def perform_deferred_transform(zaak_tuple):
             [deferred_zaak, Zaak_cls] = zaak_tuple
@@ -262,7 +264,11 @@ class DecosJoinConnection:
             )
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
-            results = executor.map(perform_deferred_transform, deferred_zaken, timeout=DECOS_API_REQUEST_TIMEOUT)
+            results = executor.map(
+                perform_deferred_transform,
+                deferred_zaken,
+                timeout=DECOS_API_REQUEST_TIMEOUT,
+            )
 
         for result in results:
             new_zaken.append(result)
@@ -324,7 +330,9 @@ class DecosJoinConnection:
 
         # execute in parallel
         with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
-            results = executor.map(fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT)
+            results = executor.map(
+                fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT
+            )
 
         for result in results:
             zaken_source.extend(result)
@@ -340,7 +348,9 @@ class DecosJoinConnection:
         tic = time.perf_counter()
         zaken = self.transform(zaken_source, user_identifier)
         toc = time.perf_counter()
-        sentry_sdk.capture_message(f"Alle zaken getransformeerd in {toc - tic:0.4f} seconden")
+        sentry_sdk.capture_message(
+            f"Alle zaken getransformeerd in {toc - tic:0.4f} seconden"
+        )
         return zaken
 
     def get_document_data(self, document_id: str):
