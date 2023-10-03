@@ -1,11 +1,7 @@
-import json
 from datetime import date
 from unittest.case import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call
 
-from freezegun import freeze_time
-
-from app.decosjoin_service import DecosJoinConnection
 from app.field_parsers import to_date
 from app.zaaktypes import (
     BZB,
@@ -22,6 +18,7 @@ from app.zaaktypes import (
     Splitsingsvergunning,
     VOBvergunning,
     RVVHeleStad,
+    RVVSloterweg,
 )
 
 
@@ -185,10 +182,8 @@ class ZaaktypesTest(TestCase):
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2021-10-15"))
 
-        zaken_all = []
-
         Omzettingsvergunning.defer_transform(
-            zaak_transformed, zaken_all, connection_mock()
+            zaak_transformed, connection_mock()
         )
 
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2021-10-15"))
@@ -332,10 +327,8 @@ class ZaaktypesTest(TestCase):
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-06-15"))
 
-        zaken_all = []
-
         NachtwerkOntheffing.defer_transform(
-            zaak_transformed, zaken_all, connection_mock()
+            zaak_transformed, connection_mock()
         )
 
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-06-15"))
@@ -374,9 +367,7 @@ class ZaaktypesTest(TestCase):
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-10-15"))
 
-        zaken_all = []
-
-        ZwaarVerkeer.defer_transform(zaak_transformed, zaken_all, connection_mock())
+        ZwaarVerkeer.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-15"))
 
         connection_mock.get_workflow.assert_called_once_with(
@@ -405,10 +396,8 @@ class ZaaktypesTest(TestCase):
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-10-15"))
 
-        zaken_all = []
-
         Samenvoegingsvergunning.defer_transform(
-            zaak_transformed, zaken_all, connection_mock()
+            zaak_transformed, connection_mock()
         )
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-15"))
 
@@ -438,10 +427,8 @@ class ZaaktypesTest(TestCase):
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2022-10-20"))
 
-        zaken_all = []
-
         Splitsingsvergunning.defer_transform(
-            zaak_transformed, zaken_all, connection_mock()
+            zaak_transformed, connection_mock()
         )
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-20"))
 
@@ -481,11 +468,7 @@ class ZaaktypesTest(TestCase):
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2023-03-13"))
 
-        zaken_all = []
-
-        VOBvergunning.defer_transform(
-            zaak_transformed, zaken_all, connection_mock()
-        )
+        VOBvergunning.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-03-13"))
 
         connection_mock.get_workflow.assert_called_once_with(
@@ -513,23 +496,66 @@ class ZaaktypesTest(TestCase):
         )
         self.assertEqual(zaak_transformed["decision"], "Verleend")
         self.assertEqual(
-            zaak_transformed["dateProcessed"], to_date("2023-02-01T00:00:00")
+            zaak_transformed["dateDecision"], to_date("2023-02-01T00:00:00")
         )
         self.assertEqual(zaak_transformed["dateStart"], to_date("2023-06-21T00:00:00"))
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2023-12-24T00:00:00"))
-        self.assertEqual(zaak_transformed["licencePlates"], "KN-UW-TS,AAZZ88")
+        self.assertEqual(zaak_transformed["licensePlates"], "KN-UW-TS | AAZZ88")
 
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2023-04-11"))
 
-        zaken_all = []
-
-        RVVHeleStad.defer_transform(
-            zaak_transformed, zaken_all, connection_mock()
-        )
+        RVVHeleStad.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-04-11"))
 
         connection_mock.get_workflow.assert_called_once_with(
             "zaak-146",
             RVVHeleStad.date_workflow_active_step_title,
+        )
+
+    def test_RVVSloterweg(self):
+        zaak_source = {
+            "mark": "Z/23/123123123",
+            "document_date": "2023-04-18T00:00:00",
+            "date5": "2023-02-01T00:00:00",
+            "date6": "2023-06-21T00:00:00",
+            "date7": "2023-12-24T00:00:00",
+            "text10": "KN-UW-TS, AAZZ88",
+            "text15": "LA-TO-RS, BA-BI-BO",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-147",
+        }
+        zaak_transformed = RVVSloterweg(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "RVV Sloterweg")
+        self.assertEqual(
+            zaak_transformed["title"],
+            "RVV ontheffing Sloterweg",
+        )
+        self.assertEqual(zaak_transformed["decision"], "Verleend")
+        self.assertEqual(
+            zaak_transformed["dateDecision"], to_date("2023-02-01T00:00:00")
+        )
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2023-06-21T00:00:00"))
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2023-12-24T00:00:00"))
+        self.assertEqual(zaak_transformed["licensePlates"], "KN-UW-TS | AAZZ88")
+        self.assertEqual(
+            zaak_transformed["previousLicensePlates"], "LA-TO-RS | BA-BI-BO"
+        )
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2023-04-11"))
+
+        RVVSloterweg.defer_transform(zaak_transformed, connection_mock())
+
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-04-11"))
+        self.assertEqual(
+            zaak_transformed["dateWorkflowVerleend"], to_date("2023-04-11")
+        )
+
+        connection_mock.get_workflow.assert_has_calls(
+            [
+                call("zaak-147", RVVSloterweg.date_workflow_active_step_title),
+                call("zaak-147", RVVSloterweg.date_workflow_verleend_step_title),
+            ],
         )

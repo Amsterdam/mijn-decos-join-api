@@ -1,4 +1,6 @@
 import math
+import time
+import concurrent.futures
 from pprint import pprint
 
 import requests
@@ -17,7 +19,7 @@ from app.field_parsers import (
 from app.zaaktypes import zaken_index
 
 LOG_RAW = False
-PAGE_SIZE = 30
+PAGE_SIZE = 60
 
 SELECT_FIELDS = ",".join(
     [
@@ -45,6 +47,7 @@ SELECT_FIELDS = ",".join(
         "text12",
         "text13",
         "text14",
+        "text15",
         "text17",
         "text18",
         "text20",
@@ -125,7 +128,8 @@ class DecosJoinConnection:
 
         adres_boeken = self.adres_boeken[profile_type]
 
-        for boek in adres_boeken:
+        def get_key(boek):
+            keys = []
             url = f"{self.api_url}search/books?properties=false"
 
             res_json = self.request(
@@ -138,6 +142,14 @@ class DecosJoinConnection:
                 for item in res_json["itemDataResultSet"]["content"]:
                     user_key = item["key"]
                     keys.append(user_key)
+
+            return keys
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+            results = executor.map(get_key, adres_boeken, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            keys.extend(result)
 
         return keys
 
@@ -210,14 +222,21 @@ class DecosJoinConnection:
 
         deferred_zaken.sort(key=lambda x: x[0].get("caseType"))
 
+        # In parallel
         # Makes it possible to defer adding the zaak to the zaken response for example to:
         # - Adding dateWorkflowActive by querying other Api's
-        for [deferred_zaak, Zaak_cls] in deferred_zaken:
-            Zaak_cls.defer_transform(
+        def perform_deferred_transform(zaak_tuple):
+            [deferred_zaak, Zaak_cls] = zaak_tuple
+            return Zaak_cls.defer_transform(
                 zaak_deferred=deferred_zaak,
-                zaken_all=new_zaken,
                 decosjoin_service=self,
             )
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+            results = executor.map(perform_deferred_transform, deferred_zaken, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            new_zaken.append(result)
 
         return new_zaken
 
@@ -257,10 +276,17 @@ class DecosJoinConnection:
         zaken_source = []
         user_keys = self.get_user_keys(profile_type, user_identifier)
 
-        for key in user_keys:
+        def fetch_zaken(key):
             url = f"{self.api_url}items/{key}/folders?select={SELECT_FIELDS}"
             zaken = self.get_all_pages(url)
-            zaken_source.extend(zaken)
+            return zaken
+
+        # execute in parallel
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+            results = executor.map(fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT)
+
+        for result in results:
+            zaken_source.extend(result)
 
         zaken = self.transform(zaken_source, user_identifier)
         return zaken
