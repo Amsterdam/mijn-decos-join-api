@@ -1,4 +1,4 @@
-FROM python:latest as base
+FROM python:3.11.6 as base
 
 ENV PYTHONUNBUFFERED=1 \
   PIP_NO_CACHE_DIR=off \
