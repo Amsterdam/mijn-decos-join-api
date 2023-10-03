@@ -30,11 +30,8 @@ if sentry_dsn:
 @auth.login_required
 @validate_openapi
 def get_vergunningen():
-    tic = time.perf_counter()
     user = auth.get_current_user()
     zaken = get_connection().get_zaken(user["type"], user["id"])
-    toc = time.perf_counter()
-    sentry_sdk.capture_message(f"Alle zaken ontvangen en terug gestuurd in {toc - tic:0.4f} seconden")
 
     return success_response_json(zaken)
 

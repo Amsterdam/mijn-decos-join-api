@@ -1,6 +1,5 @@
 import math
 import time
-import sentry_sdk
 import concurrent.futures
 from pprint import pprint
 
@@ -276,7 +275,6 @@ class DecosJoinConnection:
 
     def get_zaken(self, profile_type, user_identifier):
         zaken_source = []
-        tic = time.perf_counter()
         user_keys = self.get_user_keys(profile_type, user_identifier)
 
         def fetch_zaken(key):
@@ -291,13 +289,7 @@ class DecosJoinConnection:
         for result in results:
             zaken_source.extend(result)
 
-        toc = time.perf_counter()
-        sentry_sdk.capture_message(f"Alle zaken opgehaald in {toc - tic:0.4f} seconden")
-
-        tic = time.perf_counter()
         zaken = self.transform(zaken_source, user_identifier)
-        toc = time.perf_counter()
-        sentry_sdk.capture_message(f"Alle zaken getransformeerd in {toc - tic:0.4f} seconden")
         return zaken
 
     def get_document_data(self, document_id: str):
