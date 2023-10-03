@@ -229,7 +229,6 @@ class DecosJoinConnection:
             [deferred_zaak, Zaak_cls] = zaak_tuple
             return Zaak_cls.defer_transform(
                 zaak_deferred=deferred_zaak,
-                zaken_all=[],
                 decosjoin_service=self,
             )
 
