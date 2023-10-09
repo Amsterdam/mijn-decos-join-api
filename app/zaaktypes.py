@@ -822,7 +822,7 @@ class VOBvergunning(Zaak):
 
 class ExploitatieHorecabedrijf(Zaak):
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Horeca vergunning exploitatie Horecabedrijf"
