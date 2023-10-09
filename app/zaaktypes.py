@@ -1065,6 +1065,54 @@ class Eigenparkeeerplaats(Zaak):
         return creation_date >= not_before and super().has_valid_payment_status()
 
 
+class EigenparkeeerplaatsOpheffen(Zaak):
+    # !!!!!!!!!!!!!
+    enabled = True
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Eigen parkeerplaats opheffen"
+    title = "Eigen parkeerplaats opheffen"
+
+    parse_fields = [
+        {
+            "name": "carsharingpermit",
+            "from": "bol8",
+            "parser": to_bool_if_exists,
+        },
+        {
+            "name": "streetLocation1",
+            "from": "text25",
+            "parser": to_string,
+        },
+        {
+            "name": "housenumberLocation1",
+            "from": "NUM14",
+            "parser": to_int,
+        },
+        {
+            "name": "locationkindLocation1",
+            "from": "text17",
+            "parser": to_string,
+        },
+        {
+            "name": "fiscalnumberLocation1",
+            "from": "text18",
+            "parser": to_string,
+        },
+        {
+            "name": "dateEnd",
+            "from": "date8",
+            "parser": to_date,
+        },
+    ]
+
+    def has_valid_source_data(self):
+        not_before = to_date("2023-08-08")
+        creation_date = to_date(self.document_date)
+
+        return creation_date >= not_before and super().has_valid_payment_status()
+
+
 # A dict with all enabled Zaken
 zaken_index = {
     getattr(cls, "zaak_type"): cls for cls in Zaak.__subclasses__() if cls.enabled
