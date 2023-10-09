@@ -952,6 +952,118 @@ class RVVSloterweg(Zaak):
         },  # Vorige Kentekens
     ]
 
+class Eigenparkeeerplaats(Zaak):
+    # !!!!!!!!!!!!!
+    enabled = True
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Eigen parkeerplaats"
+    title = "Eigen parkeerplaats"
+
+    parse_fields = [
+        {
+            "name": "newRequest",
+            "from": "bol9",
+            "parser": to_bool_if_exists,
+        },
+        {
+            "name": "extension",
+            "from": "bol7",
+            "parser": to_bool_if_exists,
+        },
+        {
+            "name": "licenceplateChange",
+            "from": "bol10",
+            "parser": to_bool_if_exists,
+        },
+        {
+            "name": "move",
+            "from": "bol11",
+            "parser": to_bool_if_exists,
+        },
+        {
+            "name": "carsharingpermit",
+            "from": "bol8",
+            "parser": to_bool_if_exists,
+        },
+        {
+            "name": "streetLocation1",
+            "from": "text25",
+            "parser": to_string,
+        },
+        {
+            "name": "housenumberLocation1",
+            "from": "NUM14",
+            "parser": to_int,
+        },
+        {
+            "name": "locationkindLocation1",
+            "from": "text17",
+            "parser": to_string,
+        },
+        {
+            "name": "fiscalnumberLocation1",
+            "from": "text18",
+            "parser": to_string,
+        },
+        {
+            "name": "urlLocation1",
+            "from": "text19",
+            "parser": to_string,
+        },
+        {
+            "name": "streetLocation2",
+            "from": "text5",
+            "parser": to_string,
+        },
+        {
+            "name": "housenumberLocation2",
+            "from": "num15",
+            "parser": to_int,
+        },
+        {
+            "name": "locationkindLocation2",
+            "from": "text20",
+            "parser": to_string,
+        },
+        {
+            "name": "fiscalnumberLocation2",
+            "from": "text21",
+            "parser": to_string,
+        },
+        {
+            "name": "urlLocation2",
+            "from": "text22",
+            "parser": to_string,
+        },
+        {
+            "name": "licenseplates",
+            "from": "text13",
+            "parser": BZP.to_kenteken,
+        },
+        {
+            "name": "previousLiceneplats",
+            "from": "text14",
+            "parser": BZP.to_kenteken,
+        },
+        {
+            "name": "dateStart",
+            "from": "date6",
+            "parser": to_date,
+        },
+        {
+            "name": "dateEnd",
+            "from": "date8",
+            "parser": to_date,
+        },
+    ]
+
+    def has_valid_source_data(self):
+        not_before = to_date("2023-08-08")
+        creation_date = to_date(self.document_date)
+
+        return creation_date >= not_before and super().has_valid_payment_status()
+
 
 # A dict with all enabled Zaken
 zaken_index = {
