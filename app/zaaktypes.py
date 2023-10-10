@@ -981,7 +981,7 @@ class Eigenparkeerplaats(Zaak):
             "parser": to_bool_if_exists,
         },
         {
-            "name": "isLicenceplateChange",
+            "name": "isLicensePlateChange",
             "from": "bol10",
             "parser": to_bool_if_exists,
         },
@@ -1046,12 +1046,12 @@ class Eigenparkeerplaats(Zaak):
             "parser": to_string,
         },
         {
-            "name": "licenseplates",
+            "name": "licensePlates",
             "from": "text13",
             "parser": BZP.to_kenteken,
         },
         {
-            "name": "previousLiceneplates",
+            "name": "previousLicensePlates",
             "from": "text14",
             "parser": BZP.to_kenteken,
         },
@@ -1089,6 +1089,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
             zaak_deferred["id"], EigenparkeerplaatsOpheffen.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
+
 
     parse_fields = [
         {
