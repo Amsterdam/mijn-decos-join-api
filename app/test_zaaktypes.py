@@ -573,7 +573,11 @@ class ZaaktypesTest(TestCase):
             "dfunction": "Verleend",
             "id": "zaak-150",
             "bol9": "Ja",
-            "num14": "12"
+            "num14": "12",
+            "text25": "straat",
+            "num14": "12",
+            "text17": "Consul/Huisarts/Verloskundige woonadres",
+            "text18": "12345678"
         }
         zaak_transformed = Eigenparkeerplaats(zaak_source).result()
         self.assertEqual(zaak_transformed["caseType"], "Eigen parkeerplaats")
@@ -590,6 +594,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["licensePlates"], "KN-UW-TS | AAZZ88")
         self.assertEqual(zaak_transformed["isNewRequest"], True)
         self.assertEqual(zaak_transformed["housenumberLocation1"], 12)
+        self.assertEqual(zaak_transformed["requestType"], "Nieuwe aanvraag")
 
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2023-10-11"))

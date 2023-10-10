@@ -974,22 +974,21 @@ class Eigenparkeerplaats(Zaak):
         return zaak_deferred
 
     @staticmethod
-    def to_readable_requesttype(zaak):
-          match True:
-            case zaak.isNewRequest:
-                return 'Nieuwe aanvraag'
-
-            case zaak.isCarsharingpermit:
-                return 'Autodeelbedrijf'
-
-            case zaak.isLicensePlateChange:
-                return 'Kentekenwijziging'
-
-            case zaak.isRelocation:
-                return 'Verhuizing'
-
-            case zaak.isExtension:
-                return 'Verlenging'
+    def to_requesttype(zaak):
+          if zaak["isNewRequest"] is not None:
+              return "Nieuwe aanvraag"
+          
+          if zaak["isCarsharingpermit"] is not None:
+            return "Autodeelbedrijf"
+        
+          if zaak["isLicensePlateChange"] is not None:
+            return "Kentekenwijziging"
+        
+          if zaak["isRelocation"] is not None:
+              return "Verhuizing"
+          
+          if zaak["isExtension"] is not None:
+              return "Verlenging"
 
 
     def after_transform(self):
@@ -1011,7 +1010,7 @@ class Eigenparkeerplaats(Zaak):
             })
 
         self.zaak["locations"] = locations
-        self.zaak["requestType"] = Eigenparkeerplaats.to_readable_requesttype(self.zaak)
+        self.zaak["requestType"] = Eigenparkeerplaats.to_requesttype(self.zaak)
 
 
 
@@ -1108,7 +1107,7 @@ class Eigenparkeerplaats(Zaak):
         },
         {
             "name": "dateEnd",
-            "from": "date7",
+            "from": "date8",
             "parser": to_date,
         },
     ]
