@@ -997,7 +997,8 @@ class Eigenparkeerplaats(Zaak):
                 "type": self.zaak["locationkindLocation1"],
                 "street": self.zaak["streetLocation1"],
                 "houseNumber": self.zaak["housenumberLocation1"],
-                "fiscalNumber": self.zaak["fiscalnumberLocation1"]
+                "fiscalNumber": self.zaak["fiscalnumberLocation1"],
+                "url": self.zaak["urlLocation1"]
             })
 
         if self.zaak["streetLocation2"] is not None:
@@ -1005,7 +1006,8 @@ class Eigenparkeerplaats(Zaak):
                 "type": self.zaak["locationkindLocation2"],
                 "street": self.zaak["streetLocation2"],
                 "houseNumber": self.zaak["housenumberLocation2"],
-                "fiscalNumber": self.zaak["fiscalnumberLocation2"]
+                "fiscalNumber": self.zaak["fiscalnumberLocation2"],
+                "url": self.zaak["urlLocation2"]
             })
 
         self.zaak["locations"] = locations
