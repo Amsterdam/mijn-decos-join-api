@@ -1011,6 +1011,10 @@ class Eigenparkeerplaats(Zaak):
         self.zaak["locations"] = locations
         self.zaak["requestType"] = Eigenparkeerplaats.to_requesttype(self.zaak)
 
+        # removed duplicate keys
+        for key in ["locationkindLocation1", "streetLocation1", "housenumberLocation1", "fiscalnumberLocation1", "locationkindLocation2", "streetLocation2", "housenumberLocation2", "fiscalnumberLocation2"]:
+            self.zaak.pop(key, None)
+
     parse_fields = [
         {
             "name": "isNewRequest",

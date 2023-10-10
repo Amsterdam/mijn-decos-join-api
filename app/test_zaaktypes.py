@@ -593,7 +593,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["dateEnd"], to_date("2024-12-24T00:00:00"))
         self.assertEqual(zaak_transformed["licensePlates"], "KN-UW-TS | AAZZ88")
         self.assertEqual(zaak_transformed["isNewRequest"], True)
-        self.assertEqual(zaak_transformed["housenumberLocation1"], 12)
+        self.assertEqual(zaak_transformed["locations"][0]["houseNumber"], 12)
         self.assertEqual(zaak_transformed["requestType"], "Nieuwe aanvraag")
 
         class connection_mock:
