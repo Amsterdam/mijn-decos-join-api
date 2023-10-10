@@ -952,13 +952,22 @@ class RVVSloterweg(Zaak):
         },  # Vorige Kentekens
     ]
 
-class Eigenparkeeerplaats(Zaak):
+class Eigenparkeerplaats(Zaak):
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Eigen parkeerplaats"
     title = "Eigen parkeerplaats"
+
+    date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
+
+    def defer_transform(zaak_deferred, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], Eigenparkeerplaats.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+
 
     parse_fields = [
         {
@@ -1042,7 +1051,7 @@ class Eigenparkeeerplaats(Zaak):
             "parser": BZP.to_kenteken,
         },
         {
-            "name": "previousLiceneplats",
+            "name": "previousLiceneplates",
             "from": "text14",
             "parser": BZP.to_kenteken,
         },
@@ -1065,13 +1074,21 @@ class Eigenparkeeerplaats(Zaak):
         return creation_date >= not_before and super().has_valid_payment_status()
 
 
-class EigenparkeeerplaatsOpheffen(Zaak):
+class EigenparkeerplaatsOpheffen(Zaak):
     # !!!!!!!!!!!!!
     enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Eigen parkeerplaats opheffen"
     title = "Eigen parkeerplaats opheffen"
+
+    date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
+
+    def defer_transform(zaak_deferred, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], EigenparkeerplaatsOpheffen.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
 
     parse_fields = [
         {
