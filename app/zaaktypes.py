@@ -975,21 +975,20 @@ class Eigenparkeerplaats(Zaak):
 
     @staticmethod
     def to_requesttype(zaak):
-          if zaak["isNewRequest"] is not None:
-              return "Nieuwe aanvraag"
-          
-          if zaak["isCarsharingpermit"] is not None:
-            return "Autodeelbedrijf"
-        
-          if zaak["isLicensePlateChange"] is not None:
-            return "Kentekenwijziging"
-        
-          if zaak["isRelocation"] is not None:
-              return "Verhuizing"
-          
-          if zaak["isExtension"] is not None:
-              return "Verlenging"
+        if zaak["isNewRequest"] is not None:
+            return "Nieuwe aanvraag"
 
+        if zaak["isCarsharingpermit"] is not None:
+            return "Autodeelbedrijf"
+
+        if zaak["isLicensePlateChange"] is not None:
+            return "Kentekenwijziging"
+
+        if zaak["isRelocation"] is not None:
+            return "Verhuizing"
+
+        if zaak["isExtension"] is not None:
+            return "Verlenging"
 
     def after_transform(self):
         locations = []
@@ -1011,8 +1010,6 @@ class Eigenparkeerplaats(Zaak):
 
         self.zaak["locations"] = locations
         self.zaak["requestType"] = Eigenparkeerplaats.to_requesttype(self.zaak)
-
-
 
     parse_fields = [
         {
@@ -1135,7 +1132,6 @@ class EigenparkeerplaatsOpheffen(Zaak):
             zaak_deferred["id"], EigenparkeerplaatsOpheffen.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
-
 
     parse_fields = [
         {
