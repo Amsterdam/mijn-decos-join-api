@@ -19,6 +19,7 @@ from app.zaaktypes import (
     VOBvergunning,
     RVVHeleStad,
     RVVSloterweg,
+    Eigenparkeerplaats
 )
 
 
@@ -558,4 +559,45 @@ class ZaaktypesTest(TestCase):
                 call("zaak-147", RVVSloterweg.date_workflow_active_step_title),
                 call("zaak-147", RVVSloterweg.date_workflow_verleend_step_title),
             ],
+        )
+
+    def test_Eigenparkeerplaats(self):
+        zaak_source = {
+            "mark": "Z/23/11023674",
+            "document_date": "2023-08-18T00:00:00",
+            "date5": "2023-02-01T00:00:00",
+            "date6": "2023-10-21T00:00:00",
+            "date8": "2024-12-24T00:00:00",
+            "text13": "KN-UW-TS,AAZZ88",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-150",
+            "bol9": "Ja",
+            "num14": "12"
+        }
+        zaak_transformed = Eigenparkeerplaats(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "Eigen parkeerplaats")
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Eigen parkeerplaats",
+        )
+        self.assertEqual(zaak_transformed["decision"], "Verleend")
+        self.assertEqual(
+            zaak_transformed["dateDecision"], to_date("2023-02-01T00:00:00")
+        )
+        self.assertEqual(zaak_transformed["dateStart"], to_date("2023-10-21T00:00:00"))
+        self.assertEqual(zaak_transformed["dateEnd"], to_date("2024-12-24T00:00:00"))
+        self.assertEqual(zaak_transformed["licensePlates"], "KN-UW-TS | AAZZ88")
+        self.assertEqual(zaak_transformed["isNewRequest"], True)
+        self.assertEqual(zaak_transformed["housenumberLocation1"], 12)
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2023-10-11"))
+
+        Eigenparkeerplaats.defer_transform(zaak_transformed, connection_mock())
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-10-11"))
+
+        connection_mock.get_workflow.assert_called_once_with(
+            "zaak-150",
+            Eigenparkeerplaats.date_workflow_active_step_title,
         )
