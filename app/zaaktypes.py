@@ -1075,7 +1075,7 @@ class EigenparkeeerplaatsOpheffen(Zaak):
 
     parse_fields = [
         {
-            "name": "carsharingpermit",
+            "name": "isCarsharingpermit",
             "from": "bol8",
             "parser": to_bool_if_exists,
         },
