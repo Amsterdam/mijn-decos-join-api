@@ -1064,7 +1064,7 @@ class Eigenparkeerplaats(Zaak):
         },
         {
             "name": "streetLocation2",
-            "from": "text5",
+            "from": "text15",
             "parser": to_string,
         },
         {
