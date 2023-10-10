@@ -10,6 +10,7 @@ from app.field_parsers import (
     to_string,
     to_string_if_exists,
     to_time,
+    to_bool,
     to_bool_if_exists,
 )
 
@@ -952,9 +953,10 @@ class RVVSloterweg(Zaak):
         },  # Vorige Kentekens
     ]
 
+
 class Eigenparkeerplaats(Zaak):
     # !!!!!!!!!!!!!
-    enabled = True
+    enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
     zaak_type = "Eigen parkeerplaats"
@@ -962,38 +964,82 @@ class Eigenparkeerplaats(Zaak):
 
     date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
 
+    @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
         date_workflow_active = decosjoin_service.get_workflow(
             zaak_deferred["id"], Eigenparkeerplaats.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
 
+        return zaak_deferred
+
+    @staticmethod
+    def to_readable_requesttype(zaak):
+          match True:
+            case zaak.isNewRequest:
+                return 'Nieuwe aanvraag'
+
+            case zaak.isCarsharingpermit:
+                return 'Autodeelbedrijf'
+
+            case zaak.isLicensePlateChange:
+                return 'Kentekenwijziging'
+
+            case zaak.isRelocation:
+                return 'Verhuizing'
+
+            case zaak.isExtension:
+                return 'Verlenging'
+
+
+    def after_transform(self):
+        locations = []
+        if(self.zaak["streetLocation1"] is not None):
+            locations.append({
+                "type": self.zaak["locationkindLocation1"],
+                "street": self.zaak["streetLocation1"],
+                "houseNumber": self.zaak["housenumberLocation1"],
+                "fiscalNumber": self.zaak["fiscalnumberLocation1"]
+            })
+
+        if(self.zaak["streetLocation2"] is not None):
+            locations.append({
+                "type": self.zaak["locationkindLocation2"],
+                "street": self.zaak["streetLocation2"],
+                "houseNumber": self.zaak["housenumberLocation2"],
+                "fiscalNumber": self.zaak["fiscalnumberLocation2"]
+            })
+
+        self.zaak["locations"] = locations
+        self.zaak["requestType"] = Eigenparkeerplaats.to_readable_requesttype(self.zaak)
+
+
 
     parse_fields = [
         {
             "name": "isNewRequest",
             "from": "bol9",
-            "parser": to_bool_if_exists,
+            "parser": to_bool,
         },
         {
             "name": "isExtension",
             "from": "bol7",
-            "parser": to_bool_if_exists,
+            "parser": to_bool,
         },
         {
             "name": "isLicensePlateChange",
             "from": "bol10",
-            "parser": to_bool_if_exists,
+            "parser": to_bool,
         },
         {
             "name": "isRelocation",
             "from": "bol11",
-            "parser": to_bool_if_exists,
+            "parser": to_bool,
         },
         {
             "name": "isCarsharingpermit",
             "from": "bol8",
-            "parser": to_bool_if_exists,
+            "parser": to_bool,
         },
         {
             "name": "streetLocation1",
@@ -1002,7 +1048,7 @@ class Eigenparkeerplaats(Zaak):
         },
         {
             "name": "housenumberLocation1",
-            "from": "NUM14",
+            "from": "num14",
             "parser": to_int,
         },
         {
@@ -1062,21 +1108,21 @@ class Eigenparkeerplaats(Zaak):
         },
         {
             "name": "dateEnd",
-            "from": "date8",
+            "from": "date7",
             "parser": to_date,
         },
     ]
 
     def has_valid_source_data(self):
         not_before = to_date("2023-08-08")
-        creation_date = to_date(self.document_date)
+        creation_date = to_date(self.zaak_source["document_date"])
 
         return creation_date >= not_before and super().has_valid_payment_status()
 
 
 class EigenparkeerplaatsOpheffen(Zaak):
     # !!!!!!!!!!!!!
-    enabled = True
+    enabled = not IS_PRODUCTION
     # !!!!!!!!!!!!!
 
     zaak_type = "Eigen parkeerplaats opheffen"
@@ -1084,6 +1130,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
 
     date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
 
+    @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
         date_workflow_active = decosjoin_service.get_workflow(
             zaak_deferred["id"], EigenparkeerplaatsOpheffen.date_workflow_active_step_title
@@ -1095,7 +1142,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
         {
             "name": "isCarsharingpermit",
             "from": "bol8",
-            "parser": to_bool_if_exists,
+            "parser": to_bool,
         },
         {
             "name": "streetLocation1",
@@ -1104,7 +1151,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
         },
         {
             "name": "housenumberLocation1",
-            "from": "NUM14",
+            "from": "num14",
             "parser": to_int,
         },
         {
