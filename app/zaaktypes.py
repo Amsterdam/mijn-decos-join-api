@@ -992,7 +992,7 @@ class Eigenparkeerplaats(Zaak):
 
     def after_transform(self):
         locations = []
-        if(self.zaak["streetLocation1"] is not None):
+        if self.zaak["streetLocation1"] is not None:
             locations.append({
                 "type": self.zaak["locationkindLocation1"],
                 "street": self.zaak["streetLocation1"],
@@ -1000,7 +1000,7 @@ class Eigenparkeerplaats(Zaak):
                 "fiscalNumber": self.zaak["fiscalnumberLocation1"]
             })
 
-        if(self.zaak["streetLocation2"] is not None):
+        if self.zaak["streetLocation2"] is not None:
             locations.append({
                 "type": self.zaak["locationkindLocation2"],
                 "street": self.zaak["streetLocation2"],
