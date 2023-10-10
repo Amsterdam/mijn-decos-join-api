@@ -962,27 +962,27 @@ class Eigenparkeeerplaats(Zaak):
 
     parse_fields = [
         {
-            "name": "newRequest",
+            "name": "isNewRequest",
             "from": "bol9",
             "parser": to_bool_if_exists,
         },
         {
-            "name": "extension",
+            "name": "isExtension",
             "from": "bol7",
             "parser": to_bool_if_exists,
         },
         {
-            "name": "licenceplateChange",
+            "name": "isLicenceplateChange",
             "from": "bol10",
             "parser": to_bool_if_exists,
         },
         {
-            "name": "move",
+            "name": "isRelocation",
             "from": "bol11",
             "parser": to_bool_if_exists,
         },
         {
-            "name": "carsharingpermit",
+            "name": "isCarsharingpermit",
             "from": "bol8",
             "parser": to_bool_if_exists,
         },
