@@ -975,20 +975,19 @@ class Eigenparkeerplaats(Zaak):
 
     @staticmethod
     def to_requesttype(zaak):
-        if zaak["isNewRequest"] is not None:
-            return "Nieuwe aanvraag"
+       type_map = {
+            "isNewRequest": "Nieuwe aanvraag",
+            "isCarsharingpermit": "Autodeelbedrijf",
+            "isLicensePlateChange": "Kentekenwijziging",
+            "isRelocation": "Verhuizing",
+            "isExtension": "Verlenging",
+        }
 
-        if zaak["isCarsharingpermit"] is not None:
-            return "Autodeelbedrijf"
+        for key in type_map.keys():
+            if zaak[key] is not None:
+                return type_map[key]
 
-        if zaak["isLicensePlateChange"] is not None:
-            return "Kentekenwijziging"
-
-        if zaak["isRelocation"] is not None:
-            return "Verhuizing"
-
-        if zaak["isExtension"] is not None:
-            return "Verlenging"
+        return None
 
     def after_transform(self):
         locations = []
