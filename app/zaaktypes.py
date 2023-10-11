@@ -1014,7 +1014,7 @@ class Eigenparkeerplaats(Zaak):
         self.zaak["requestType"] = Eigenparkeerplaats.to_requesttype(self.zaak)
 
         # removed duplicate keys
-        for key in ["locationkindLocation1", "streetLocation1", "housenumberLocation1", "fiscalnumberLocation1", "locationkindLocation2", "streetLocation2", "housenumberLocation2", "fiscalnumberLocation2"]:
+        for key in ["locationkindLocation1", "streetLocation1", "housenumberLocation1", "fiscalnumberLocation1", "locationkindLocation2", "streetLocation2", "housenumberLocation2", "fiscalnumberLocation2", "urlLocation1", "urlLocation2"]:
             self.zaak.pop(key, None)
 
     parse_fields = [
@@ -1146,23 +1146,28 @@ class EigenparkeerplaatsOpheffen(Zaak):
             "parser": to_bool,
         },
         {
-            "name": "streetLocation1",
+            "name": "street",
             "from": "text25",
             "parser": to_string,
         },
         {
-            "name": "housenumberLocation1",
+            "name": "houseNumber",
             "from": "num14",
             "parser": to_int,
         },
         {
-            "name": "locationkindLocation1",
+            "name": "locationType",
             "from": "text17",
             "parser": to_string,
         },
         {
-            "name": "fiscalnumberLocation1",
+            "name": "fiscalNumber",
             "from": "text18",
+            "parser": to_string,
+        },
+        {
+            "name": "locationUrl",
+            "from": "text19",
             "parser": to_string,
         },
         {
