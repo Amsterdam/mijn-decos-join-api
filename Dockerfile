@@ -1,4 +1,4 @@
-FROM python:latest as base
+FROM python:3.11-bookworm as base
 
 WORKDIR /api
 
