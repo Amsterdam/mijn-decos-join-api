@@ -1,4 +1,5 @@
 import logging
+import os
 
 import sentry_sdk
 from flask import Flask, make_response
@@ -60,7 +61,13 @@ def get_document_blob(encrypted_doc_id):
 @app.route("/")
 @app.route("/status/health")
 def health_check():
-    return success_response_json("OK")
+    return success_response_json(
+        {
+            "gitSha": os.getenv("MA_GIT_SHA", -1),
+            "buildId": os.getenv("MA_BUILD_ID", -1),
+            "otapEnv": os.getenv("MA_OTAP_ENV", None),
+        }
+    )
 
 
 @app.errorhandler(Exception)
