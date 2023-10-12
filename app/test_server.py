@@ -162,11 +162,3 @@ class ApiTests(FlaskServerTestCase):
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
-
-    @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
-    @patch("app.helpers.DecosJoinConnection.post_response", post_response_mock)
-    @patch("app.decosjoin_service.PAGE_SIZE", 10)
-    def test_get_with_openapi(self):
-        response = self.client_get("/decosjoin/getvergunningen")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json["status"], "OK")

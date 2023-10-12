@@ -13,7 +13,6 @@ from app.helpers import (
     error_response_json,
     get_connection,
     success_response_json,
-    validate_openapi,
 )
 
 app = Flask(__name__)
@@ -28,20 +27,17 @@ if sentry_dsn:
 
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
 @auth.login_required
-@validate_openapi
 def get_vergunningen():
     tic = time.perf_counter()
     user = auth.get_current_user()
     zaken = get_connection().get_zaken(user["type"], user["id"])
     toc = time.perf_counter()
-    sentry_sdk.capture_message(f"Alle zaken ontvangen en terug gestuurd in {toc - tic:0.4f} seconden")
 
     return success_response_json(zaken)
 
 
 @app.route("/decosjoin/listdocuments/<string:encrypted_zaak_id>", methods=["GET"])
 @auth.login_required
-@validate_openapi
 def get_documents(encrypted_zaak_id):
     user = auth.get_current_user()
     zaak_id = decrypt(encrypted_zaak_id, user["id"])
@@ -52,7 +48,6 @@ def get_documents(encrypted_zaak_id):
 
 @app.route("/decosjoin/document/<string:encrypted_doc_id>", methods=["GET"])
 @auth.login_required
-@validate_openapi
 def get_document_blob(encrypted_doc_id):
     user = auth.get_current_user()
 

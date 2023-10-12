@@ -1,14 +1,12 @@
-import math
-import time
-import sentry_sdk
 import concurrent.futures
+import math
 from pprint import pprint
 
 import requests
 from requests import PreparedRequest
 from requests.auth import HTTPBasicAuth
-from app.auth import PROFILE_TYPE_COMMERCIAL, PROFILE_TYPE_PRIVATE
 
+from app.auth import PROFILE_TYPE_COMMERCIAL, PROFILE_TYPE_PRIVATE
 from app.config import (
     DECOS_API_REQUEST_TIMEOUT,
     get_decosjoin_adres_boeken_bsn,
@@ -161,7 +159,9 @@ class DecosJoinConnection:
             return keys
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
-            results = executor.map(get_key, adres_boeken, timeout=DECOS_API_REQUEST_TIMEOUT)
+            results = executor.map(
+                get_key, adres_boeken, timeout=DECOS_API_REQUEST_TIMEOUT
+            )
 
         for result in results:
             keys.extend(result)
@@ -244,12 +244,15 @@ class DecosJoinConnection:
             [deferred_zaak, Zaak_cls] = zaak_tuple
             return Zaak_cls.defer_transform(
                 zaak_deferred=deferred_zaak,
-                zaken_all=new_zaken,
                 decosjoin_service=self,
             )
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
-            results = executor.map(perform_deferred_transform, deferred_zaken, timeout=DECOS_API_REQUEST_TIMEOUT)
+            results = executor.map(
+                perform_deferred_transform,
+                deferred_zaken,
+                timeout=DECOS_API_REQUEST_TIMEOUT,
+            )
 
         for result in results:
             new_zaken.append(result)
@@ -299,7 +302,9 @@ class DecosJoinConnection:
 
         # execute in parallel
         with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
-            results = executor.map(fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT)
+            results = executor.map(
+                fetch_zaken, user_keys, timeout=DECOS_API_REQUEST_TIMEOUT
+            )
 
         for result in results:
             zaken_source.extend(result)
