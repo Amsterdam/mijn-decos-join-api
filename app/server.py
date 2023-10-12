@@ -1,5 +1,4 @@
 import logging
-import time
 
 import sentry_sdk
 from flask import Flask, make_response
@@ -28,10 +27,8 @@ if sentry_dsn:
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
 @auth.login_required
 def get_vergunningen():
-    tic = time.perf_counter()
     user = auth.get_current_user()
     zaken = get_connection().get_zaken(user["type"], user["id"])
-    toc = time.perf_counter()
 
     return success_response_json(zaken)
 
