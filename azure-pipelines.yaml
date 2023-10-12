@@ -1,12 +1,11 @@
 trigger:
+  batch: true
   branches:
     include:
+      - ontwikkelen
       - testen
-  # tags:
-  #   include:
-  #     - release-v*
-
 pr:
+  autoCancel: true
   branches:
     include:
       - main
@@ -22,7 +21,7 @@ variables:
   - ${{ if eq(variables['Build.SourceBranchName'], 'ontwikkelen') }}:
       - name: dtapName
         value: o
-  - ${{ if eq(variables['Build.SourceBranchName'], 'testen') }}:
+  - ${{ if or(eq(variables['Build.SourceBranchName'], 'testen'), eq(variables['Build.Reason'], 'PullRequest')) }}:
       - name: dtapName
         value: t
 
@@ -50,3 +49,4 @@ jobs:
       btdTest: ${{ parameters.btdTest }}
       btdDeploy: ${{ parameters.btdDeploy }}
       updateAppSettings: ${{ parameters.updateAppSettings }}
+      aquaScan: ${{ eq(variables['Build.Reason'], 'PullRequest') }}
