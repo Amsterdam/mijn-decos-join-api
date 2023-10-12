@@ -1,3 +1,4 @@
+import os
 import time
 from unittest.mock import patch
 
@@ -16,6 +17,14 @@ from app.server import app
 TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 
 
+@patch.dict(
+    os.environ,
+    {
+        "MA_BUILD_ID": "999",
+        "MA_GIT_SHA": "abcdefghijk",
+        "MA_OTAP_ENV": "unittesting",
+    },
+)
 @patch("app.crypto.get_encrytion_key", lambda: TESTKEY)
 @patch("app.helpers.get_decosjoin_api_host", lambda: "http://localhost")
 @patch(
@@ -61,7 +70,10 @@ class ApiTests(FlaskServerTestCase):
     def test_status(self):
         response = self.client.get("/status/health")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.decode(), '{"content":"OK","status":"OK"}\n')
+        self.assertEqual(
+            response.data.decode(),
+            '{"content":{"buildId":"999","gitSha":"abcdefghijk","otapEnv":"unittesting"},"status":"OK"}\n',
+        )
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch("app.helpers.DecosJoinConnection.post_response", post_response_mock)
