@@ -1137,6 +1137,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
             zaak_deferred["id"], EigenparkeerplaatsOpheffen.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        return zaak_deferred
 
     parse_fields = [
         {

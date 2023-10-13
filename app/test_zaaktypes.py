@@ -19,7 +19,8 @@ from app.zaaktypes import (
     VOBvergunning,
     RVVHeleStad,
     RVVSloterweg,
-    Eigenparkeerplaats
+    Eigenparkeerplaats,
+    EigenparkeerplaatsOpheffen
 )
 
 
@@ -606,3 +607,45 @@ class ZaaktypesTest(TestCase):
             "zaak-150",
             Eigenparkeerplaats.date_workflow_active_step_title,
         )
+
+    def test_Eigenparkeerplaats(self):
+        zaak_source = {
+            "mark": "Z/23/11023674",
+            "document_date": "2023-08-07T00:00:00",
+            "date5": "2023-02-01T00:00:00",
+            "date6": "2023-10-21T00:00:00",
+            "date8": "2024-12-24T00:00:00",
+            "text13": "KN-UW-TS,AAZZ88",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-150",
+            "bol9": "Ja",
+            "num14": "12",
+            "text25": "straat",
+            "num14": "12",
+            "text17": "Consul/Huisarts/Verloskundige woonadres",
+            "text18": "12345678"
+        }
+        zaak_transformed = Eigenparkeerplaats(zaak_source).result()
+        self.assertEqual(zaak_transformed, None)
+
+    def test_EigenparkeerplaatsOpheffen(self):
+        zaak_source = {
+            "mark": "Z/23/11023674",
+            "document_date": "2023-08-07T00:00:00",
+            "date5": "2023-02-01T00:00:00",
+            "date6": "2023-10-21T00:00:00",
+            "date8": "2024-12-24T00:00:00",
+            "text13": "KN-UW-TS,AAZZ88",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-150",
+            "bol9": "Ja",
+            "num14": "12",
+            "text25": "straat",
+            "num14": "12",
+            "text17": "Consul/Huisarts/Verloskundige woonadres",
+            "text18": "12345678"
+        }
+        zaak_transformed = EigenparkeerplaatsOpheffen(zaak_source).result()
+        self.assertEqual(zaak_transformed, None)
