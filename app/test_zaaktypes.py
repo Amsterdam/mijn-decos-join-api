@@ -608,7 +608,7 @@ class ZaaktypesTest(TestCase):
             Eigenparkeerplaats.date_workflow_active_step_title,
         )
 
-    def test_Eigenparkeerplaats(self):
+    def test_EigenparkeerplaatsToOld(self):
         zaak_source = {
             "mark": "Z/23/11023674",
             "document_date": "2023-08-07T00:00:00",

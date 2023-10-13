@@ -975,7 +975,7 @@ class Eigenparkeerplaats(Zaak):
 
     @staticmethod
     def to_requesttype(zaak):
-       type_map = {
+        type_map = {
             "isNewRequest": "Nieuwe aanvraag",
             "isCarsharingpermit": "Autodeelbedrijf",
             "isLicensePlateChange": "Kentekenwijziging",
