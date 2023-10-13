@@ -1178,7 +1178,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
 
     def has_valid_source_data(self):
         not_before = to_date("2023-08-08")
-        creation_date = to_date(self.document_date)
+        creation_date = to_date(self.zaak_source["document_date"])
 
         return creation_date >= not_before and super().has_valid_payment_status()
 
