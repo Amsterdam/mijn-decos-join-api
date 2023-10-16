@@ -653,7 +653,7 @@ class ZaaktypesTest(TestCase):
             "Eigen parkeerplaats opheffen",
         )
         self.assertEqual(zaak_transformed["location"], {"street":"weesperstraat", "houseNumber":12, "fiscalNumber": "12345678", "type": "Consul/Huisarts/Verloskundige woonadres", "url": None})
-        
+
 
     def test_EigenparkeerplaatsOpheffenOldRequest(self):
         zaak_source = {

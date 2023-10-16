@@ -1146,7 +1146,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
             "fiscalNumber": self.zaak["fiscalNumber"],
             "url": self.zaak["locationUrl"]
         }
-       
+
         self.zaak["location"] = location
 
         # removed duplicate keys
