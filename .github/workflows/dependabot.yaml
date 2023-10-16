@@ -12,4 +12,3 @@ jobs:
     secrets: inherit
     with:
       check_diff: true
-      slack_channel: mijn_amsterdam
