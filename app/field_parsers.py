@@ -39,13 +39,13 @@ def to_date(value) -> Union[date, None]:
     if not value:
         return None
 
-    if type(value) == date:
-        return value
-
-    if type(value) == datetime:
+    if isinstance(value, datetime):
         return value.date()
 
-    if type(value) == str:
+    if isinstance(value, date):
+        return value
+
+    if isinstance(value, str):
         parsed_value = parser.isoparse(value).date()
         return parsed_value
 
@@ -57,13 +57,13 @@ def to_time(value) -> Union[str, None]:
     if not value:
         return None
 
-    if type(value) == time:
-        return f"{value.hour:02}:{value.minute:02}"
-
-    if type(value) == datetime:
+    if isinstance(value, datetime):
         return to_time(value.time())
 
-    if type(value) == str:
+    if isinstance(value, time):
+        return f"{value.hour:02}:{value.minute:02}"
+
+    if isinstance(value, str):
         time_pattern = r"([0-9]{1,2})[\.,:;]([0-9]{1,2})"
         matches = re.match(time_pattern, value)
         if matches:
@@ -84,13 +84,13 @@ def to_datetime(value) -> Union[datetime, None]:
     if not value:
         return None
 
-    if type(value) == date:
-        return datetime(value.year, value.month, value.day)
-
-    if type(value) == datetime:
+    if isinstance(value, datetime):
         return value
 
-    if type(value) == str:
+    if isinstance(value, date):
+        return datetime(value.year, value.month, value.day)
+
+    if isinstance(value, str):
         parsed_value = parser.isoparse(value)
         return parsed_value
 
@@ -126,6 +126,7 @@ def to_bool(value):
     if not value:
         return False
     return True
+
 
 def to_bool_if_exists(zaak, key):
     return to_bool(zaak[key]) if key in zaak else False
