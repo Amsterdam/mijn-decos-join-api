@@ -5,19 +5,26 @@ from datetime import date, time
 
 from flask.json.provider import DefaultJSONProvider
 
-from app.auth import PROFILE_TYPE_COMMERCIAL, PROFILE_TYPE_PRIVATE
-
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-# Use the Sentry environment
-IS_PRODUCTION = os.getenv("SENTRY_ENVIRONMENT") == "production"
-IS_ACCEPTANCE = os.getenv("SENTRY_ENVIRONMENT") == "acceptance"
-IS_AP = IS_PRODUCTION or IS_ACCEPTANCE
-IS_DEV = os.getenv("FLASK_ENV") == "development" and not IS_AP
+# Sentry configuration.
+SENTRY_DSN = os.getenv("SENTRY_DSN")
+SENTRY_ENV = os.getenv("SENTRY_ENVIRONMENT")
+
+# Environment determination
+IS_PRODUCTION = SENTRY_ENV == "production"
+IS_ACCEPTANCE = SENTRY_ENV == "acceptance"
+IS_DEV = SENTRY_ENV == "development"
+IS_TEST = SENTRY_ENV == "test"
+
+IS_TAP = IS_PRODUCTION or IS_ACCEPTANCE or IS_TEST
+IS_AP = IS_ACCEPTANCE or IS_PRODUCTION
+IS_OT = IS_DEV or IS_TEST
+
+# App constants
+VERIFY_JWT_SIGNATURE = os.getenv("VERIFY_JWT_SIGNATURE", IS_AP)
 
 DECOS_API_REQUEST_TIMEOUT = 5
-
-ENABLE_OPENAPI_VALIDATION = os.environ.get("ENABLE_OPENAPI_VALIDATION", not IS_AP)
 
 # Set-up logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "ERROR").upper()
@@ -64,12 +71,5 @@ def get_decosjoin_adres_boeken_kvk():
     return os.getenv("DECOS_JOIN_ADRES_BOEKEN_KVK").split(",")
 
 
-def get_decosjoin_adres_boeken():
-    return {
-        PROFILE_TYPE_PRIVATE: get_decosjoin_adres_boeken_bsn(),
-        PROFILE_TYPE_COMMERCIAL: get_decosjoin_adres_boeken_kvk(),
-    }
-
-
 def get_encrytion_key():
-    return os.getenv("FERNET_KEY")
+    return os.getenv("FERNET_ENCRYPTION_KEY")

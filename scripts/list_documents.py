@@ -6,7 +6,6 @@ from app.config import (
     get_decosjoin_username,
     get_decosjoin_password,
     get_decosjoin_api_host,
-    get_decosjoin_adres_boeken,
 )
 import app.decosjoin_service
 from app.crypto import decrypt
@@ -25,7 +24,6 @@ connection = DecosJoinConnection(
     get_decosjoin_username(),
     get_decosjoin_password(),
     get_decosjoin_api_host(),
-    get_decosjoin_adres_boeken(),
 )
 
 documents = connection.get_documents(zaak_id, bsn)

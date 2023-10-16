@@ -1,3 +1,4 @@
+import os
 import time
 from unittest.mock import patch
 
@@ -16,10 +17,18 @@ from app.server import app
 TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
 
 
+@patch.dict(
+    os.environ,
+    {
+        "MA_BUILD_ID": "999",
+        "MA_GIT_SHA": "abcdefghijk",
+        "MA_OTAP_ENV": "unittesting",
+    },
+)
 @patch("app.crypto.get_encrytion_key", lambda: TESTKEY)
 @patch("app.helpers.get_decosjoin_api_host", lambda: "http://localhost")
 @patch(
-    "app.helpers.get_decosjoin_adres_boeken",
+    "app.decosjoin_service.get_decosjoin_adres_boeken",
     lambda: {
         PROFILE_TYPE_PRIVATE: [
             "hexkey32chars000000000000000BSN1",
@@ -61,7 +70,10 @@ class ApiTests(FlaskServerTestCase):
     def test_status(self):
         response = self.client.get("/status/health")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.decode(), '{"content":"OK","status":"OK"}\n')
+        self.assertEqual(
+            response.data.decode(),
+            '{"content":{"buildId":"999","gitSha":"abcdefghijk","otapEnv":"unittesting"},"status":"OK"}\n',
+        )
 
     @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
     @patch("app.helpers.DecosJoinConnection.post_response", post_response_mock)
@@ -162,11 +174,3 @@ class ApiTests(FlaskServerTestCase):
         self.assertEqual(
             response.json, {"message": "Server error occurred", "status": "ERROR"}
         )
-
-    @patch("app.helpers.DecosJoinConnection.get_response", get_response_mock)
-    @patch("app.helpers.DecosJoinConnection.post_response", post_response_mock)
-    @patch("app.decosjoin_service.PAGE_SIZE", 10)
-    def test_get_with_openapi(self):
-        response = self.client_get("/decosjoin/getvergunningen")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json["status"], "OK")

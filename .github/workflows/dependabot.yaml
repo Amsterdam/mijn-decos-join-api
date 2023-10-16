@@ -1,0 +1,14 @@
+name: Opdrachten Team Dependabot
+
+on:
+  schedule: # Run the script every day at 6am UTC
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  dependabot:
+    name: Templates
+    uses: amsterdam/github-workflows/.github/workflows/dependabot.yml@v1
+    secrets: inherit
+    with:
+      check_diff: true
