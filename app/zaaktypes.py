@@ -973,8 +973,7 @@ class Eigenparkeerplaats(Zaak):
 
         return zaak_deferred
 
-    @staticmethod
-    def to_requesttype(zaak):
+    def to_requesttype(self):
         type_map = {
             "isNewRequest": "Nieuwe aanvraag",
             "isCarsharingpermit": "Autodeelbedrijf",
@@ -984,7 +983,7 @@ class Eigenparkeerplaats(Zaak):
         }
 
         for key in type_map.keys():
-            if zaak[key] is not None:
+            if self.zaak[key] is not None:
                 return type_map[key]
 
         return None
@@ -1010,7 +1009,7 @@ class Eigenparkeerplaats(Zaak):
             })
 
         self.zaak["locations"] = locations
-        self.zaak["requestType"] = Eigenparkeerplaats.to_requesttype(self.zaak)
+        self.zaak["requestType"] = self.to_requesttype()
 
         # removed duplicate keys
         for key in ["locationkindLocation1", "streetLocation1", "housenumberLocation1", "fiscalnumberLocation1", "locationkindLocation2", "streetLocation2", "housenumberLocation2", "fiscalnumberLocation2", "urlLocation1", "urlLocation2"]:
