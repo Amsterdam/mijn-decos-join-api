@@ -608,7 +608,7 @@ class ZaaktypesTest(TestCase):
             Eigenparkeerplaats.date_workflow_active_step_title,
         )
 
-    def test_EigenparkeerplaatsToOld(self):
+    def test_EigenparkeerplaatsToOldRequest(self):
         zaak_source = {
             "mark": "Z/23/11023674",
             "document_date": "2023-08-07T00:00:00",
@@ -632,6 +632,32 @@ class ZaaktypesTest(TestCase):
     def test_EigenparkeerplaatsOpheffen(self):
         zaak_source = {
             "mark": "Z/23/11023674",
+            "document_date": "2023-09-07T00:00:00",
+            "date5": "2023-02-01T00:00:00",
+            "date6": "2023-10-21T00:00:00",
+            "date8": "2024-12-24T00:00:00",
+            "text13": "KN-UW-TS,AAZZ88",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-150",
+            "bol9": "Ja",
+            "num14": "12",
+            "text25": "weesperstraat",
+            "text17": "Consul/Huisarts/Verloskundige woonadres",
+            "text18": "12345678"
+        }
+        zaak_transformed = EigenparkeerplaatsOpheffen(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "Eigen parkeerplaats opheffen")
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Eigen parkeerplaats opheffen",
+        )
+        self.assertEqual(zaak_transformed["location"], {"street":"weesperstraat", "houseNumber":12, "fiscalNumber": "12345678", "type": "Consul/Huisarts/Verloskundige woonadres", "url": None})
+        
+
+    def test_EigenparkeerplaatsOpheffenOldRequest(self):
+        zaak_source = {
+            "mark": "Z/23/11023674",
             "document_date": "2023-08-07T00:00:00",
             "date5": "2023-02-01T00:00:00",
             "date6": "2023-10-21T00:00:00",
@@ -643,7 +669,6 @@ class ZaaktypesTest(TestCase):
             "bol9": "Ja",
             "num14": "12",
             "text25": "straat",
-            "num14": "12",
             "text17": "Consul/Huisarts/Verloskundige woonadres",
             "text18": "12345678"
         }

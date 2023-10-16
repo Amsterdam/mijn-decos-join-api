@@ -1138,6 +1138,21 @@ class EigenparkeerplaatsOpheffen(Zaak):
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
         return zaak_deferred
 
+    def after_transform(self):
+        location = {
+            "type": self.zaak["locationType"],
+            "street": self.zaak["street"],
+            "houseNumber": self.zaak["houseNumber"],
+            "fiscalNumber": self.zaak["fiscalNumber"],
+            "url": self.zaak["locationUrl"]
+        }
+       
+        self.zaak["location"] = location
+
+        # removed duplicate keys
+        for key in ["locationType", "street", "houseNumber", "fiscalNumber", "locationUrl"]:
+            self.zaak.pop(key, None)
+
     parse_fields = [
         {
             "name": "isCarsharingpermit",
