@@ -10,6 +10,7 @@ from app.field_parsers import (
     to_string,
     to_string_if_exists,
     to_time,
+    to_bool,
     to_bool_if_exists,
 )
 
@@ -951,6 +952,250 @@ class RVVSloterweg(Zaak):
             "parser": BZP.to_kenteken,
         },  # Vorige Kentekens
     ]
+
+
+class Eigenparkeerplaats(Zaak):
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Eigen parkeerplaats"
+    title = "Eigen parkeerplaats"
+
+    date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], Eigenparkeerplaats.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+
+        return zaak_deferred
+
+    def to_requesttype(self):
+        type_map = {
+            "isNewRequest": "Nieuwe aanvraag",
+            "isCarsharingpermit": "Autodeelbedrijf",
+            "isLicensePlateChange": "Kentekenwijziging",
+            "isRelocation": "Verhuizing",
+            "isExtension": "Verlenging",
+        }
+
+        for key in type_map.keys():
+            if self.zaak[key] is not None:
+                return type_map[key]
+
+        return None
+
+    def after_transform(self):
+        locations = []
+        if self.zaak["streetLocation1"] is not None:
+            locations.append({
+                "type": self.zaak["locationkindLocation1"],
+                "street": self.zaak["streetLocation1"],
+                "houseNumber": self.zaak["housenumberLocation1"],
+                "fiscalNumber": self.zaak["fiscalnumberLocation1"],
+                "url": self.zaak["urlLocation1"]
+            })
+
+        if self.zaak["streetLocation2"] is not None:
+            locations.append({
+                "type": self.zaak["locationkindLocation2"],
+                "street": self.zaak["streetLocation2"],
+                "houseNumber": self.zaak["housenumberLocation2"],
+                "fiscalNumber": self.zaak["fiscalnumberLocation2"],
+                "url": self.zaak["urlLocation2"]
+            })
+
+        self.zaak["locations"] = locations
+        self.zaak["requestType"] = self.to_requesttype()
+
+        # removed duplicate keys
+        for key in ["locationkindLocation1", "streetLocation1", "housenumberLocation1", "fiscalnumberLocation1", "locationkindLocation2", "streetLocation2", "housenumberLocation2", "fiscalnumberLocation2", "urlLocation1", "urlLocation2"]:
+            self.zaak.pop(key, None)
+
+    parse_fields = [
+        {
+            "name": "isNewRequest",
+            "from": "bol9",
+            "parser": to_bool,
+        },
+        {
+            "name": "isExtension",
+            "from": "bol7",
+            "parser": to_bool,
+        },
+        {
+            "name": "isLicensePlateChange",
+            "from": "bol10",
+            "parser": to_bool,
+        },
+        {
+            "name": "isRelocation",
+            "from": "bol11",
+            "parser": to_bool,
+        },
+        {
+            "name": "isCarsharingpermit",
+            "from": "bol8",
+            "parser": to_bool,
+        },
+        {
+            "name": "streetLocation1",
+            "from": "text25",
+            "parser": to_string,
+        },
+        {
+            "name": "housenumberLocation1",
+            "from": "num14",
+            "parser": to_int,
+        },
+        {
+            "name": "locationkindLocation1",
+            "from": "text17",
+            "parser": to_string,
+        },
+        {
+            "name": "fiscalnumberLocation1",
+            "from": "text18",
+            "parser": to_string,
+        },
+        {
+            "name": "urlLocation1",
+            "from": "text19",
+            "parser": to_string,
+        },
+        {
+            "name": "streetLocation2",
+            "from": "text15",
+            "parser": to_string,
+        },
+        {
+            "name": "housenumberLocation2",
+            "from": "num15",
+            "parser": to_int,
+        },
+        {
+            "name": "locationkindLocation2",
+            "from": "text20",
+            "parser": to_string,
+        },
+        {
+            "name": "fiscalnumberLocation2",
+            "from": "text21",
+            "parser": to_string,
+        },
+        {
+            "name": "urlLocation2",
+            "from": "text22",
+            "parser": to_string,
+        },
+        {
+            "name": "licensePlates",
+            "from": "text13",
+            "parser": BZP.to_kenteken,
+        },
+        {
+            "name": "previousLicensePlates",
+            "from": "text14",
+            "parser": BZP.to_kenteken,
+        },
+        {
+            "name": "dateStart",
+            "from": "date6",
+            "parser": to_date,
+        },
+        {
+            "name": "dateEnd",
+            "from": "date8",
+            "parser": to_date,
+        },
+    ]
+
+    def has_valid_source_data(self):
+        not_before = to_date("2023-08-08")
+        creation_date = to_date(self.zaak_source["document_date"])
+
+        return creation_date >= not_before and super().has_valid_payment_status()
+
+
+class EigenparkeerplaatsOpheffen(Zaak):
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Eigen parkeerplaats opheffen"
+    title = "Eigen parkeerplaats opheffen"
+
+    date_workflow_active_step_title = "Status bijwerken en notificatie verzenden - In behandeling"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], EigenparkeerplaatsOpheffen.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        return zaak_deferred
+
+    def after_transform(self):
+        location = {
+            "type": self.zaak["locationType"],
+            "street": self.zaak["street"],
+            "houseNumber": self.zaak["houseNumber"],
+            "fiscalNumber": self.zaak["fiscalNumber"],
+            "url": self.zaak["locationUrl"]
+        }
+
+        self.zaak["location"] = location
+
+        # removed duplicate keys
+        for key in ["locationType", "street", "houseNumber", "fiscalNumber", "locationUrl"]:
+            self.zaak.pop(key, None)
+
+    parse_fields = [
+        {
+            "name": "isCarsharingpermit",
+            "from": "bol8",
+            "parser": to_bool,
+        },
+        {
+            "name": "street",
+            "from": "text25",
+            "parser": to_string,
+        },
+        {
+            "name": "houseNumber",
+            "from": "num14",
+            "parser": to_int,
+        },
+        {
+            "name": "locationType",
+            "from": "text17",
+            "parser": to_string,
+        },
+        {
+            "name": "fiscalNumber",
+            "from": "text18",
+            "parser": to_string,
+        },
+        {
+            "name": "locationUrl",
+            "from": "text19",
+            "parser": to_string,
+        },
+        {
+            "name": "dateEnd",
+            "from": "date8",
+            "parser": to_date,
+        },
+    ]
+
+    def has_valid_source_data(self):
+        not_before = to_date("2023-08-08")
+        creation_date = to_date(self.zaak_source["document_date"])
+
+        return creation_date >= not_before and super().has_valid_payment_status()
 
 
 # A dict with all enabled Zaken
