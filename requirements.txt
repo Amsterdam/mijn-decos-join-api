@@ -86,5 +86,5 @@ urllib3==2.0.6
     # via
     #   requests
     #   sentry-sdk
-werkzeug==3.0.0
+werkzeug==3.0.1
     # via flask
