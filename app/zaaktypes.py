@@ -893,7 +893,7 @@ class RVVHeleStad(Zaak):
 
 class RVVSloterweg(Zaak):
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = False
     # !!!!!!!!!!!!!
 
     zaak_type = "RVV Sloterweg"
