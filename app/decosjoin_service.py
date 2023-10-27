@@ -323,7 +323,7 @@ class DecosJoinConnection:
         for result in results:
             zaken_source.extend(result)
 
-        sentry_sdk.capture_message(f"{zaken_source}")
+        sentry_sdk.capture_message(f"get_zaken {len(zaken_source)}")
 
         zaken = self.transform(zaken_source, user_identifier)
         return zaken
