@@ -922,6 +922,9 @@ class RVVSloterweg(Zaak):
         )
         zaak_deferred["dateWorkflowVerleend"] = date_workflow_verleend
 
+        if date_workflow_verleend is not None:
+            zaak_deferred['processed'] = True
+
         return zaak_deferred
 
     parse_fields = [
