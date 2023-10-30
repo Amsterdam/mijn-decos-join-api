@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt requirements-root.txt
 #
-black==23.9.1
+black==23.10.1
     # via -r requirements-root.txt
 blinker==1.6.3
     # via
@@ -16,7 +16,7 @@ certifi==2023.7.22
     #   sentry-sdk
 cffi==1.16.0
     # via cryptography
-charset-normalizer==3.3.0
+charset-normalizer==3.3.1
     # via requests
 click==8.1.7
     # via
@@ -24,7 +24,7 @@ click==8.1.7
     #   flask
 coverage==7.3.2
     # via -r requirements-root.txt
-cryptography==41.0.4
+cryptography==41.0.5
     # via -r requirements-root.txt
 flake8==6.1.0
     # via -r requirements-root.txt
@@ -82,9 +82,9 @@ tomli==2.0.1
     # via black
 typing-extensions==4.8.0
     # via black
-urllib3==2.0.6
+urllib3==2.0.7
     # via
     #   requests
     #   sentry-sdk
-werkzeug==3.0.0
+werkzeug==3.0.1
     # via flask
