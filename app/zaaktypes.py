@@ -925,6 +925,8 @@ class RVVSloterweg(Zaak):
         if date_workflow_verleend is not None:
             zaak_deferred['processed'] = True
 
+        zaak_deferred['title'] = f"RVV ontheffing Sloterweg ({zaak_deferred['licensePlates']})"
+
         return zaak_deferred
 
     parse_fields = [
