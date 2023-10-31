@@ -29,7 +29,6 @@ if sentry_dsn:
 @auth.login_required
 def get_vergunningen():
     user = auth.get_current_user()
-    sentry_sdk.capture_message("test")
     zaken = get_connection().get_zaken(user["type"], user["id"])
 
     return success_response_json(zaken)

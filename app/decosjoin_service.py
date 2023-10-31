@@ -196,8 +196,6 @@ class DecosJoinConnection:
             zaken_source, key=lambda zaak: zaak["fields"]["mark"]
         )
 
-        sentry_sdk.capture_message(f"Decosbron")
-
         for zaak_source in zaken_source_sorted:
             source_fields = zaak_source["fields"]
 
@@ -323,7 +321,10 @@ class DecosJoinConnection:
         for result in results:
             zaken_source.extend(result)
 
-        sentry_sdk.capture_message(f"get_zaken {len(zaken_source)}")
+        sentry_sdk.set_context("Zaken", {
+            "zaken": zaken_source
+        })
+        sentry_sdk.capture_message(f"Fetched zaken")
 
         zaken = self.transform(zaken_source, user_identifier)
         return zaken
