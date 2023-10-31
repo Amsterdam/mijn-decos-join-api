@@ -266,7 +266,7 @@ class DecosJoinConnection:
             new_zaken.append(result)
 
         zaken_source_sorted = sorted(
-            new_zaken, key=lambda zaak: zaak["fields"]["mark"]
+            new_zaken, key=lambda zaak: zaak["identifier"]
         )
 
         return zaken_source_sorted
