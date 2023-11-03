@@ -1,6 +1,5 @@
 import concurrent.futures
 import math
-import sentry_sdk
 from pprint import pprint
 
 import requests
