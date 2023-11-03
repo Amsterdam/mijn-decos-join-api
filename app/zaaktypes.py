@@ -924,6 +924,9 @@ class RVVSloterweg(Zaak):
 
         if date_workflow_verleend is not None:
             zaak_deferred['processed'] = True
+            # if the workflow verleend has run but there is no decision then its actually Verleend.
+            if zaak_deferred['decision'] is None: 
+                zaak_deferred['decision'] = 'Verleend'
 
         zaak_deferred['title'] = f"RVV ontheffing Sloterweg ({zaak_deferred['licensePlates']})"
 
