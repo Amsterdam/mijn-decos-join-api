@@ -6,7 +6,7 @@
 #
 black==23.10.1
     # via -r requirements-root.txt
-blinker==1.6.3
+blinker==1.7.0
     # via
     #   flask
     #   sentry-sdk
@@ -16,7 +16,7 @@ certifi==2023.7.22
     #   sentry-sdk
 cffi==1.16.0
     # via cryptography
-charset-normalizer==3.3.1
+charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via
@@ -74,7 +74,7 @@ python-dateutil==2.8.2
     #   freezegun
 requests==2.31.0
     # via -r requirements-root.txt
-sentry-sdk[flask]==1.32.0
+sentry-sdk[flask]==1.34.0
     # via -r requirements-root.txt
 six==1.16.0
     # via python-dateutil
