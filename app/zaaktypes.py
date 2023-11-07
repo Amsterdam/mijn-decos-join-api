@@ -929,7 +929,7 @@ class RVVSloterweg(Zaak):
             if zaak_deferred['decision'] is None:
                 zaak_deferred['decision'] = 'Verleend'
 
-        zaak_deferred['title'] = f"RVV ontheffing Sloterweg ({zaak_deferred['licensePlates']})"
+        zaak_deferred['title'] = f"RVV ontheffing {zaak_deferred['area']} ({zaak_deferred['licensePlates']})"
 
         return zaak_deferred
 
