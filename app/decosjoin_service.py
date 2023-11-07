@@ -191,11 +191,7 @@ class DecosJoinConnection:
         new_zaken = []
         deferred_zaken = []
 
-        zaken_source_sorted = sorted(
-            zaken_source, key=lambda zaak: zaak["fields"]["mark"]
-        )
-
-        for zaak_source in zaken_source_sorted:
+        for zaak_source in zaken_source:
             source_fields = zaak_source["fields"]
 
             # Cannot reliably determine the zaaktype of this zaak
@@ -268,7 +264,11 @@ class DecosJoinConnection:
         for result in results:
             new_zaken.append(result)
 
-        return new_zaken
+        zaken_source_sorted = sorted(
+            new_zaken, key=lambda zaak: zaak["identifier"]
+        )
+
+        return zaken_source_sorted
 
     def get_page(self, url, offset=None):
         """Get a single page for url. When offset is provided add that to the url."""
