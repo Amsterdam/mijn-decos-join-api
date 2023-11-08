@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt requirements-root.txt
 #
-black==23.10.1
+black==23.11.0
     # via -r requirements-root.txt
 blinker==1.7.0
     # via
