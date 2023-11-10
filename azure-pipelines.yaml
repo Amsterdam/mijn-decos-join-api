@@ -54,6 +54,9 @@ variables:
         value: ${{ parameters.btdDeploy }}
       - name: dtapName
         value: t
+  - ${{ if ne(parameters.dtapName, 'none') }}:
+      - name: dtapName
+        value: ${{ parameters.dtapName }}
 
 jobs:
   - template: pipelines/jobs/apps/btd-koppel-api.yaml@MamsInfra
