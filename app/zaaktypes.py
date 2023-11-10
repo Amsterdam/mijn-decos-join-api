@@ -981,12 +981,6 @@ class Eigenparkeerplaats(Zaak):
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
 
         return zaak_deferred
-    
-    # "isCarsharingpermit": false,
-    # "isExtension": false,
-    # "isLicensePlateChange": true,
-    # "isNewRequest": false,
-    # "isRelocation": false,
 
     def to_requesttype(self):
         type_map = {
