@@ -981,6 +981,12 @@ class Eigenparkeerplaats(Zaak):
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
 
         return zaak_deferred
+    
+    # "isCarsharingpermit": false,
+    # "isExtension": false,
+    # "isLicensePlateChange": true,
+    # "isNewRequest": false,
+    # "isRelocation": false,
 
     def to_requesttype(self):
         type_map = {
@@ -992,7 +998,7 @@ class Eigenparkeerplaats(Zaak):
         }
 
         for key in type_map.keys():
-            if self.zaak[key] is not None:
+            if self.zaak[key] is True:
                 return type_map[key]
 
         return None
