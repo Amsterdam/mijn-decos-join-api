@@ -992,7 +992,7 @@ class Eigenparkeerplaats(Zaak):
         }
 
         for key in type_map.keys():
-            if self.zaak[key] is not None:
+            if self.zaak[key] is True:
                 return type_map[key]
 
         return None
