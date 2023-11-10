@@ -2,8 +2,8 @@ trigger:
   batch: true
   branches:
     include:
-      - ontwikkelen
       - testen
+      - az-acceptance
 pr:
   autoCancel: true
   branches:
@@ -32,19 +32,26 @@ parameters:
     default: none
     values:
       - none
-      - o
       - t
-      # - a
-      # - p
+      - a
+      - p
   - name: updateAppSettings
     type: boolean
     default: false
 
 variables:
-  - ${{ if eq(variables['Build.SourceBranchName'], 'ontwikkelen') }}:
+  - ${{ if or(eq(variables['Build.SourceBranchName'], 'testen'), eq(variables['Build.Reason'], 'PullRequest')) }}:
       - name: dtapName
-        value: o
-  - ${{ if and(or(eq(variables['Build.SourceBranchName'], 'testen'), eq(variables['Build.Reason'], 'PullRequest')), eq(parameters.dtapName, 'none')) }}:
+        value: t
+  - ${{ if eq(variables['Build.SourceBranchName'], 'az-acceptance') }}:
+      - name: dtapName
+        value: a
+  - ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
+      - name: btdDeploy
+        value: false
+  - ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
+      - name: btdDeploy
+        value: ${{ parameters.btdDeploy }}
       - name: dtapName
         value: t
   - ${{ if ne(parameters.dtapName, 'none') }}:
@@ -58,6 +65,6 @@ jobs:
       dtapName: ${{ variables.dtapName }}
       btdBuild: ${{ parameters.btdBuild }}
       btdTest: ${{ parameters.btdTest }}
-      btdDeploy: ${{ parameters.btdDeploy }}
+      btdDeploy: ${{ variables.btdDeploy }}
       updateAppSettings: ${{ parameters.updateAppSettings }}
       aquaScan: ${{ eq(variables['Build.Reason'], 'PullRequest') }}
