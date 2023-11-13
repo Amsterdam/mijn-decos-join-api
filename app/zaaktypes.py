@@ -1302,8 +1302,7 @@ class TouringcarJaarontheffing(Zaak):
             "name": "routetest",
             "from": "bol8",
             "parser": to_bool,
-        } 
-        
+        }
     ]
 
     def has_valid_source_data(self):
