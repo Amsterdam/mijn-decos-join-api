@@ -1300,7 +1300,7 @@ class TouringcarJaarontheffing(Zaak):
         },
         {
             "name": "routetest",
-            "from": "bol",
+            "from": "bol8",
             "parser": to_bool,
         } 
         
