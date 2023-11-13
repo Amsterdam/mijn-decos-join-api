@@ -929,7 +929,8 @@ class RVVSloterweg(Zaak):
             if zaak_deferred['decision'] is None:
                 zaak_deferred['decision'] = 'Verleend'
 
-        zaak_deferred['title'] = f"RVV ontheffing {zaak_deferred['area']} ({zaak_deferred['licensePlates']})"
+        if zaak_deferred['area'] is not None and zaak_deferred['licensePlates'] is not None:
+            zaak_deferred['title'] = f"RVV ontheffing {zaak_deferred['area']} ({zaak_deferred['licensePlates']})"
 
         return zaak_deferred
 
@@ -1205,6 +1206,108 @@ class EigenparkeerplaatsOpheffen(Zaak):
         creation_date = to_date(self.zaak_source["document_date"])
 
         return creation_date >= not_before and super().has_valid_payment_status()
+
+
+class TouringcarDagontheffing(Zaak):
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Touringcar dagontheffing"
+    title = "Touringcar dagontheffing"
+
+    date_workflow_active_step_title = (
+        "Status naar in behandeling"
+    )
+
+    @staticmethod
+    def defer_transform(zaak_deferred, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], TouringcarDagontheffing.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        return zaak_deferred
+
+    parse_fields = [
+        {
+            "name": "dateStart",
+            "from": "date6",
+            "parser": to_date,
+        },  # Begindatum vergunning
+        {
+            "name": "timeStart",
+            "from": "text14",
+            "parser": to_time,
+        },
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einddatum vergunning
+        {
+            "name": "timeEnd",
+            "from": "text15",
+            "parser": to_time,
+        },
+        {
+            "name": "licensePlate",
+            "from": "text10",
+            "parser": BZP.to_kenteken,
+        },  # Kentekens
+        {
+            "name": "destination",
+            "from": "text7",
+            "parser": to_date,
+        }
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
+class TouringcarJaarontheffing(Zaak):
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Touringcar jaarontheffing"
+    title = "Touringcar jaarontheffing"
+
+    date_workflow_active_step_title = (
+        "Status naar in behandeling"
+    )
+
+    @staticmethod
+    def defer_transform(zaak_deferred, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], TouringcarJaarontheffing.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        return zaak_deferred
+
+    parse_fields = [
+        {
+            "name": "dateStart",
+            "from": "date6",
+            "parser": to_date,
+        },  # Begindatum vergunning
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einddatum vergunning
+        {
+            "name": "licensePlates",
+            "from": "text39",
+            "parser": BZP.to_kenteken,
+        },  # Kentekens
+        {
+            "name": "destination",
+            "from": "text7",
+            "parser": to_date,
+        },
+        {
+            "name": "routetest",
+            "from": "bol",
+            "parser": to_bool,
+        } 
+        
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
 
 
 # A dict with all enabled Zaken
