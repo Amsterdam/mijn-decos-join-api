@@ -20,7 +20,9 @@ from app.zaaktypes import (
     RVVHeleStad,
     RVVSloterweg,
     Eigenparkeerplaats,
-    EigenparkeerplaatsOpheffen
+    EigenparkeerplaatsOpheffen,
+    TouringcarJaarontheffing,
+    TouringcarDagontheffing
 )
 
 
@@ -677,3 +679,59 @@ class ZaaktypesTest(TestCase):
         }
         zaak_transformed = EigenparkeerplaatsOpheffen(zaak_source).result()
         self.assertEqual(zaak_transformed, None)
+
+    def test_TouringcarJaarontheffing(self):
+        zaak_source = {
+            "mark": "Z/23/11023674",
+            "document_date": "2023-09-07T00:00:00",
+            "date5": "2023-02-01T00:00:00",
+            "date6": "2023-10-21T00:00:00",
+            "date7": "2024-12-24T00:00:00",
+            "text10": "KN-UW-TS,AAZZ88",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-155",
+            "bol8": "Ja",
+            "num14": "12",
+            "text7": "weesperstraat"
+        }
+        zaak_transformed = TouringcarJaarontheffing(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "Touringcar Jaarontheffing")
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Touringcar jaarontheffing",
+        )
+        self.assertEqual(zaak_transformed["destination"], "weesperstraat")
+
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2023-11-11"))
+
+        TouringcarJaarontheffing.defer_transform(zaak_transformed, connection_mock())
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-11-11"))
+
+    def test_TouringcarDagontheffing(self):
+        zaak_source = {
+            "mark": "Z/23/11023674",
+            "document_date": "2023-09-07T00:00:00",
+            "date5": "2023-02-01T00:00:00",
+            "date6": "2023-10-21T00:00:00",
+            "date7": "2024-12-24T00:00:00",
+            "text39": "KN-UW-TS,AAZZ88",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-156",
+            "bol8": "Ja",
+            "text7": "weesperstraat"
+        }
+        zaak_transformed = TouringcarDagontheffing(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "Touringcar Dagontheffing")
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Touringcar dagontheffing",
+        )
+        self.assertEqual(zaak_transformed["destination"], "weesperstraat")
+        class connection_mock:
+            get_workflow = MagicMock(return_value=to_date("2023-11-12"))
+
+        TouringcarDagontheffing.defer_transform(zaak_transformed, connection_mock())
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-11-12"))
