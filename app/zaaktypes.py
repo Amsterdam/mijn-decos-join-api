@@ -1270,12 +1270,12 @@ class TouringcarJaarontheffing(Zaak):
     date_workflow_active_step_title = "Status naar in behandeling"
 
     # @staticmethod
-    # def defer_transform(zaak_deferred, decosjoin_service):
-    #     date_workflow_active = decosjoin_service.get_workflow(
-    #         zaak_deferred["id"], TouringcarJaarontheffing.date_workflow_active_step_title
-    #     )
-    #     zaak_deferred["dateWorkflowActive"] = date_workflow_active
-    #     return zaak_deferred
+    def defer_transform(zaak_deferred, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow(
+            zaak_deferred["id"], TouringcarJaarontheffing.date_workflow_active_step_title
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+        return zaak_deferred
 
     parse_fields = [
         {
