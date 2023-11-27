@@ -893,13 +893,13 @@ class RVVHeleStad(Zaak):
 
 class RVVSloterweg(Zaak):
     # !!!!!!!!!!!!!
-    enabled = True
+    enabled = False
     # !!!!!!!!!!!!!
 
     zaak_type = "RVV Sloterweg"
     title = "RVV ontheffing Sloterweg"
 
-    date_workflow_active_step_title = "Behandelen"
+    date_workflow_active_step_title = "RVV Sloterweg - Behandelen"
     date_workflow_verleend_step_title = "Status naar actief"
 
     # status_translations = []
