@@ -52,8 +52,6 @@ variables:
   - ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
       - name: btdDeploy
         value: ${{ parameters.btdDeploy }}
-      - name: dtapName
-        value: t
   - ${{ if ne(parameters.dtapName, 'none') }}:
       - name: dtapName
         value: ${{ parameters.dtapName }}
