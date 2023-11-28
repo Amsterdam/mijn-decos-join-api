@@ -215,7 +215,7 @@ class BBVergunning(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], BBVergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -396,7 +396,7 @@ class Omzettingsvergunning(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], Omzettingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -561,7 +561,7 @@ class NachtwerkOntheffing(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], NachtwerkOntheffing.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -597,7 +597,7 @@ class ZwaarVerkeer(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], ZwaarVerkeer.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -689,7 +689,7 @@ class Samenvoegingsvergunning(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], Samenvoegingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -713,7 +713,7 @@ class Onttrekkingsvergunning(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], Onttrekkingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -737,7 +737,7 @@ class OnttrekkingsvergunningSloop(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"],
             OnttrekkingsvergunningSloop.date_workflow_active_step_title,
         )
@@ -762,7 +762,7 @@ class VormenVanWoonruimte(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], VormenVanWoonruimte.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -784,7 +784,7 @@ class Splitsingsvergunning(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], Splitsingsvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -806,7 +806,7 @@ class VOBvergunning(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], VOBvergunning.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -835,7 +835,7 @@ class ExploitatieHorecabedrijf(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"],
             ExploitatieHorecabedrijf.date_workflow_active_step_title,
         )
@@ -867,7 +867,7 @@ class RVVHeleStad(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], RVVHeleStad.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -912,12 +912,12 @@ class RVVSloterweg(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], RVVSloterweg.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
 
-        date_workflow_verleend = decosjoin_service.get_workflow(
+        date_workflow_verleend = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], RVVSloterweg.date_workflow_verleend_step_title
         )
         zaak_deferred["dateWorkflowVerleend"] = date_workflow_verleend
@@ -931,8 +931,8 @@ class RVVSloterweg(Zaak):
 
         if (
             zaak_deferred["processed"] is False
-            and zaak_deferred["dateDescision"] is not None
-            and zaak_deferred["descision"] is not None
+            and zaak_deferred.get("dateDescision") is not None
+            and zaak_deferred.get("descision") is not None
         ):
             zaak_deferred["processed"] = True
 
@@ -990,7 +990,7 @@ class Eigenparkeerplaats(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], Eigenparkeerplaats.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -1173,7 +1173,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"],
             EigenparkeerplaatsOpheffen.date_workflow_active_step_title,
         )
@@ -1258,7 +1258,7 @@ class TouringcarDagontheffing(Zaak):
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"], TouringcarDagontheffing.date_workflow_active_step_title
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
@@ -1309,7 +1309,7 @@ class TouringcarJaarontheffing(Zaak):
 
     # @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
-        date_workflow_active = decosjoin_service.get_workflow(
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"],
             TouringcarJaarontheffing.date_workflow_active_step_title,
         )

@@ -1,6 +1,6 @@
 import concurrent.futures
+import logging
 import math
-from pprint import pprint
 
 import requests
 from requests import PreparedRequest
@@ -22,7 +22,6 @@ from app.field_parsers import (
 )
 from app.zaaktypes import zaken_index
 
-LOG_RAW = False
 PAGE_SIZE = 60
 
 SELECT_FIELDS = ",".join(
@@ -120,11 +119,6 @@ class DecosJoinConnection:
             )
         else:
             raise RuntimeError("Method needs to be GET or POST")
-
-        if LOG_RAW:
-            print("\nstatus", response.status_code, url)
-            print("\npost", json)
-            print(">>", response.content)
 
         if response.status_code == 200:
             json = response.json()
@@ -265,9 +259,7 @@ class DecosJoinConnection:
         for result in results:
             new_zaken.append(result)
 
-        zaken_source_sorted = sorted(
-            new_zaken, key=lambda zaak: zaak["identifier"]
-        )
+        zaken_source_sorted = sorted(new_zaken, key=lambda zaak: zaak["identifier"])
 
         return zaken_source_sorted
 
@@ -276,11 +268,8 @@ class DecosJoinConnection:
         if offset:
             url += f"&skip={offset}"
         res_json = self.request(url)
-        if LOG_RAW:
-            from pprint import pprint
-
-            print("request:", url)
-            pprint(res_json)
+        logging.debug(f"Get page {url} - offset: {offset}")
+        logging.debug(res_json)
         return res_json
 
     def get_all_pages(self, url):
@@ -342,10 +331,6 @@ class DecosJoinConnection:
 
         res = self.get_all_pages(url)
 
-        if LOG_RAW:
-            print("Documents list")
-            pprint(res)
-
         parse_fields = [
             {"name": "title", "from": "text41", "parser": to_string_or_empty_string},
             {"name": "id", "from": "mark", "parser": to_string},
@@ -397,27 +382,18 @@ class DecosJoinConnection:
             headers={"Accept": "application/octet-stream"},
         )
 
-        if LOG_RAW:
-            pprint(document_response.content)
-            pprint(document_response.headers)
-
         return {
             "Content-Type": document_response.headers["Content-Type"],
             "file_data": document_response.content,
         }
 
-    def get_workflow(self, zaak_id: str, step_title: str):
+    def get_workflow_date_by_step_title(self, zaak_id: str, step_title: str):
         all_workflows_response = self.request(
             f"{self.api_url}items/{zaak_id}/workflows"
         )
 
         if all_workflows_response and all_workflows_response["count"] > 0:
             # Take last workflow key
-
-            if LOG_RAW:
-                print("\n\nAll workflows")
-                pprint(all_workflows_response)
-                print("====\n\n")
 
             worflow_key = all_workflows_response["content"][-1]["key"]
             single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
@@ -426,15 +402,18 @@ class DecosJoinConnection:
             if not single_workflow_response["content"]:
                 return None
 
-            date_in_behandeling = None
-
+            workflow_step_date = None
+            logging.debug(
+                f"Find workflow step for {zaak_id} by step title {step_title}"
+            )
             for workflow_step in single_workflow_response["content"]:
                 if (
                     "text7" in workflow_step["fields"]
                     and workflow_step["fields"]["text7"] == step_title
                 ):
-                    date_in_behandeling = to_date(workflow_step["fields"]["date1"])
+                    logging.debug(workflow_step["fields"])
+                    workflow_step_date = to_date(workflow_step["fields"]["date1"])
 
-            return date_in_behandeling
+            return workflow_step_date
 
         return None

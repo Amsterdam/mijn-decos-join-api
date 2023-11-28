@@ -12,8 +12,6 @@ import app.decosjoin_service
 
 kvk = argv[1]
 
-app.decosjoin_service.LOG_RAW = True
-
 connection = DecosJoinConnection(
     get_decosjoin_username(),
     get_decosjoin_password(),
