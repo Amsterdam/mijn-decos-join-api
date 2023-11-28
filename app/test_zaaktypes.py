@@ -730,6 +730,7 @@ class ZaaktypesTest(TestCase):
             "Touringcar dagontheffing",
         )
         self.assertEqual(zaak_transformed["destination"], "weesperstraat")
+
         class connection_mock:
             get_workflow = MagicMock(return_value=to_date("2023-11-12"))
 
