@@ -67,6 +67,7 @@ SELECT_FIELDS = ",".join(
         "text21",
         "text22",
         "text25",
+        "text39",
         "text49",
         "processed",
         "sequence",
