@@ -22,7 +22,7 @@ from app.zaaktypes import (
     Eigenparkeerplaats,
     EigenparkeerplaatsOpheffen,
     TouringcarJaarontheffing,
-    TouringcarDagontheffing
+    TouringcarDagontheffing,
 )
 
 
@@ -184,15 +184,15 @@ class ZaaktypesTest(TestCase):
         )
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2021-10-15"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2021-10-15")
+            )
 
-        Omzettingsvergunning.defer_transform(
-            zaak_transformed, connection_mock()
-        )
+        Omzettingsvergunning.defer_transform(zaak_transformed, connection_mock())
 
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2021-10-15"))
 
-        connection_mock.get_workflow.assert_called_once_with(
+        connection_mock.get_workflow_date_by_step_title.assert_called_once_with(
             "zaak-omzettingsvergunning-1",
             Omzettingsvergunning.date_workflow_active_step_title,
         )
@@ -329,15 +329,15 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["decision"], "Verleend")
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2022-06-15"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2022-06-15")
+            )
 
-        NachtwerkOntheffing.defer_transform(
-            zaak_transformed, connection_mock()
-        )
+        NachtwerkOntheffing.defer_transform(zaak_transformed, connection_mock())
 
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-06-15"))
 
-        connection_mock.get_workflow.assert_called_once_with(
+        connection_mock.get_workflow_date_by_step_title.assert_called_once_with(
             "zaak-1",
             NachtwerkOntheffing.date_workflow_active_step_title,
         )
@@ -369,12 +369,14 @@ class ZaaktypesTest(TestCase):
         )
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2022-10-15"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2022-10-15")
+            )
 
         ZwaarVerkeer.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-15"))
 
-        connection_mock.get_workflow.assert_called_once_with(
+        connection_mock.get_workflow_date_by_step_title.assert_called_once_with(
             "zaak-99",
             ZwaarVerkeer.date_workflow_active_step_title,
         )
@@ -398,14 +400,14 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["location"], "Amstel 1 1000AB")
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2022-10-15"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2022-10-15")
+            )
 
-        Samenvoegingsvergunning.defer_transform(
-            zaak_transformed, connection_mock()
-        )
+        Samenvoegingsvergunning.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-15"))
 
-        connection_mock.get_workflow.assert_called_once_with(
+        connection_mock.get_workflow_date_by_step_title.assert_called_once_with(
             "zaak-100",
             Samenvoegingsvergunning.date_workflow_active_step_title,
         )
@@ -429,14 +431,14 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["location"], "Amstel 10 1000AB")
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2022-10-20"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2022-10-20")
+            )
 
-        Splitsingsvergunning.defer_transform(
-            zaak_transformed, connection_mock()
-        )
+        Splitsingsvergunning.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2022-10-20"))
 
-        connection_mock.get_workflow.assert_called_once_with(
+        connection_mock.get_workflow_date_by_step_title.assert_called_once_with(
             "zaak-101",
             Splitsingsvergunning.date_workflow_active_step_title,
         )
@@ -470,12 +472,14 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["vesselName"], "Sloepie IX")
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2023-03-13"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2023-03-13")
+            )
 
         VOBvergunning.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-03-13"))
 
-        connection_mock.get_workflow.assert_called_once_with(
+        connection_mock.get_workflow_date_by_step_title.assert_called_once_with(
             "zaak-145",
             VOBvergunning.date_workflow_active_step_title,
         )
@@ -507,12 +511,14 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["licensePlates"], "KN-UW-TS | AAZZ88")
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2023-04-11"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2023-04-11")
+            )
 
         RVVHeleStad.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-04-11"))
 
-        connection_mock.get_workflow.assert_called_once_with(
+        connection_mock.get_workflow_date_by_step_title.assert_called_once_with(
             "zaak-146",
             RVVHeleStad.date_workflow_active_step_title,
         )
@@ -548,7 +554,9 @@ class ZaaktypesTest(TestCase):
         )
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2023-04-11"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2023-04-11")
+            )
 
         RVVSloterweg.defer_transform(zaak_transformed, connection_mock())
 
@@ -557,7 +565,7 @@ class ZaaktypesTest(TestCase):
             zaak_transformed["dateWorkflowVerleend"], to_date("2023-04-11")
         )
 
-        connection_mock.get_workflow.assert_has_calls(
+        connection_mock.get_workflow_date_by_step_title.assert_has_calls(
             [
                 call("zaak-147", RVVSloterweg.date_workflow_active_step_title),
                 call("zaak-147", RVVSloterweg.date_workflow_verleend_step_title),
@@ -584,7 +592,7 @@ class ZaaktypesTest(TestCase):
             "text25": "straat",
             "num14": "12",
             "text17": "Consul/Huisarts/Verloskundige woonadres",
-            "text18": "12345678"
+            "text18": "12345678",
         }
         zaak_transformed = Eigenparkeerplaats(zaak_source).result()
         self.assertEqual(zaak_transformed["caseType"], "Eigen parkeerplaats")
@@ -604,12 +612,14 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["requestType"], "Kentekenwijziging")
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2023-10-11"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2023-10-11")
+            )
 
         Eigenparkeerplaats.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-10-11"))
 
-        connection_mock.get_workflow.assert_called_once_with(
+        connection_mock.get_workflow_date_by_step_title.assert_called_once_with(
             "zaak-150",
             Eigenparkeerplaats.date_workflow_active_step_title,
         )
@@ -630,7 +640,7 @@ class ZaaktypesTest(TestCase):
             "text25": "straat",
             "num14": "12",
             "text17": "Consul/Huisarts/Verloskundige woonadres",
-            "text18": "12345678"
+            "text18": "12345678",
         }
         zaak_transformed = Eigenparkeerplaats(zaak_source).result()
         self.assertEqual(zaak_transformed, None)
@@ -650,7 +660,7 @@ class ZaaktypesTest(TestCase):
             "num14": "12",
             "text25": "weesperstraat",
             "text17": "Consul/Huisarts/Verloskundige woonadres",
-            "text18": "12345678"
+            "text18": "12345678",
         }
         zaak_transformed = EigenparkeerplaatsOpheffen(zaak_source).result()
         self.assertEqual(zaak_transformed["caseType"], "Eigen parkeerplaats opheffen")
@@ -658,7 +668,16 @@ class ZaaktypesTest(TestCase):
             zaak_transformed["title"],
             "Eigen parkeerplaats opheffen",
         )
-        self.assertEqual(zaak_transformed["location"], {"street":"weesperstraat", "houseNumber":12, "fiscalNumber": "12345678", "type": "Consul/Huisarts/Verloskundige woonadres", "url": None})
+        self.assertEqual(
+            zaak_transformed["location"],
+            {
+                "street": "weesperstraat",
+                "houseNumber": 12,
+                "fiscalNumber": "12345678",
+                "type": "Consul/Huisarts/Verloskundige woonadres",
+                "url": None,
+            },
+        )
 
     def test_EigenparkeerplaatsOpheffenOldRequest(self):
         zaak_source = {
@@ -675,7 +694,7 @@ class ZaaktypesTest(TestCase):
             "num14": "12",
             "text25": "straat",
             "text17": "Consul/Huisarts/Verloskundige woonadres",
-            "text18": "12345678"
+            "text18": "12345678",
         }
         zaak_transformed = EigenparkeerplaatsOpheffen(zaak_source).result()
         self.assertEqual(zaak_transformed, None)
@@ -693,7 +712,7 @@ class ZaaktypesTest(TestCase):
             "id": "zaak-155",
             "bol8": "Ja",
             "num14": "12",
-            "text7": "weesperstraat"
+            "text7": "weesperstraat",
         }
         zaak_transformed = TouringcarJaarontheffing(zaak_source).result()
         self.assertEqual(zaak_transformed["caseType"], "Touringcar Jaarontheffing")
@@ -704,7 +723,9 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["destination"], "weesperstraat")
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2023-11-11"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2023-11-11")
+            )
 
         TouringcarJaarontheffing.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-11-11"))
@@ -725,7 +746,7 @@ class ZaaktypesTest(TestCase):
             "dfunction": "Verleend",
             "id": "zaak-156",
             "bol8": "Ja",
-            "text7": "weesperstraat"
+            "text7": "weesperstraat",
         }
         zaak_transformed = TouringcarDagontheffing(zaak_source).result()
         self.assertEqual(zaak_transformed["caseType"], "Touringcar Dagontheffing")
@@ -736,7 +757,9 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["destination"], "weesperstraat")
 
         class connection_mock:
-            get_workflow = MagicMock(return_value=to_date("2023-11-12"))
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2023-11-12")
+            )
 
         TouringcarDagontheffing.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-11-12"))

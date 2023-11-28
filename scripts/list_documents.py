@@ -18,8 +18,6 @@ else:
     zaak_id = argv[2]
 
 
-app.decosjoin_service.LOG_RAW = True
-
 connection = DecosJoinConnection(
     get_decosjoin_username(),
     get_decosjoin_password(),

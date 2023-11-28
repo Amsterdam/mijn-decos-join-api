@@ -15,8 +15,6 @@ else:
     document_id = argv[1]
 
 
-app.decosjoin_service.LOG_RAW = True
-
 connection = DecosJoinConnection(
     get_decosjoin_username(),
     get_decosjoin_password(),
@@ -24,4 +22,3 @@ connection = DecosJoinConnection(
 )
 
 document = connection.get_document_blob(document_id)
-# printing is done by LOG_RAW

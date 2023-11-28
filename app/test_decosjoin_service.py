@@ -175,7 +175,7 @@ class ConnectionTests(TestCase):
         self.assertEqual(zaken_result[0]["dateWorkflowActive"], to_date("2021-09-15"))
 
     def test_get_workflow(self):
-        workflow_date = self.connection.get_workflow(
+        workflow_date = self.connection.get_workflow_date_by_step_title(
             "HEXSTRING17", BBVergunning.date_workflow_active_step_title
         )
 
