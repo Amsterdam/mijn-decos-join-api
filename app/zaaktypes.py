@@ -1276,7 +1276,7 @@ class TouringcarJaarontheffing(Zaak):
         )
         zaak_deferred["dateWorkflowActive"] = date_workflow_active
 
-        if zaak_deferred['routetest'] == True:
+        if zaak_deferred['routetest'] is True:
             zaak_deferred['title'] = "Touringcar jaarontheffing met routetoets"
 
         return zaak_deferred
