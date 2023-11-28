@@ -929,10 +929,9 @@ class RVVSloterweg(Zaak):
             if zaak_deferred["decision"] is None:
                 zaak_deferred["decision"] = "Verleend"
 
-        if (
-            zaak_deferred["processed"] is False
-            and zaak_deferred.get("dateDecision") is not None
-            and zaak_deferred.get("decision") is not None
+        if zaak_deferred["processed"] is False and (
+            zaak_deferred.get("dateDecision") is not None
+            or zaak_deferred.get("decision") is not None
         ):
             zaak_deferred["processed"] = True
 
