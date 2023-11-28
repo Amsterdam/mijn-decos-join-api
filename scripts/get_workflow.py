@@ -10,6 +10,7 @@ from app.config import (
 import app.decosjoin_service
 
 zaak_id = argv[1]
+step_title = argv[2]
 
 connection = DecosJoinConnection(
     get_decosjoin_username(),
@@ -17,5 +18,5 @@ connection = DecosJoinConnection(
     get_decosjoin_api_host(),
 )
 
-workflow = connection.get_workflow_date_by_step_title(zaak_id)
-pprint(workflow)
+workflow_date = connection.get_workflow_date_by_step_title(zaak_id, step_title)
+pprint(workflow_date)
