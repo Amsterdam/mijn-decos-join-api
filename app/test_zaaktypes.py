@@ -708,6 +708,10 @@ class ZaaktypesTest(TestCase):
 
         TouringcarJaarontheffing.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-11-11"))
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Touringcar jaarontheffing met routetoets",
+        )
 
     def test_TouringcarDagontheffing(self):
         zaak_source = {
