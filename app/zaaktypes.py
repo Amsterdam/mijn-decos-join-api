@@ -1306,7 +1306,7 @@ class TouringcarJaarontheffing(Zaak):
 
     date_workflow_active_step_title = "Status naar in behandeling"
 
-    # @staticmethod
+    @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
         date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
             zaak_deferred["id"],
@@ -1339,6 +1339,84 @@ class TouringcarJaarontheffing(Zaak):
         {
             "name": "routetest",
             "from": "bol8",
+            "parser": to_bool,
+        },
+    ]
+
+    def has_valid_source_data(self):
+        return super().has_valid_payment_status()
+
+
+class WerkEnVervoerOpStraat(Zaak):
+    # !!!!!!!!!!!!!
+    enabled = not IS_PRODUCTION
+    # !!!!!!!!!!!!!
+
+    zaak_type = "Werk en vervoer op straat"
+    title = "Touringcar jaarontheffing"
+
+    date_workflow_active_step_title = "Status - In behandeling"
+
+    @staticmethod
+    def defer_transform(zaak_deferred, decosjoin_service):
+        date_workflow_active = decosjoin_service.get_workflow_date_by_step_title(
+            zaak_deferred["id"],
+            WerkEnVervoerOpStraat.date_workflow_active_step_title,
+        )
+        zaak_deferred["dateWorkflowActive"] = date_workflow_active
+
+        return zaak_deferred
+
+    parse_fields = [
+        {
+            "name": "dateStart",
+            "from": "date6",
+            "parser": to_date,
+        },  # Begindatum vergunning
+        {"name": "dateEnd", "from": "date7", "parser": to_date},  # Einddatum vergunning
+        {
+            "name": "licensePlates",
+            "from": "text49",
+            "parser": BZP.to_kenteken,
+        },  # Kentekens
+        {
+            "name": "destination",
+            "from": "text7",
+            "parser": to_string,
+        },
+        {
+            "name": "parkingspace",
+            "from": "bol20",
+            "parser": to_bool,
+        },
+        {
+            "name": "eParkingspace",
+            "from": "bol13",
+            "parser": to_bool,
+        },
+        {
+            "name": "block",
+            "from": "bol9",
+            "parser": to_bool,
+        },
+        {
+            "name": "rvv",
+            "from": "bol22",
+            "parser": to_bool,
+        },
+        {
+            "name": "eRvv",
+            "from": "bol21",
+            "parser": to_bool,
+        },
+        {
+            "name": "vezip",
+            "from": "bol23",
+            "parser": to_bool,
+        },
+        {
+            "name": "bicycleRack",
+            "from": "bol12",
             "parser": to_bool,
         },
     ]
