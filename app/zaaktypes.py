@@ -1353,7 +1353,7 @@ class WerkEnVervoerOpStraat(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "Werk en vervoer op straat"
-    title = "Touringcar jaarontheffing"
+    title = "Werk en vervoer op straat"
 
     date_workflow_active_step_title = "Status - In behandeling"
 
@@ -1380,13 +1380,18 @@ class WerkEnVervoerOpStraat(Zaak):
             "parser": BZP.to_kenteken,
         },  # Kentekens
         {
-            "name": "destination",
-            "from": "text7",
+            "name": "location",
+            "from": "text6",
             "parser": to_string,
         },
         {
-            "name": "parkingspace",
-            "from": "bol20",
+            "name": "block",
+            "from": "bol9",
+            "parser": to_bool,
+        },
+        {
+            "name": "bicycleRack",
+            "from": "bol12",
             "parser": to_bool,
         },
         {
@@ -1395,13 +1400,23 @@ class WerkEnVervoerOpStraat(Zaak):
             "parser": to_bool,
         },
         {
-            "name": "block",
-            "from": "bol9",
+            "name": "filming",
+            "from": "bol16",
             "parser": to_bool,
         },
         {
-            "name": "rvv",
-            "from": "bol22",
+            "name": "night",
+            "from": "bol17",
+            "parser": to_bool,
+        },
+        {
+            "name": "object",
+            "from": "bol18",
+            "parser": to_bool,
+        },
+        {
+            "name": "parkingspace",
+            "from": "bol20",
             "parser": to_bool,
         },
         {
@@ -1410,13 +1425,13 @@ class WerkEnVervoerOpStraat(Zaak):
             "parser": to_bool,
         },
         {
-            "name": "vezip",
-            "from": "bol23",
+            "name": "rvv",
+            "from": "bol22",
             "parser": to_bool,
         },
         {
-            "name": "bicycleRack",
-            "from": "bol12",
+            "name": "vezip",
+            "from": "bol23",
             "parser": to_bool,
         },
     ]
