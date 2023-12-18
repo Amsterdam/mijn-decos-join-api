@@ -1353,7 +1353,7 @@ class WerkEnVervoerOpStraat(Zaak):
     # !!!!!!!!!!!!!
 
     zaak_type = "Werk en vervoer op straat"
-    title = "Werk en vervoer op straat"
+    title = "Werkzaamheden en vervoer op straat"
 
     date_workflow_active_step_title = "Status - In behandeling"
 
