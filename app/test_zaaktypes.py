@@ -23,6 +23,7 @@ from app.zaaktypes import (
     EigenparkeerplaatsOpheffen,
     TouringcarJaarontheffing,
     TouringcarDagontheffing,
+    WerkEnVervoerOpStraat,
 )
 
 
@@ -763,3 +764,38 @@ class ZaaktypesTest(TestCase):
 
         TouringcarDagontheffing.defer_transform(zaak_transformed, connection_mock())
         self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-11-12"))
+
+    def test_WVOS(self):
+        zaak_source = {
+            "mark": "Z/23/11023785",
+            "document_date": "2023-09-07T00:00:00",
+            "date5": "2023-02-01T00:00:00",
+            "date6": "2023-10-21T00:00:00",
+            "date7": "2024-12-24T00:00:00",
+            "text49": "KN-UW-TS,AAZZ88",
+            "title": "Ontvangen",
+            "dfunction": "Verleend",
+            "id": "zaak-159",
+            "text6": "weesperstraat",
+            "bol16": "Ja",
+            "bol17": "Ja",
+        }
+        zaak_transformed = WerkEnVervoerOpStraat(zaak_source).result()
+        self.assertEqual(zaak_transformed["caseType"], "Werk en vervoer op straat")
+        self.assertEqual(
+            zaak_transformed["title"],
+            "Werkzaamheden en vervoer op straat",
+        )
+        self.assertEqual(zaak_transformed["location"], "weesperstraat")
+        self.assertEqual(zaak_transformed["filming"], True)
+        self.assertEqual(zaak_transformed["night"], True)
+        self.assertEqual(zaak_transformed["object"], False)
+        self.assertEqual(zaak_transformed["parkingspace"], False)
+
+        class connection_mock:
+            get_workflow_date_by_step_title = MagicMock(
+                return_value=to_date("2023-12-12")
+            )
+
+        WerkEnVervoerOpStraat.defer_transform(zaak_transformed, connection_mock())
+        self.assertEqual(zaak_transformed["dateWorkflowActive"], to_date("2023-12-12"))
