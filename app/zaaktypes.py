@@ -977,7 +977,7 @@ class RVVSloterweg(Zaak):
 
 class Eigenparkeerplaats(Zaak):
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Eigen parkeerplaats"
@@ -1160,7 +1160,7 @@ class Eigenparkeerplaats(Zaak):
 
 class EigenparkeerplaatsOpheffen(Zaak):
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Eigen parkeerplaats opheffen"
