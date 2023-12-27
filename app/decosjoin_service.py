@@ -418,6 +418,7 @@ class DecosJoinConnection:
             for workflow_step in single_workflow_response["content"]:
                 if (
                     "text7" in workflow_step["fields"]
+                    and "date1" in workflow_step["fields"]
                     and workflow_step["fields"]["text7"] == step_title
                 ):
                     logging.debug(workflow_step["fields"])
