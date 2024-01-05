@@ -80,7 +80,7 @@ pycodestyle==2.11.1
     # via flake8
 pycparser==2.21
     # via cffi
-pycryptodome==3.19.0
+pycryptodome==3.19.1
     # via -r requirements-root.txt
 pyflakes==3.1.0
     # via flake8
