@@ -5,6 +5,7 @@ trigger:
       - testen
       - az-acceptance
       - main
+      - production-release-v*
 pr:
   autoCancel: true
   branches:
@@ -41,6 +42,13 @@ parameters:
     default: false
 
 variables:
+  - name: btdBuild
+    value: ${{ parameters.btdBuild }}
+  - name: btdTest
+    value: ${{ parameters.btdTest }}
+  - name: btdDeploy
+    value: ${{ parameters.btdDeploy }}
+
   - ${{ if or(eq(variables['Build.SourceBranchName'], 'testen'), eq(variables['Build.Reason'], 'PullRequest')) }}:
       - name: dtapName
         value: t
@@ -57,13 +65,23 @@ variables:
       - name: dtapName
         value: ${{ parameters.dtapName }}
 
+  - ${{ if contains(variables['Build.SourceBranchName'], 'production-release') }}:
+      - name: dtapName
+        value: p
+      - name: btdBuild
+        value: true
+      - name: btdTest
+        value: true
+      - name: btdDeploy
+        value: true
+
 jobs:
   - template: pipelines/jobs/apps/btd-koppel-api.yaml@MamsInfra
     parameters:
       appServiceShortName: vergunningen
       dtapName: ${{ variables.dtapName }}
-      btdBuild: ${{ parameters.btdBuild }}
-      btdTest: ${{ parameters.btdTest }}
+      btdBuild: ${{ variables.btdBuild }}
+      btdTest: ${{ variables.btdTest }}
       btdDeploy: ${{ variables.btdDeploy }}
       updateAppSettings: ${{ parameters.updateAppSettings }}
       aquaScan: ${{ eq(variables['Build.Reason'], 'PullRequest') }}
