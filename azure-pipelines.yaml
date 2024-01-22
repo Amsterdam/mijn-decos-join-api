@@ -20,6 +20,21 @@ resources:
       ref: refs/heads/pipeline-fe
 
 parameters:
+  - name: pipelineAction
+    type: string
+    default: btd
+    values:
+      - btd
+      - updateAppSettings
+
+  - name: dtapName
+    type: string
+    default: t
+    values:
+      - t
+      - a
+      - p
+
   - name: btdBuild
     type: boolean
     default: true
@@ -29,17 +44,6 @@ parameters:
   - name: btdDeploy
     type: boolean
     default: true
-  - name: dtapName
-    type: string
-    default: none
-    values:
-      - none
-      - t
-      - a
-      - p
-  - name: updateAppSettings
-    type: boolean
-    default: false
 
 variables:
   - name: btdBuild
@@ -65,7 +69,7 @@ variables:
       - name: dtapName
         value: ${{ parameters.dtapName }}
 
-  - ${{ if contains(variables['Build.SourceBranchName'], 'production-release') }}:
+  - ${{ if and(contains(variables['Build.SourceBranchName'], 'production-release'), eq(parameters.pipelineAction, 'btd')) }}:
       - name: dtapName
         value: p
       - name: btdBuild
@@ -75,6 +79,14 @@ variables:
       - name: btdDeploy
         value: true
 
+  - ${{ if eq(parameters.pipelineAction, 'updateAppSettings') }}:
+      - name: btdBuild
+        value: false
+      - name: btdTest
+        value: false
+      - name: btdDeploy
+        value: false
+
 jobs:
   - template: pipelines/jobs/apps/btd-koppel-api.yaml@MamsInfra
     parameters:
@@ -83,5 +95,5 @@ jobs:
       btdBuild: ${{ variables.btdBuild }}
       btdTest: ${{ variables.btdTest }}
       btdDeploy: ${{ variables.btdDeploy }}
-      updateAppSettings: ${{ parameters.updateAppSettings }}
+      pipelineAction: ${{ parameters.pipelineAction }}
       aquaScan: ${{ eq(variables['Build.Reason'], 'PullRequest') }}

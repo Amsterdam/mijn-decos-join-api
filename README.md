@@ -1,20 +1,26 @@
-# Mijn Decos Join API
+Vergunningen API
+=========
 
-## Introduction
+## Introductie
 
-A REST API which discloses the decos-join data
+Deze api levert de volgende data:
 
-### Local development
+- Vergunningen, zie `/app/zaaktypes.py` voor een overzicht van de types.
 
-1. Clone repo and `cd` into
-2. Create a virtual env and activate
-3. Run `pip install -r decosjoin/requirements.txt`
-4. Run `sh run-dev.sh`
+### Kenmerken
+- Het bronsysteem is DecosJoin
+- De output van de api is JSON formaat.
 
-### Testing
+### Development & testen
+- Er is geen uitgebreide lokale set-up waarbij ontwikkeld kan worden op basis van een "draaiende" api. Dit zou gemaakt / geïmplementeerd moeten worden.
+- Alle tests worden dichtbij de geteste functionaliteit opgeslagen. B.v `some_service.py` en wordt getest in `test_some_service.py`.
 
-1. Clone repo
-2. Create a virtual env and activate
-3. Run `pip install -r decosjoin/requirements.txt`
-4. `cd decosjoin`
-5. Run `python -m unittest`
+### CI/CD
+- De applicatie wordt verpakt in een Docker container.
+- Bouwen en deployen van de applicatie gebeurt in Github en Azure DevOps.
+
+### Release to production
+```
+~ cd scripts
+~ sh release.sh --minor [--major [--patch]]
+```
