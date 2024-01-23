@@ -405,7 +405,7 @@ class DecosJoinConnection:
             # Take last workflow key
 
             worflow_key = all_workflows_response["content"][-1]["key"]
-            single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence"
+            single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence&top=50"
             single_workflow_response = self.request(single_workflow_url)
 
             if not single_workflow_response["content"]:
