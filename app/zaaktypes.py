@@ -1253,7 +1253,7 @@ class TouringcarDagontheffing(Zaak):
     zaak_type = "Touringcar Dagontheffing"
     title = "Touringcar dagontheffing"
 
-    date_workflow_active_step_title = "Status naar in behandeling"
+    date_workflow_active_step_title = "Status naar In behandeling"
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
@@ -1304,7 +1304,7 @@ class TouringcarJaarontheffing(Zaak):
     zaak_type = "Touringcar Jaarontheffing"
     title = "Touringcar jaarontheffing"
 
-    date_workflow_active_step_title = "Status naar in behandeling"
+    date_workflow_active_step_title = "Status naar In behandeling"
 
     @staticmethod
     def defer_transform(zaak_deferred, decosjoin_service):
