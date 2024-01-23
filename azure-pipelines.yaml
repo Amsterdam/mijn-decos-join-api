@@ -52,6 +52,8 @@ variables:
     value: ${{ parameters.btdTest }}
   - name: btdDeploy
     value: ${{ parameters.btdDeploy }}
+  - name: dtapName
+    value: ${{ parameters.dtapName }}
 
   - ${{ if or(eq(variables['Build.SourceBranchName'], 'testen'), eq(variables['Build.Reason'], 'PullRequest')) }}:
       - name: dtapName
@@ -65,9 +67,6 @@ variables:
   - ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
       - name: btdDeploy
         value: ${{ parameters.btdDeploy }}
-  - ${{ if ne(parameters.dtapName, 'none') }}:
-      - name: dtapName
-        value: ${{ parameters.dtapName }}
 
   - ${{ if and(contains(variables['Build.SourceBranchName'], 'production-release'), eq(parameters.pipelineAction, 'btd')) }}:
       - name: dtapName
