@@ -7,7 +7,7 @@ from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from app import auth
-from app.config import IS_DEV, UpdatedJSONProvider, get_sentry_dsn
+from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn
 from app.crypto import decrypt
 from app.helpers import (
     error_response_json,
@@ -21,7 +21,10 @@ app.json = UpdatedJSONProvider(app)
 sentry_dsn = get_sentry_dsn()
 if sentry_dsn:
     sentry_sdk.init(
-        dsn=sentry_dsn, integrations=[FlaskIntegration()], with_locals=False
+        dsn=sentry_dsn,
+        environment=f"{'az-' if IS_AZ else ''}{SENTRY_ENV}",
+        integrations=[FlaskIntegration()],
+        with_locals=False,
     )
 
 
