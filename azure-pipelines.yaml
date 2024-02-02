@@ -68,8 +68,6 @@ variables:
         value: ${{ parameters.btdDeploy }}
 
   - ${{ if and(contains(variables['Build.SourceBranchName'], 'production-release'), eq(parameters.pipelineAction, 'btd')) }}:
-      - name: dtapName
-        value: p
       - name: btdBuild
         value: true
       - name: btdTest
@@ -84,6 +82,10 @@ variables:
         value: false
       - name: btdDeploy
         value: false
+
+  - ${{ if contains(variables['Build.SourceBranchName'], 'production-release') }}:
+      - name: dtapName
+        value: p
 
 jobs:
   - template: pipelines/jobs/apps/btd-koppel-api.yaml@MamsInfra
