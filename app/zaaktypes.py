@@ -1247,7 +1247,7 @@ class EigenparkeerplaatsOpheffen(Zaak):
 
 class TouringcarDagontheffing(Zaak):
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Touringcar Dagontheffing"
@@ -1298,7 +1298,7 @@ class TouringcarDagontheffing(Zaak):
 
 class TouringcarJaarontheffing(Zaak):
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Touringcar Jaarontheffing"
