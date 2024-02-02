@@ -33,7 +33,6 @@ parameters:
     values:
       - t
       - a
-      - p
 
   - name: btdBuild
     type: boolean
