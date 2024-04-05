@@ -237,9 +237,9 @@ class DecosJoinConnection:
                 continue
 
             # This url can be used to retrieve matching document attachments for this particular zaak
-            new_zaak[
-                "documentsUrl"
-            ] = f"/decosjoin/listdocuments/{encrypt(zaak_source['key'], user_identifier)}"
+            new_zaak["documentsUrl"] = (
+                f"/decosjoin/listdocuments/{encrypt(zaak_source['key'], user_identifier)}"
+            )
 
             if Zaak.defer_transform:
                 deferred_zaken.append([new_zaak, Zaak])
@@ -365,9 +365,9 @@ class DecosJoinConnection:
                     doc_data = self.get_document_data(item["key"])
 
                     if doc_data["is_pdf"]:
-                        document_meta_data[
-                            "url"
-                        ] = f"/decosjoin/document/{encrypt(doc_data['doc_key'], identifier)}"
+                        document_meta_data["url"] = (
+                            f"/decosjoin/document/{encrypt(doc_data['doc_key'], identifier)}"
+                        )
 
                         del document_meta_data["text39"]
                         del document_meta_data["text40"]
@@ -405,7 +405,7 @@ class DecosJoinConnection:
             # Take last workflow key
 
             worflow_key = all_workflows_response["content"][-1]["key"]
-            single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence&top=50"
+            single_workflow_url = f"{self.api_url}items/{worflow_key}/workflowlinkinstances?properties=false&fetchParents=false&select=mark,date1,date2,text7,sequence&orderBy=sequence&filter=text7 eq '{step_title}'"
             single_workflow_response = self.request(single_workflow_url)
 
             if not single_workflow_response["content"]:
