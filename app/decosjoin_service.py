@@ -416,7 +416,11 @@ class DecosJoinConnection:
                 f"Find workflow step for {zaak_id} by step title {step_title}"
             )
             for workflow_step in single_workflow_response["content"]:
-                if "date1" in workflow_step["fields"]:
+                if (
+                    "text7" in workflow_step["fields"]
+                    and "date1" in workflow_step["fields"]
+                    and workflow_step["fields"]["text7"] == step_title
+                ):
                     logging.debug(workflow_step["fields"])
                     workflow_step_date = to_date(workflow_step["fields"]["date1"])
 

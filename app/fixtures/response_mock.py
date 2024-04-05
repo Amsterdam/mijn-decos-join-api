@@ -203,11 +203,11 @@ mocked_get_urls_tuple = (
         get_all_workflows_response("omzettingsvergunning"),
     ),
     (
-        "http://localhost/decosweb/aspx/api/v1/items/HEXSTRING_ALL_WORKFLOWS_RESPONSE/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence&top=50",
+        "http://localhost/decosweb/aspx/api/v1/items/HEXSTRING_ALL_WORKFLOWS_RESPONSE/workflowlinkinstances?properties=false&fetchParents=false&select=mark,date1,date2,text7,sequence&orderBy=sequence&filter=text7 eq 'B&B - vergunning - Behandelen'",
         get_single_workflow_response(),
     ),
     (
-        "http://localhost/decosweb/aspx/api/v1/items/HEXSTRING_ALL_WORKFLOWS_RESPONSE_OMZETTINGSVERGUNNING/workflowlinkinstances?properties=false&fetchParents=false&oDataQuery.select=mark,date1,date2,text7,sequence&oDataQuery.orderBy=sequence&top=50",
+        "http://localhost/decosweb/aspx/api/v1/items/HEXSTRING_ALL_WORKFLOWS_RESPONSE_OMZETTINGSVERGUNNING/workflowlinkinstances?properties=false&fetchParents=false&select=mark,date1,date2,text7,sequence&orderBy=sequence&filter=text7 eq 'Omzettingsvergunning - Behandelen'",
         get_single_workflow_response("omzettingsvergunning"),
     ),
 )
