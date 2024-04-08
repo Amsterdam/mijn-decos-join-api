@@ -11,7 +11,6 @@ BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 SENTRY_ENV = os.getenv("SENTRY_ENVIRONMENT")
 
-
 # Environment determination
 IS_PRODUCTION = SENTRY_ENV == "production"
 IS_ACCEPTANCE = SENTRY_ENV == "acceptance"
