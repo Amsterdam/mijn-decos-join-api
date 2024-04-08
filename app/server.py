@@ -17,8 +17,10 @@ from app.helpers import (
     get_connection,
     success_response_json,
 )
-configure_azure_monitor(
-    connection_string=get_application_insights())
+application_insights = get_application_insights()
+if application_insights:
+    configure_azure_monitor(
+        connection_string=get_application_insights())
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
