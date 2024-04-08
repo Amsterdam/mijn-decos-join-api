@@ -6,7 +6,14 @@ from flask import Flask, make_response
 from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-import applicationinsights
+from azure.monitor.opentelemetry import configure_azure_monitor
+
+
+from opentelemetry import trace
+
+
+configure_azure_monitor(
+     oonnection_string= os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"))
 
 from app import auth
 from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn

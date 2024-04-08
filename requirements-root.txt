@@ -9,5 +9,5 @@ pyjwt
 python-dateutil
 requests
 sentry-sdk[flask]
-applicationinsights
+azure-monitor-opentelemetry
 freezegun
