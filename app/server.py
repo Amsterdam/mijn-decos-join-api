@@ -7,10 +7,7 @@ from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from azure.monitor.opentelemetry import configure_azure_monitor
-
-
 from opentelemetry import trace
-
 
 configure_azure_monitor(
      oonnection_string= os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"))
