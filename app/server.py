@@ -9,9 +9,6 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry import trace
 
-configure_azure_monitor(
-    connection_string=os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"))
-
 from app import auth
 from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn
 from app.crypto import decrypt
@@ -20,6 +17,9 @@ from app.helpers import (
     get_connection,
     success_response_json,
 )
+
+azure_monitor  = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
+configure_azure_monitor(connection_string=azure_monitor)
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
