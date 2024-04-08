@@ -10,7 +10,7 @@ from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry import trace
 
 configure_azure_monitor(
-    connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"))
+    connection_string=os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"))
 
 from app import auth
 from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn
