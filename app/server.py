@@ -18,7 +18,7 @@ from app.helpers import (
     success_response_json,
 )
 
-azure_monitor  = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
+azure_monitor = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
 configure_azure_monitor(connection_string=azure_monitor)
 
 app = Flask(__name__)
