@@ -105,4 +105,6 @@ def handle_error(error):
 
 
 if __name__ == "__main__":  # pragma: no cover
+    
+    print(os.getenv("APPLICATION_INSIGHTS_CONNECTION_STRING"))
     app.run()
