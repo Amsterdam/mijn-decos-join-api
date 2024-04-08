@@ -6,6 +6,8 @@ from flask import Flask, make_response
 from requests.exceptions import HTTPError
 from sentry_sdk.integrations.flask import FlaskIntegration
 
+import applicationinsights
+
 from app import auth
 from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn
 from app.crypto import decrypt

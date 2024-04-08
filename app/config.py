@@ -11,6 +11,9 @@ BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 SENTRY_ENV = os.getenv("SENTRY_ENVIRONMENT")
 
+instrumentation_key = 'APPLICATION_INSIGHTS_CONNECTION_STRING'
+app_insights = applicationinsights.TelemetryClient(instrumentation_key)
+
 # Environment determination
 IS_PRODUCTION = SENTRY_ENV == "production"
 IS_ACCEPTANCE = SENTRY_ENV == "acceptance"
