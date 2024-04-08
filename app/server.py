@@ -17,7 +17,8 @@ from app.helpers import (
     get_connection,
     success_response_json,
 )
-
+configure_azure_monitor(
+    connection_string=os.getenv("APPLICATION_INSIGHTS_CONNECTION_STRING"))
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
@@ -104,5 +105,4 @@ def handle_error(error):
 
 
 if __name__ == "__main__":  # pragma: no cover
-    print(os.getenv("APPLICATION_INSIGHTS_CONNECTION_STRING"))
     app.run()

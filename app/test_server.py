@@ -23,6 +23,7 @@ TESTKEY = "z4QXWk3bjwFST2HRRVidnn7Se8VFCaHscK39JfODzNs="
         "MA_BUILD_ID": "999",
         "MA_GIT_SHA": "abcdefghijk",
         "MA_OTAP_ENV": "unittesting",
+        "APPLICATIONS_INSIGHTS_CONNECTION_STRING": "InstrumentationKey=54398cf4-1d58-458c-949f-7af272a21afc;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/",
     },
 )
 @patch("app.crypto.get_encrytion_key", lambda: TESTKEY)
