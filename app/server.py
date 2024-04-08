@@ -10,7 +10,7 @@ from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry import trace
 
 from app import auth
-from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn
+from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn, get_application_insights
 from app.crypto import decrypt
 from app.helpers import (
     error_response_json,
@@ -18,7 +18,7 @@ from app.helpers import (
     success_response_json,
 )
 configure_azure_monitor(
-    connection_string=os.getenv("APPLICATION_INSIGHTS_CONNECTION_STRING"))
+    connection_string=get_application_insights())
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
