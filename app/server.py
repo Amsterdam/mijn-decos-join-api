@@ -18,8 +18,8 @@ from app.helpers import (
     success_response_json,
 )
 
-azure_monitor = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
-configure_azure_monitor(connection_string=azure_monitor)
+configure_azure_monitor(
+connection_string=os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"))
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
