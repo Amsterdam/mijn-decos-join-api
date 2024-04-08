@@ -9,4 +9,5 @@ pyjwt
 python-dateutil
 requests
 sentry-sdk[flask]
+applicationinsights
 freezegun
