@@ -23,10 +23,12 @@ if application_insights:
         connection_string=get_application_insights())
 
 def callback_function(envelope):
-   envelope.tags['ai.cloud.role'] = 'mams-t-appservice-vergunningen'
+    envelope.tags['ai.cloud.role'] = 'mams-t-appservice-vergunningen'
+
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
+
 
 sentry_dsn = get_sentry_dsn()
 if sentry_dsn:
