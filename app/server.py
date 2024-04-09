@@ -22,6 +22,15 @@ if application_insights:
     configure_azure_monitor(
         connection_string=get_application_insights())
 
+def callback_function(envelope):
+   envelope.tags['ai.cloud.role'] = 'mams-t-appservice-vergunningen'
+
+# AzureLogHandler
+handler.add_telemetry_processor(callback_function)
+
+# AzureExporter
+exporter.add_telemetry_processor(callback_function)
+
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
 
