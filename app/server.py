@@ -18,9 +18,8 @@ from app.helpers import (
     success_response_json,
 )
 
-otel_resource_attributes = os.getenv("OTEL_RESOURCE_ATTRIBUTES")
-otel_service_name = os.getenv("OTEL_SERVICE_NAME")
-
+os.environ["OTEL_RESOURCE_ATTRIBUTES"] = "service.namespace=my-namespace,service.instance.id=my-instance"
+os.environ["OTEL_SERVICE_NAME"] = "my-service"
 
 application_insights = get_application_insights()
 if application_insights:
@@ -30,16 +29,6 @@ if application_insights:
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
-
-
-sentry_dsn = get_sentry_dsn()
-if sentry_dsn:
-    sentry_sdk.init(
-        dsn=sentry_dsn,
-        environment=f"{'az-' if IS_AZ else ''}{SENTRY_ENV}",
-        integrations=[FlaskIntegration()],
-        with_locals=False,
-    )
 
 
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
