@@ -17,13 +17,13 @@ from app.helpers import (
     get_connection,
     success_response_json,
 )
+os.environ["OTEL_RESOURCE_ATTRIBUTES"] = "service.namespace=my-namespace,service.instance.id=my-instance"
+os.environ["OTEL_SERVICE_NAME"] = "my-service"
+
 application_insights = get_application_insights()
 if application_insights:
     configure_azure_monitor(
         connection_string=get_application_insights())
-
-def callback_function(envelope):
-    envelope.tags['ai.cloud.role'] = 'mams-t-appservice-vergunningen'
 
 
 app = Flask(__name__)
