@@ -18,8 +18,8 @@ from app.helpers import (
     success_response_json,
 )
 
-resource_attributes = os.getenv("OTEL_RESOURCE_ATTRIBUTES")
-service_name = os.getenv("OTEL_SERVICE_NAME")
+otel_resource_attributes = os.environ.get("OTEL_RESOURCE_ATTRIBUTES")
+otel_service_name = os.environ.get("OTEL_SERVICE_NAME")
 
 application_insights = get_application_insights()
 if application_insights:
