@@ -17,8 +17,10 @@ from app.helpers import (
     get_connection,
     success_response_json,
 )
-os.environ["OTEL_RESOURCE_ATTRIBUTES"] = "service.namespace=my-namespace,service.instance.id=my-instance"
-os.environ["OTEL_SERVICE_NAME"] = "my-service"
+
+otel_resource_attributes = os.getenv("OTEL_RESOURCE_ATTRIBUTES")
+otel_service_name = os.getenv("OTEL_SERVICE_NAME")
+
 
 application_insights = get_application_insights()
 if application_insights:
