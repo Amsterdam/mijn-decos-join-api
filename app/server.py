@@ -2,6 +2,7 @@ import logging
 import os
 
 from azure.monitor.opentelemetry import configure_azure_monitor
+from opentelemetry.sdk.resources import Resource, ResourceAttributes
 from flask import Flask, make_response
 from opentelemetry import trace
 from requests.exceptions import HTTPError
@@ -25,6 +26,17 @@ if application_insights_connection_string:
     configure_azure_monitor(
         connection_string=application_insights_connection_string,
         logger_name=logger_name,
+        resource=Resource.create(
+            {
+                ResourceAttributes.SERVICE_NAMESPACE: "koppel-apis",
+                ResourceAttributes.SERVICE_NAME: "vergunningen",
+                ResourceAttributes.SERVICE_INSTANCE_ID: "vergunningen1",
+                "ai.cloud.role": "vergunningen",
+                "ai.cloud.roleInstance": "vergunningen1",
+                "cloudRoleName": "vergunningen",
+                "cloudRoleInstance": "vergunningen1",
+            }
+        ),
         instrumentation_options={
             "azure_sdk": {"enabled": True},
             "flask": {"enabled": True},
