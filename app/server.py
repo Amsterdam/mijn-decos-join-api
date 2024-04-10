@@ -17,10 +17,15 @@ from app.helpers import error_response_json, get_connection, success_response_js
 
 tracer = trace.get_tracer(__name__)
 
+logger_name = "server"
+logger = logging.getLogger(logger_name)
+logger.setLevel(logging.INFO)
+
 application_insights_connection_string = get_application_insights_connection_string()
 if application_insights_connection_string:
     configure_azure_monitor(
         connection_string=application_insights_connection_string,
+        logger_name=logger_name,
         instrumentation_options={
             "azure_sdk": {"enabled": False},
             "flask": {"enabled": True},
@@ -81,9 +86,15 @@ def health_check():
 
 
 @app.route("/trace-app-insights", methods=["GET"])
-def test_app_insights1():
+def test_app_insights():
     with tracer.start_as_current_span("hello"):
         print("Message from Decos/Vergunningen Api")
+    return success_response_json("OK")
+
+
+@app.route("/log-app-insights", methods=["GET"])
+def test_app_insights1():
+    logger.info("Some info message")
     return success_response_json("OK")
 
 
