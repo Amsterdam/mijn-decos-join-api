@@ -17,7 +17,7 @@ from app.helpers import error_response_json, get_connection, success_response_js
 
 tracer = trace.get_tracer(__name__)
 
-logger_name = "server"
+logger_name = __name__
 logger = logging.getLogger(logger_name)
 logger.setLevel(logging.INFO)
 
