@@ -1,33 +1,34 @@
 import logging
 import os
 
-import sentry_sdk
-from flask import Flask, make_response
-from requests.exceptions import HTTPError
-from sentry_sdk.integrations.flask import FlaskIntegration
-
 from azure.monitor.opentelemetry import configure_azure_monitor
+from flask import Flask, make_response
 from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+from requests.exceptions import HTTPError
 
 from app import auth
-from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn, get_application_insights
-from app.crypto import decrypt
-from app.helpers import (
-    error_response_json,
-    get_connection,
-    success_response_json,
+from app.config import (
+    IS_DEV,
+    UpdatedJSONProvider,
+    get_application_insights_connection_string,
 )
+from app.crypto import decrypt
+from app.helpers import error_response_json, get_connection, success_response_json
 
-exporter = AzureMonitorTraceExporter.from_connection_string(
-    conn_str=get_application_insights())
+tracer = trace.get_tracer(__name__)
 
-application_insights = get_application_insights()
-if application_insights:
+application_insights_connection_string = get_application_insights_connection_string()
+if application_insights_connection_string:
     configure_azure_monitor(
-        connection_string=get_application_insights())
+        connection_string=application_insights_connection_string,
+        instrumentation_options={
+            "azure_sdk": {"enabled": False},
+            "flask": {"enabled": True},
+            "django": {"enabled": False},
+            "fastapi": {"enabled": False},
+            "psycopg2": {"enabled": False},
+        },
+    )
 
 
 app = Flask(__name__)
@@ -77,6 +78,18 @@ def health_check():
             "otapEnv": os.getenv("MA_OTAP_ENV", None),
         }
     )
+
+
+@app.route("/trace-app-insights", methods=["GET"])
+def test_app_insights1():
+    with tracer.start_as_current_span("hello"):
+        print("Message from Decos/Vergunningen Api")
+    return success_response_json("OK")
+
+
+@app.route("/exception-app-insights", methods=["GET"])
+def test_app_insights2():
+    raise Exception("Testing the Decos/Vergunningen Api Exception")
 
 
 @app.errorhandler(Exception)

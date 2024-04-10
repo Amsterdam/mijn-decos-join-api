@@ -51,8 +51,10 @@ class UpdatedJSONProvider(DefaultJSONProvider):
 def get_sentry_dsn():
     return os.getenv("SENTRY_DSN", None)
 
-def get_application_insights():
-    return os.getenv("APPLICATION_INSIGHTS_CONNECTION_STRING", None)
+
+def get_application_insights_connection_string():
+    return os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING", None)
+
 
 def get_decosjoin_username():
     return os.getenv("DECOS_JOIN_USERNAME")

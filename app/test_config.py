@@ -12,7 +12,7 @@ from app.config import (
     get_decosjoin_username,
     get_encrytion_key,
     get_sentry_dsn,
-    get_application_insights,
+    get_application_insights_connection_string,
 )
 from app.decosjoin_service import get_decosjoin_adres_boeken
 
@@ -48,4 +48,4 @@ class ConfigTests(TestCase):
         )
         self.assertEqual(get_sentry_dsn(), "sentry")
         self.assertEqual(get_encrytion_key(), FERNET_KEY)
-        self.assertEqual(get_application_insights(), "test")
+        self.assertEqual(get_application_insights_connection_string(), "test")
