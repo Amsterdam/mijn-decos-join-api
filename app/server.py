@@ -8,6 +8,9 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 
 from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 
 from app import auth
 from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn, get_application_insights
@@ -18,6 +21,10 @@ from app.helpers import (
     success_response_json,
 )
 
+exporter = AzureMonitorTraceExporter.from_connection_string(
+    os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"]
+)
+
 application_insights = get_application_insights()
 if application_insights:
     configure_azure_monitor(
@@ -26,12 +33,6 @@ if application_insights:
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
-
-
-@app.route("trace-app-insights", methods=["GET"])
-def test_app_insights():
-    trace('Message from Decos/Vergunningen Api')
-    return success_response_json('OK')
 
 
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
