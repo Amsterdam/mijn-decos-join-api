@@ -27,7 +27,7 @@ if application_insights_connection_string:
         connection_string=application_insights_connection_string,
         logger_name=logger_name,
         instrumentation_options={
-            "azure_sdk": {"enabled": False},
+            "azure_sdk": {"enabled": True},
             "flask": {"enabled": True},
             "django": {"enabled": False},
             "fastapi": {"enabled": False},
