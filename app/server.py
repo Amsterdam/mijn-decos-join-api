@@ -28,6 +28,16 @@ app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
 
 
+@app.route("trace-app-insights", methods=["GET"])
+def test_app_insights():
+    trace('Message from Decos/Vergunningen Api')
+    return success_response_json('OK')
+
+@app.route("exception-app-insights", methods=["GET"])
+def test_app_insights():
+    raise Exception('Testing the Decos/Vergunningen Api Exception')
+
+
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
 @auth.login_required
 def get_vergunningen():
