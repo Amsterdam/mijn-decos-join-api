@@ -19,7 +19,6 @@ tracer = trace.get_tracer(__name__)
 
 logger_name = __name__
 logger = logging.getLogger(logger_name)
-logger.setLevel(logging.INFO)
 
 application_insights_connection_string = get_application_insights_connection_string()
 if application_insights_connection_string:
@@ -100,7 +99,12 @@ def test_app_insights1():
 
 @app.route("/exception-app-insights", methods=["GET"])
 def test_app_insights2():
-    raise Exception("Testing the Decos/Vergunningen Api Exception")
+    logger.exception("Testing the Decos/Vergunningen Api Exception")
+
+
+@app.route("/error-app-insights", methods=["GET"])
+def test_app_insights3():
+    logger.error("Testing the Decos/Vergunningen ERROR")
 
 
 @app.errorhandler(Exception)
