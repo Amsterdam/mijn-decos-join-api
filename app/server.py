@@ -94,17 +94,19 @@ def test_app_insights():
 @app.route("/log-app-insights", methods=["GET"])
 def test_app_insights1():
     logger.info("Some info message")
-    return success_response_json("OK")
+    return success_response_json("OK-INFO")
 
 
 @app.route("/exception-app-insights", methods=["GET"])
 def test_app_insights2():
     logger.exception("Testing the Decos/Vergunningen Api Exception")
+    return success_response_json("OK-EXCEPTION")
 
 
 @app.route("/error-app-insights", methods=["GET"])
 def test_app_insights3():
     logger.error("Testing the Decos/Vergunningen ERROR")
+    return success_response_json("OK-ERROR")
 
 
 @app.errorhandler(Exception)
