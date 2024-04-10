@@ -22,8 +22,7 @@ from app.helpers import (
 )
 
 exporter = AzureMonitorTraceExporter.from_connection_string(
-    os.environ["APPLICATION_INSIGHTS_CONNECTION_STRING"]
-)
+    conn_str=get_application_insights())
 
 application_insights = get_application_insights()
 if application_insights:
