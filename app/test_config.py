@@ -31,7 +31,7 @@ FERNET_KEY = str(Fernet.generate_key())
         "DECOS_JOIN_ADRES_BOEKEN_BSN": "address1,address2",
         "DECOS_JOIN_ADRES_BOEKEN_KVK": "address3,address4",
         "FERNET_ENCRYPTION_KEY": FERNET_KEY,
-        "APPLICATION_INSIGHTS_CONNECTION_STRING": "test",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "test",
     },
 )
 class ConfigTests(TestCase):
