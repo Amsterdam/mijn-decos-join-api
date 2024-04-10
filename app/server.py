@@ -2,9 +2,10 @@ import logging
 import os
 
 from azure.monitor.opentelemetry import configure_azure_monitor
-from opentelemetry.sdk.resources import Resource, ResourceAttributes
 from flask import Flask, make_response
 from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.trace import get_tracer_provider
 from requests.exceptions import HTTPError
 
 from app import auth
@@ -16,39 +17,18 @@ from app.config import (
 from app.crypto import decrypt
 from app.helpers import error_response_json, get_connection, success_response_json
 
-tracer = trace.get_tracer(__name__)
-
 logger_name = __name__
 logger = logging.getLogger(logger_name)
 
-application_insights_connection_string = get_application_insights_connection_string()
-if application_insights_connection_string:
-    configure_azure_monitor(
-        connection_string=application_insights_connection_string,
-        logger_name=logger_name,
-        resource=Resource.create(
-            {
-                ResourceAttributes.SERVICE_NAMESPACE: "koppel-apis",
-                ResourceAttributes.SERVICE_NAME: "vergunningen",
-                ResourceAttributes.SERVICE_INSTANCE_ID: "vergunningen1",
-                "ai.cloud.role": "vergunningen",
-                "ai.cloud.roleInstance": "vergunningen1",
-                "cloudRoleName": "vergunningen",
-                "cloudRoleInstance": "vergunningen1",
-            }
-        ),
-        instrumentation_options={
-            "azure_sdk": {"enabled": True},
-            "flask": {"enabled": True},
-            "django": {"enabled": False},
-            "fastapi": {"enabled": False},
-            "psycopg2": {"enabled": False},
-        },
-    )
+if get_application_insights_connection_string():
+    configure_azure_monitor()
 
+tracer = trace.get_tracer(__name__, tracer_provider=get_tracer_provider())
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
+
+FlaskInstrumentor.instrument_app(app)
 
 
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
