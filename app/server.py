@@ -2,11 +2,10 @@ import logging
 import os
 
 from azure.monitor.opentelemetry import configure_azure_monitor
-from flask import Flask, make_response, request
+from flask import Flask, make_response
 from opentelemetry import trace
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
-from opentelemetry.propagate import extract
-from opentelemetry.trace import SpanKind, get_tracer_provider
+from opentelemetry.trace import get_tracer_provider
 from requests.exceptions import HTTPError
 
 from app import auth
