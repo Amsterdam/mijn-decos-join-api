@@ -7,6 +7,22 @@ Deze api levert de volgende data:
 
 - Vergunningen, zie `/app/zaaktypes.py` voor een overzicht van de types.
 
+### Local env
+```
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements-root.txt
+
+// unittest
+python -m unittest
+
+// requirements.txt maken
+make requirements
+
+// dev server
+sh scripts/run-dev.sh
+```
+
 ### Kenmerken
 - Het bronsysteem is DecosJoin
 - De output van de api is JSON formaat.
