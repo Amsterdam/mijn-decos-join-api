@@ -44,6 +44,10 @@ FROM base as publish
 # ssh ( see also: https://github.com/Azure-Samples/docker-django-webapp-linux )
 ENV SSH_PASSWD "root:Docker!"
 
+# ssh ( see also: https://github.com/Azure-Samples/docker-django-webapp-linux )
+ARG SSH_PASSWD
+ENV SSH_PASSWD=$SSH_PASSWD
+
 EXPOSE 8000
 ENV PORT 8000
 
@@ -55,6 +59,9 @@ ENV MA_BUILD_ID=$MA_BUILD_ID
 
 ARG MA_GIT_SHA
 ENV MA_GIT_SHA=$MA_GIT_SHA
+
+ARG MA_CONTAINER_SSH_ENABLED=false
+ENV MA_CONTAINER_SSH_ENABLED=$MA_CONTAINER_SSH_ENABLED
 
 COPY conf/uwsgi.ini /api/
 COPY conf/docker-entrypoint.sh /api/
