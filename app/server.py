@@ -1,64 +1,72 @@
 import logging
 import os
 
-import sentry_sdk
-from flask import Flask, make_response
+from azure.monitor.opentelemetry import configure_azure_monitor
+from flask import Flask, make_response, request
+from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.propagate import extract
+from opentelemetry.trace import SpanKind, get_tracer_provider
 from requests.exceptions import HTTPError
-from sentry_sdk.integrations.flask import FlaskIntegration
 
 from app import auth
-from app.config import IS_AZ, IS_DEV, SENTRY_ENV, UpdatedJSONProvider, get_sentry_dsn
-from app.crypto import decrypt
-from app.helpers import (
-    error_response_json,
-    get_connection,
-    success_response_json,
+from app.config import (
+    IS_DEV,
+    UpdatedJSONProvider,
+    get_application_insights_connection_string,
 )
+from app.crypto import decrypt
+from app.helpers import error_response_json, get_connection, success_response_json
+
+logger_name = __name__
+logger = logging.getLogger(logger_name)
+
+# See also: https://medium.com/@tedisaacs/auto-instrumenting-python-fastapi-and-monitoring-with-azure-application-insights-768a59d2f4b9
+if get_application_insights_connection_string():
+    configure_azure_monitor()
+
+tracer = trace.get_tracer(__name__, tracer_provider=get_tracer_provider())
 
 app = Flask(__name__)
 app.json = UpdatedJSONProvider(app)
 
-sentry_dsn = get_sentry_dsn()
-if sentry_dsn:
-    sentry_sdk.init(
-        dsn=sentry_dsn,
-        environment=f"{'az-' if IS_AZ else ''}{SENTRY_ENV}",
-        integrations=[FlaskIntegration()],
-        with_locals=False,
-    )
+FlaskInstrumentor.instrument_app(app)
 
 
 @app.route("/decosjoin/getvergunningen", methods=["GET"])
 @auth.login_required
 def get_vergunningen():
-    user = auth.get_current_user()
-    zaken = get_connection().get_zaken(user["type"], user["id"])
+    with tracer.start_as_current_span("/getvergunningen"):
+        user = auth.get_current_user()
+        zaken = get_connection().get_zaken(user["type"], user["id"])
 
-    return success_response_json(zaken)
+        return success_response_json(zaken)
 
 
 @app.route("/decosjoin/listdocuments/<string:encrypted_zaak_id>", methods=["GET"])
 @auth.login_required
 def get_documents(encrypted_zaak_id):
-    user = auth.get_current_user()
-    zaak_id = decrypt(encrypted_zaak_id, user["id"])
-    documents = get_connection().get_documents(zaak_id, user["id"])
+    with tracer.start_as_current_span("/listdocuments"):
+        user = auth.get_current_user()
+        zaak_id = decrypt(encrypted_zaak_id, user["id"])
+        documents = get_connection().get_documents(zaak_id, user["id"])
 
-    return success_response_json(documents)
+        return success_response_json(documents)
 
 
 @app.route("/decosjoin/document/<string:encrypted_doc_id>", methods=["GET"])
 @auth.login_required
 def get_document_blob(encrypted_doc_id):
-    user = auth.get_current_user()
+    with tracer.start_as_current_span("/document"):
+        user = auth.get_current_user()
 
-    doc_id = decrypt(encrypted_doc_id, user["id"])
-    document = get_connection().get_document_blob(doc_id)
+        doc_id = decrypt(encrypted_doc_id, user["id"])
+        document = get_connection().get_document_blob(doc_id)
 
-    new_response = make_response(document["file_data"])
-    new_response.headers["Content-Type"] = document["Content-Type"]
+        new_response = make_response(document["file_data"])
+        new_response.headers["Content-Type"] = document["Content-Type"]
 
-    return new_response
+        return new_response
 
 
 @app.route("/")
@@ -96,7 +104,9 @@ def handle_error(error):
     elif auth.is_auth_exception(error):
         return error_response_json(msg_auth_exception, 401)
 
-    return error_response_json(msg_server_error, 500)
+    return error_response_json(
+        msg_server_error, error.code if hasattr(error, "code") else 500
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover
