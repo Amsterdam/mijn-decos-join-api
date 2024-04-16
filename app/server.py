@@ -17,9 +17,6 @@ from app.config import (
 from app.crypto import decrypt
 from app.helpers import error_response_json, get_connection, success_response_json
 
-logger_name = __name__
-logger = logging.getLogger(logger_name)
-
 # See also: https://medium.com/@tedisaacs/auto-instrumenting-python-fastapi-and-monitoring-with-azure-application-insights-768a59d2f4b9
 if get_application_insights_connection_string():
     configure_azure_monitor()
