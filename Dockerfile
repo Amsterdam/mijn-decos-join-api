@@ -42,9 +42,6 @@ ENTRYPOINT [ "/bin/sh", "/api/test.sh"]
 FROM base as publish
 
 # ssh ( see also: https://github.com/Azure-Samples/docker-django-webapp-linux )
-ENV SSH_PASSWD "root:Docker!"
-
-# ssh ( see also: https://github.com/Azure-Samples/docker-django-webapp-linux )
 ARG SSH_PASSWD
 ENV SSH_PASSWD=$SSH_PASSWD
 
