@@ -7,15 +7,13 @@ from flask.json.provider import DefaultJSONProvider
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-# Sentry configuration.
-SENTRY_DSN = os.getenv("SENTRY_DSN")
-SENTRY_ENV = os.getenv("SENTRY_ENVIRONMENT")
+OTAP_ENV = os.getenv("MA_OTAP_ENV")
 
 # Environment determination
-IS_PRODUCTION = SENTRY_ENV == "production"
-IS_ACCEPTANCE = SENTRY_ENV == "acceptance"
-IS_DEV = SENTRY_ENV == "development"
-IS_TEST = SENTRY_ENV == "test"
+IS_PRODUCTION = OTAP_ENV == "production"
+IS_ACCEPTANCE = OTAP_ENV == "acceptance"
+IS_DEV = OTAP_ENV == "development"
+IS_TEST = OTAP_ENV == "test"
 
 IS_TAP = IS_PRODUCTION or IS_ACCEPTANCE or IS_TEST
 IS_AP = IS_ACCEPTANCE or IS_PRODUCTION
@@ -48,8 +46,8 @@ class UpdatedJSONProvider(DefaultJSONProvider):
         return super().default(obj)
 
 
-def get_sentry_dsn():
-    return os.getenv("SENTRY_DSN", None)
+def get_application_insights_connection_string():
+    return os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING", None)
 
 
 def get_decosjoin_username():

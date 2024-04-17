@@ -11,7 +11,7 @@ from app.config import (
     get_decosjoin_password,
     get_decosjoin_username,
     get_encrytion_key,
-    get_sentry_dsn,
+    get_application_insights_connection_string,
 )
 from app.decosjoin_service import get_decosjoin_adres_boeken
 
@@ -23,13 +23,13 @@ FERNET_KEY = str(Fernet.generate_key())
 @patch.dict(
     os.environ,
     {
-        "SENTRY_DSN": "sentry",
         "DECOS_JOIN_USERNAME": "username",
         "DECOS_JOIN_PASSWORD": "password",
         "DECOS_JOIN_API_HOST": "host",
         "DECOS_JOIN_ADRES_BOEKEN_BSN": "address1,address2",
         "DECOS_JOIN_ADRES_BOEKEN_KVK": "address3,address4",
         "FERNET_ENCRYPTION_KEY": FERNET_KEY,
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "test",
     },
 )
 class ConfigTests(TestCase):
@@ -44,5 +44,5 @@ class ConfigTests(TestCase):
                 PROFILE_TYPE_COMMERCIAL: ["address3", "address4"],
             },
         )
-        self.assertEqual(get_sentry_dsn(), "sentry")
         self.assertEqual(get_encrytion_key(), FERNET_KEY)
+        self.assertEqual(get_application_insights_connection_string(), "test")
