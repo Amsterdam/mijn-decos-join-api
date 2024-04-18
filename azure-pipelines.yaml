@@ -20,14 +20,8 @@ resources:
       ref: refs/heads/main
 
 parameters:
-  - name: pipelineAction
-    type: string
-    default: btd
-    values:
-      - btd
-      - updateAppSettings
-
   - name: dtapName
+    displayName: Test or Acc
     type: string
     default: t
     values:
@@ -63,27 +57,14 @@ variables:
   - ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
       - name: btdDeploy
         value: false
-  - ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
-      - name: btdDeploy
-        value: ${{ parameters.btdDeploy }}
-
-  - ${{ if and(contains(variables['Build.SourceBranchName'], 'production-release'), eq(parameters.pipelineAction, 'btd')) }}:
-      - name: btdBuild
-        value: true
-      - name: btdTest
-        value: true
-      - name: btdDeploy
-        value: true
-
-  - ${{ if eq(parameters.pipelineAction, 'updateAppSettings') }}:
-      - name: btdBuild
-        value: false
-      - name: btdTest
-        value: false
-      - name: btdDeploy
-        value: false
 
   - ${{ if contains(variables['Build.SourceBranchName'], 'production-release') }}:
+      - name: btdBuild
+        value: true
+      - name: btdTest
+        value: true
+      - name: btdDeploy
+        value: true
       - name: dtapName
         value: p
 
@@ -95,5 +76,4 @@ jobs:
       btdBuild: ${{ variables.btdBuild }}
       btdTest: ${{ variables.btdTest }}
       btdDeploy: ${{ variables.btdDeploy }}
-      pipelineAction: ${{ parameters.pipelineAction }}
       aquaScan: ${{ eq(variables['Build.Reason'], 'PullRequest') }}
