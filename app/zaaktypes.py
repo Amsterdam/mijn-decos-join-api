@@ -461,6 +461,7 @@ class BZP(Zaak):
 
         value = re.sub("[^0-9a-zA-Z-]+", " ", value)
         value = re.sub(" +", " ", value.strip())
+        value = re.sub(" -", "", value.upper())
         value = re.sub(" ", " | ", value.upper())
 
         return value

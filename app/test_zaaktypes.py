@@ -580,7 +580,7 @@ class ZaaktypesTest(TestCase):
             "date5": "2023-02-01T00:00:00",
             "date6": "2023-10-21T00:00:00",
             "date8": "2024-12-24T00:00:00",
-            "text13": "KN-UW-TS,AAZZ88",
+            "text13": "KN-UW-TS - AAZZ88",
             "title": "Ontvangen",
             "dfunction": "Verleend",
             "id": "zaak-150",

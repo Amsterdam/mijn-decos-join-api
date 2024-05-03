@@ -8,20 +8,21 @@ Deze api levert de volgende data:
 - Vergunningen, zie `/app/zaaktypes.py` voor een overzicht van de types.
 
 ### Local env
-```
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements-root.txt
+
+`python -m venv venv`
+Mac: `source venv/bin/activate`
+Windows: `.\venv\Scripts\Activate.ps1`
+`pip install -r requirements-root.txt`
 
 // unittest
-python -m unittest
+`python -m unittest`
 
 // requirements.txt maken
-make requirements
+`make requirements`
 
 // dev server
-sh scripts/run-dev.sh
-```
+`sh scripts/run-dev.sh`
+
 
 ### Kenmerken
 - Het bronsysteem is DecosJoin
