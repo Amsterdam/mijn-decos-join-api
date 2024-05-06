@@ -997,7 +997,7 @@ class Eigenparkeerplaats(Zaak):
 
         return zaak_deferred
 
-    def to_requesttype(self):
+    def to_requesttypes(self):
         type_map = {
             "isNewRequest": "Nieuwe aanvraag",
             "isCarsharingpermit": "Autodeelbedrijf",
@@ -1006,11 +1006,11 @@ class Eigenparkeerplaats(Zaak):
             "isExtension": "Verlenging",
         }
 
+        request_types = []
         for key in type_map.keys():
             if self.zaak[key] is True:
-                return type_map[key]
-
-        return None
+                request_types.append(type_map[key])
+        return request_types
 
     def after_transform(self):
         locations = []
@@ -1037,7 +1037,7 @@ class Eigenparkeerplaats(Zaak):
             )
 
         self.zaak["locations"] = locations
-        self.zaak["requestType"] = self.to_requesttype()
+        self.zaak["requestTypes"] = self.to_requesttypes()
 
         # removed duplicate keys
         for key in [
