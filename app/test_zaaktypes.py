@@ -610,7 +610,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["licensePlates"], "KN-UW-TS | AAZZ88")
         self.assertEqual(zaak_transformed["isLicensePlateChange"], True)
         self.assertEqual(zaak_transformed["locations"][0]["houseNumber"], 12)
-        self.assertEqual(zaak_transformed["requestTypes"],  ['Kentekenwijziging'])
+        self.assertEqual(zaak_transformed["requestTypes"], ["Kentekenwijziging"])
 
         class connection_mock:
             get_workflow_date_by_step_title = MagicMock(

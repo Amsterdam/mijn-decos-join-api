@@ -940,9 +940,9 @@ class RVVSloterweg(Zaak):
             zaak_deferred["area"] is not None
             and zaak_deferred["licensePlates"] is not None
         ):
-            zaak_deferred[
-                "title"
-            ] = f"RVV ontheffing {zaak_deferred['area']} ({zaak_deferred['licensePlates']})"
+            zaak_deferred["title"] = (
+                f"RVV ontheffing {zaak_deferred['area']} ({zaak_deferred['licensePlates']})"
+            )
 
         return zaak_deferred
 
