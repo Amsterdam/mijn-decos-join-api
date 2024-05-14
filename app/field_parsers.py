@@ -2,7 +2,6 @@ import logging
 import re
 from datetime import date, datetime, time
 from typing import Union
-
 from dateutil import parser
 
 

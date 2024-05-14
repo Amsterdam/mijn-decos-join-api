@@ -580,7 +580,7 @@ class ZaaktypesTest(TestCase):
             "date5": "2023-02-01T00:00:00",
             "date6": "2023-10-21T00:00:00",
             "date8": "2024-12-24T00:00:00",
-            "text13": "KN-UW-TS,AAZZ88",
+            "text13": "KN-UW-TS - AAZZ88",
             "title": "Ontvangen",
             "dfunction": "Verleend",
             "id": "zaak-150",
@@ -610,7 +610,7 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["licensePlates"], "KN-UW-TS | AAZZ88")
         self.assertEqual(zaak_transformed["isLicensePlateChange"], True)
         self.assertEqual(zaak_transformed["locations"][0]["houseNumber"], 12)
-        self.assertEqual(zaak_transformed["requestType"], "Kentekenwijziging")
+        self.assertEqual(zaak_transformed["requestTypes"], ["Kentekenwijziging"])
 
         class connection_mock:
             get_workflow_date_by_step_title = MagicMock(
