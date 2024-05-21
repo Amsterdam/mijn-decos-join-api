@@ -1386,6 +1386,11 @@ class WerkEnVervoerOpStraat(Zaak):
             "parser": to_string,
         },
         {
+            "name": "movingLocations",
+            "from": "bol8",
+            "parser": to_bool,
+        },
+        {
             "name": "block",
             "from": "bol9",
             "parser": to_bool,
@@ -1433,6 +1438,11 @@ class WerkEnVervoerOpStraat(Zaak):
         {
             "name": "vezip",
             "from": "bol23",
+            "parser": to_bool,
+        },
+        {
+            "name": "eblock",
+            "from": "bol52",
             "parser": to_bool,
         },
     ]

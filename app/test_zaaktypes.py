@@ -779,6 +779,8 @@ class ZaaktypesTest(TestCase):
             "text6": "weesperstraat",
             "bol16": "Ja",
             "bol17": "Ja",
+            "bol8": "Ja",
+            "bol52": "Ja",
         }
         zaak_transformed = WerkEnVervoerOpStraat(zaak_source).result()
         self.assertEqual(zaak_transformed["caseType"], "Werk en vervoer op straat")
@@ -791,6 +793,8 @@ class ZaaktypesTest(TestCase):
         self.assertEqual(zaak_transformed["night"], True)
         self.assertEqual(zaak_transformed["object"], False)
         self.assertEqual(zaak_transformed["parkingspace"], False)
+        self.assertEqual(zaak_transformed["movingLocations"], True)
+        self.assertEqual(zaak_transformed["eblock"], True)
 
         class connection_mock:
             get_workflow_date_by_step_title = MagicMock(

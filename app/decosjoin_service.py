@@ -44,6 +44,7 @@ SELECT_FIELDS = ",".join(
         "bol21",
         "bol22",
         "bol23",
+        "bol52",
         "company",
         "date1",
         "date2",
