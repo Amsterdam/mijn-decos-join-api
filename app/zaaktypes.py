@@ -1350,7 +1350,7 @@ class TouringcarJaarontheffing(Zaak):
 
 class WerkEnVervoerOpStraat(Zaak):
     # !!!!!!!!!!!!!
-    enabled = not IS_PRODUCTION
+    enabled = True
     # !!!!!!!!!!!!!
 
     zaak_type = "Werk en vervoer op straat"
