@@ -76,4 +76,3 @@ jobs:
       btdBuild: ${{ variables.btdBuild }}
       btdTest: ${{ variables.btdTest }}
       btdDeploy: ${{ variables.btdDeploy }}
-      aquaScan: ${{ eq(variables['Build.Reason'], 'PullRequest') }}
