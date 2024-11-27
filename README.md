@@ -43,5 +43,5 @@ Windows: `.\venv\Scripts\Activate.ps1`
 ### Release to production
 ```
 ~ cd scripts
-~ sh release.sh --minor [--major [--patch]]
+~ ./release.sh --minor [--major [--patch]]
 ```
