@@ -14,7 +14,7 @@ azure-core==1.32.0
     #   msrest
 azure-core-tracing-opentelemetry==1.0.0b11
     # via azure-monitor-opentelemetry
-azure-monitor-opentelemetry==1.6.4
+azure-monitor-opentelemetry==1.6.5
     # via -r requirements-root.txt
 azure-monitor-opentelemetry-exporter==1.0.0b33
     # via azure-monitor-opentelemetry
@@ -34,9 +34,9 @@ click==8.1.8
     # via
     #   black
     #   flask
-coverage==7.6.11
+coverage==7.6.12
     # via -r requirements-root.txt
-cryptography==44.0.0
+cryptography==44.0.1
     # via -r requirements-root.txt
 deprecated==1.2.18
     # via
@@ -44,7 +44,7 @@ deprecated==1.2.18
     #   opentelemetry-semantic-conventions
 fixedint==0.1.6
     # via azure-monitor-opentelemetry-exporter
-flake8==7.1.1
+flake8==7.1.2
     # via -r requirements-root.txt
 flask==3.1.0
     # via
