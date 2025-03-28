@@ -114,6 +114,8 @@ def get_verified_token_data(token):
         signing_key.key,
         algorithms=["RS256"],
         audience=audience,
+        # SEE MIJN-11298 For more details
+        options={"verify_nbf": False},
     )
 
     return token_data
