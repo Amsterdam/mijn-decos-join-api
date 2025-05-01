@@ -901,7 +901,7 @@ class RVVSloterweg(Zaak):
     title = "RVV ontheffing Sloterweg"
 
     date_workflow_active_step_title = "RVV Sloterweg - Behandelen"
-    date_workflow_verleend_step_title = "Actief"
+    date_workflow_verleend_step_title = "Status naar actief"
 
     # status_translations = []
 
